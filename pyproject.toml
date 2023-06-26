@@ -1,0 +1,25 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "superpy"
+version = "0.0.1"
+authors = [
+  { name="Joss Appleton-Fox", email="jossappletonfox@protonmail.com" },
+]
+description = "Track and manage retail transactions"
+requires-python = ">=3.9"
+
+[project.urls]
+"Homepage" = "https://github.com/jaf7C7/superpy"
+"Bug Tracker" = "https://github.com/jaf7C7/superpy/issues"
+
+# https://docs.pytest.org/en/7.1.x/explanation/goodpractices.html#choosing-an-import-mode
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+]
+markers = [
+    "active: mark tests as active (run only the marked tests with '-m active')",
+]
