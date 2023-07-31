@@ -20,10 +20,7 @@ def main(argv=None):
         return 1
     if len(argv) > 1:
         if argv[1] == "--advance":
-            if len(argv) == 3:
-                days = int(argv[2])
-            else:
-                days = 1
+            days = int(argv[2]) if len(argv) == 3 else 1
             date = datetime.date.fromisoformat(get_date())
             date += datetime.timedelta(days=days)
             write_date(date.isoformat())
