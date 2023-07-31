@@ -24,6 +24,7 @@ def parse_args(argv):
     date_parser.add_argument(
         "--advance", dest="days_to_advance", type=int, nargs="?", const=1
     )
+    ledger_parser = subparsers.add_parser("ledger")
     return parser.parse_args(argv)
 
 
