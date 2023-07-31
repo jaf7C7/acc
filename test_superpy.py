@@ -33,7 +33,7 @@ def test_can_set_and_get_the_date(capsys):
 )
 def test_can_advance_date_by_days(capsys, days, expected):
     try:
-        superpy.main(["date", "--advance", days])
+        superpy.main(f"date --advance {days}".split())
         superpy.main(["date"])
         out, err = capsys.readouterr()
         assert out == expected
