@@ -46,6 +46,7 @@ def test_can_advance_date_by_days(capsys, days, expected):
         os.unlink(".superpy.conf")
 
 
+@pytest.mark.active
 def test_ledger_without_args_prints_the_default_ledger_path(capsys):
     superpy.main(["ledger"])
     out, err = capsys.readouterr()

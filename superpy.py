@@ -45,4 +45,7 @@ def main(argv=None):
         else:
             date = get_date()
             print(date)
+    elif args.command == "ledger":
+        print("superpy_ledger.csv")
+
     return 0
