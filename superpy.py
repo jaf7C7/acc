@@ -1,3 +1,4 @@
+import datetime
 import argparse
 
 
@@ -36,6 +37,11 @@ def main(argv=None):
     if args.command == "date":
         if args.date is not None:
             write_date(args.date)
+        elif args.days_to_advance is not None:
+            date = datetime.date.fromisoformat(get_date())
+            days = datetime.timedelta(days=args.days_to_advance)
+            new_date = date + days
+            write_date(new_date.isoformat())
         else:
             date = get_date()
             print(date)
