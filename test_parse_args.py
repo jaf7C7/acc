@@ -19,6 +19,7 @@ import superpy
             ["date", "--advance"],
             argparse.Namespace(command="date", date=None, days_to_advance=1),
         ),
+        (["ledger"], argparse.Namespace(command="ledger")),
     ],
 )
 def test_parse_args(args, expected):
