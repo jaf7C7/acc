@@ -1,6 +1,13 @@
 import argparse
+import pytest
 import superpy
 
 
-def test_sets_command_attribute():
-    assert superpy.parse_args(["date"]) == argparse.Namespace(command="date")
+@pytest.mark.parametrize(
+    "args, expected",
+    [
+        (["date"], argparse.Namespace(command="date")),
+    ],
+)
+def test_parse_args(args, expected):
+    assert superpy.parse_args(args) == expected
