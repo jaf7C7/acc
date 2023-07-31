@@ -1,6 +1,3 @@
-import sys
-
-
 def main(argv=None):
     if argv is None:
         return 1
