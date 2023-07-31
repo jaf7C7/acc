@@ -21,7 +21,7 @@ def main(argv=None):
     if len(argv) > 1:
         if argv[1] == "--advance":
             date = datetime.date.fromisoformat(get_date())
-            date += datetime.timedelta(days=1)
+            date += datetime.timedelta(days=int(argv[2]))
             write_date(date.isoformat())
         else:
             write_date(argv[1])
