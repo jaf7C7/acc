@@ -34,5 +34,9 @@ def main(argv=None):
     except argparse.ArgumentError:
         return 1
     if args.command == "date":
-        print("1970-01-01")
+        if args.date is not None:
+            write_date(args.date)
+        else:
+            date = get_date()
+            print(date)
     return 0

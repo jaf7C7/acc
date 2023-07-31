@@ -20,6 +20,7 @@ def test_date_without_args_prints_the_default_date(capsys):
     assert out == "1970-01-01\n"
 
 
+@pytest.mark.active
 def test_can_set_and_get_the_date(capsys):
     try:
         superpy.main(["date", "2020-02-02"])
