@@ -25,6 +25,7 @@ def parse_args(argv):
         "--advance", dest="days_to_advance", type=int, nargs="?", const=1
     )
     ledger_parser = subparsers.add_parser("ledger")
+    ledger_parser.add_argument("ledger_path", nargs="?")
     return parser.parse_args(argv)
 
 
