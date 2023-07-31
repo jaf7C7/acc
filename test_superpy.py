@@ -3,8 +3,9 @@ import pytest
 import superpy
 
 
-def test_returns_1_if_no_args():
-    assert superpy.main([""]) == 1
+@pytest.mark.parametrize("args", [[""], ["frobble"]])
+def test_returns_1_if_no_or_unknown_args(args):
+    assert superpy.main(args) == 1
 
 
 def test_returns_0_if_known_args():
