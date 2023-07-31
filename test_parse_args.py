@@ -19,7 +19,11 @@ import superpy
             ["date", "--advance"],
             argparse.Namespace(command="date", date=None, days_to_advance=1),
         ),
-        (["ledger"], argparse.Namespace(command="ledger")),
+        (["ledger"], argparse.Namespace(command="ledger", ledger_path=None)),
+        (
+            ["ledger", "/tmp/foo"],
+            argparse.Namespace(command="ledger", ledger_path="/tmp/foo"),
+        ),
     ],
 )
 def test_parse_args(args, expected):
