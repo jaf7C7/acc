@@ -33,4 +33,6 @@ def main(argv=None):
         args = parse_args(argv)  # noqa: F841
     except argparse.ArgumentError:
         return 1
+    if args.command == "date":
+        print("1970-01-01")
     return 0
