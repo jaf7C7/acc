@@ -18,17 +18,18 @@ def write_date(date):
 def main(argv=None):
     if argv is None:
         return 1
-    if len(argv) > 1:
-        if argv[1] == "--advance":
-            days = int(argv[2]) if len(argv) == 3 else 1
-            date = datetime.date.fromisoformat(get_date())
-            date += datetime.timedelta(days=days)
-            write_date(date.isoformat())
+    if argv[0] == "date":
+        if len(argv) > 1:
+            if argv[1] == "--advance":
+                days = int(argv[2]) if len(argv) == 3 else 1
+                date = datetime.date.fromisoformat(get_date())
+                date += datetime.timedelta(days=days)
+                write_date(date.isoformat())
+            else:
+                write_date(argv[1])
         else:
-            write_date(argv[1])
-    elif argv[0] == "date":
-        date = get_date()
-        print(date)
+            date = get_date()
+            print(date)
     elif argv[0] == "ledger":
         if len(argv) > 1:
             with open(".superpy.conf", "w") as config:
