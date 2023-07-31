@@ -31,7 +31,7 @@ def parse_args(argv):
 
 def main(argv=None):
     try:
-        args = parse_args(argv)  # noqa: F841
+        args = parse_args(argv)
     except argparse.ArgumentError:
         return 1
     if args.command == "date":
@@ -46,6 +46,14 @@ def main(argv=None):
             date = get_date()
             print(date)
     elif args.command == "ledger":
-        print("superpy_ledger.csv")
-
+        if args.ledger_path is not None:
+            with open(".superpy.conf", "w") as conf:
+                conf.write(args.ledger_path)
+        else:
+            try:
+                with open(".superpy.conf", "r") as conf:
+                    ledger_path = conf.read()
+            except FileNotFoundError:
+                ledger_path = "superpy_ledger.csv"
+            print(ledger_path)
     return 0
