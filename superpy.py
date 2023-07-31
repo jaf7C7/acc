@@ -7,6 +7,11 @@ def get_date():
     return date
 
 
+def write_date(date):
+    with open("superpy_date", "w") as date_file:
+        date_file.write(date)
+
+
 def main(argv=None):
     if argv is None:
         return 1
@@ -16,11 +21,9 @@ def main(argv=None):
             day = int(date[-2:])
             day += 1
             new_date = f"{date[:-2]}{day:02}"
-            with open("superpy_date", "w") as date_file:
-                date_file.write(new_date)
+            write_date(new_date)
         else:
-            with open("superpy_date", "w") as date_file:
-                date_file.write(argv[1])
+            write_date(argv[1])
     elif argv[0] == "date":
         date = get_date()
         print(date)
