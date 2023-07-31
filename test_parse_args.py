@@ -15,6 +15,10 @@ import superpy
             ["date", "--advance", "1"],
             argparse.Namespace(command="date", date=None, days_to_advance=1),
         ),
+        (
+            ["date", "--advance"],
+            argparse.Namespace(command="date", date=None, days_to_advance=1),
+        ),
     ],
 )
 def test_parse_args(args, expected):
