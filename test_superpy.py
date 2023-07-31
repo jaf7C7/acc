@@ -39,3 +39,9 @@ def test_can_advance_date_by_days(capsys, days, expected):
         assert out == expected
     finally:
         os.unlink("superpy_date")
+
+
+def test_ledger_without_args_prints_the_default_ledger_path(capsys):
+    superpy.main(["ledger"])
+    out, err = capsys.readouterr()
+    assert out == "superpy_ledger.csv\n"
