@@ -24,7 +24,7 @@ def test_can_set_and_get_the_date(capsys):
         out, err = capsys.readouterr()
         assert out == "2020-02-02\n"
     finally:
-        os.unlink("superpy_date")
+        os.unlink(".superpy.conf")
 
 
 @pytest.mark.parametrize(
@@ -38,7 +38,7 @@ def test_can_advance_date_by_days(capsys, days, expected):
         out, err = capsys.readouterr()
         assert out == expected
     finally:
-        os.unlink("superpy_date")
+        os.unlink(".superpy.conf")
 
 
 def test_ledger_without_args_prints_the_default_ledger_path(capsys):

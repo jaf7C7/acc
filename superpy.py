@@ -3,7 +3,7 @@ import datetime
 
 def get_date():
     try:
-        with open("superpy_date", "r") as date_file:
+        with open(".superpy.conf", "r") as date_file:
             date = date_file.read()
     except FileNotFoundError:
         date = "1970-01-01"
@@ -11,7 +11,7 @@ def get_date():
 
 
 def write_date(date):
-    with open("superpy_date", "w") as date_file:
+    with open(".superpy.conf", "w") as date_file:
         date_file.write(date)
 
 
