@@ -5,4 +5,4 @@
 - [X] Can set and get the date?
 - [X] Does 'date --advance N' advance the date by 'N' days??
 - [X] Does 'date --advance' default to 1 day?
-- [ ] Does 'ledger' return "ledger.csv"
+- [ ] Does 'ledger' return "superpy_ledger.csv"
