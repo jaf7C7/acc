@@ -3,6 +3,7 @@ import pytest  # noqa: F401
 import superpy
 
 
+@pytest.mark.active
 def test_returns_1_if_no_args():
     assert superpy.main() == 1
 
