@@ -30,5 +30,14 @@ def main(argv=None):
         date = get_date()
         print(date)
     elif argv[0] == "ledger":
-        print("superpy_ledger.csv")
+        if len(argv) > 1:
+            with open(".superpy.conf", "w") as config:
+                config.write(argv[1])
+        else:
+            try:
+                with open(".superpy.conf", "r") as config:
+                    ledger = config.read()
+            except FileNotFoundError:
+                ledger = "superpy_ledger.csv"
+            print(ledger)
     return 0
