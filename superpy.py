@@ -20,6 +20,7 @@ def parse_args(argv):
     parser = argparse.ArgumentParser(exit_on_error=False)
     subparsers = parser.add_subparsers(dest="command")
     date_parser = subparsers.add_parser("date")
+    date_parser.add_argument("date", nargs="?")
     return parser.parse_args(argv)
 
 
