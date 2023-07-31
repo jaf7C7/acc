@@ -6,5 +6,6 @@
 - [X] Does 'date --advance N' advance the date by 'N' days??
 - [X] Does 'date --advance' default to 1 day?
 - [X] Does 'ledger' return "superpy_ledger.csv"
-- [ ] Can the application set and get the ledger path?
+- [X] Can the application set and get the ledger path?
+- [ ] Rewrite argument parsing using 'argparse'
 - [ ] 'date <date>' fails if <date> is not YYYY-MM-DD ISO format
