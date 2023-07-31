@@ -8,8 +8,9 @@ def test_returns_1_if_no_args():
     assert superpy.main() == 1
 
 
-def test_returns_0_if_args():
-    assert superpy.main(["frobble"]) == 0
+@pytest.mark.active
+def test_returns_0_if_known_args():
+    assert superpy.main(["date"]) == 0
 
 
 def test_date_without_args_prints_the_default_date(capsys):

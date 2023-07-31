@@ -29,4 +29,8 @@ def parse_args(argv):
 
 
 def main(argv=None):
-    return 1
+    try:
+        args = parse_args(argv)  # noqa: F841
+    except argparse.ArgumentError:
+        return 1
+    return 0
