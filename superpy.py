@@ -29,4 +29,6 @@ def main(argv=None):
     elif argv[0] == "date":
         date = get_date()
         print(date)
+    elif argv[0] == "ledger":
+        print("superpy_ledger.csv")
     return 0
