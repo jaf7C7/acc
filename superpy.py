@@ -6,3 +6,4 @@ def main(argv=None):
         return 1
     if argv[0] == "date":
         print("1970-01-01")
+    return 0
