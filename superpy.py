@@ -1,4 +1,5 @@
 import datetime
+import argparse
 
 
 def get_date():
@@ -13,6 +14,13 @@ def get_date():
 def write_date(date):
     with open(".superpy.conf", "w") as date_file:
         date_file.write(date)
+
+
+def parse_args(argv):
+    parser = argparse.ArgumentParser(exit_on_error=False)
+    subparsers = parser.add_subparsers(dest="command")
+    date_parser = subparsers.add_parser("date")
+    return parser.parse_args(argv)
 
 
 def main(argv=None):
