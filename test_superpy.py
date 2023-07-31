@@ -45,3 +45,13 @@ def test_ledger_without_args_prints_the_default_ledger_path(capsys):
     superpy.main(["ledger"])
     out, err = capsys.readouterr()
     assert out == "superpy_ledger.csv\n"
+
+
+def test_can_set_and_get_the_ledger_path(capsys):
+    try:
+        superpy.main(["ledger", "/tmp/foo"])
+        superpy.main(["ledger"])
+        out, err = capsys.readouterr()
+        assert out == "/tmp/foo\n"
+    finally:
+        os.unlink(".superpy.conf")
