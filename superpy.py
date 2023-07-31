@@ -1,3 +1,6 @@
+import datetime
+
+
 def get_date():
     try:
         with open("superpy_date", "r") as date_file:
@@ -17,11 +20,9 @@ def main(argv=None):
         return 1
     if len(argv) > 1:
         if argv[1] == "--advance":
-            date = get_date()
-            day = int(date[-2:])
-            day += 1
-            new_date = f"{date[:-2]}{day:02}"
-            write_date(new_date)
+            date = datetime.date.fromisoformat(get_date())
+            date += datetime.timedelta(days=1)
+            write_date(date.isoformat())
         else:
             write_date(argv[1])
     elif argv[0] == "date":
