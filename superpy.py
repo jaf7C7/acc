@@ -21,6 +21,7 @@ def parse_args(argv):
     subparsers = parser.add_subparsers(dest="command")
     date_parser = subparsers.add_parser("date")
     date_parser.add_argument("date", nargs="?")
+    date_parser.add_argument("--advance", dest="days_to_advance", type=int)
     return parser.parse_args(argv)
 
 
