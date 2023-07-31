@@ -25,9 +25,15 @@ def test_can_set_and_get_the_date(capsys):
     os.unlink("superpy_date")
 
 
-def test_can_advance_date_by_days(capsys):
-    superpy.main(["date", "--advance", 1])
-    superpy.main(["date"])
-    out, err = capsys.readouterr()
-    assert out == "1970-01-02\n"
-    os.unlink("superpy_date")
+@pytest.mark.parametrize(
+    "days, expected",
+    [("", "1970-01-02\n"), ("30", "1970-01-31\n"), ("366", "1971-01-02\n")],
+)
+def test_can_advance_date_by_days(capsys, days, expected):
+    try:
+        superpy.main(["date", "--advance", days])
+        superpy.main(["date"])
+        out, err = capsys.readouterr()
+        assert out == expected
+    finally:
+        os.unlink("superpy_date")

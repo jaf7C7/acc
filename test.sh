@@ -1,5 +1,6 @@
 # Format, lint and test the entire project
 find . -name \*.py | entr -cs '
+	test -n "$TMUX_PANE" && tmux clear -t "$TMUX_PANE"
 	print_header () {
 		: "${COLUMNS:=79}"
 		set -- " $* "
