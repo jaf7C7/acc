@@ -4,4 +4,5 @@
 - [X] Does 'date' return 0 args are not 'None'?
 - [X] Can set and get the date?
 - [X] Does 'date --advance N' advance the date by 'N' days??
-- [ ] Does 'date --advance' default to 1 day?
+- [X] Does 'date --advance' default to 1 day?
+- [ ] Does 'ledger' return "ledger.csv"
