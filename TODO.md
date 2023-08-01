@@ -12,4 +12,5 @@
 - [X] 'date --advance <days>' fails if <days> is not an integer
 - [X] Can the application remember and recall a sequence of simple transactions?
 - [X] Refactoring!
+- [ ] Do 'set_date' and 'set_ledger' reset each other?
 - [ ] Can the user sell items as well as buying them?
