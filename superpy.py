@@ -12,7 +12,7 @@ def get_date():
     return date
 
 
-def write_date(date):
+def set_date(date):
     with open(".superpy.conf", "w") as date_file:
         date_file.write(date.isoformat())
 
@@ -20,7 +20,7 @@ def write_date(date):
 def advance_date(days_to_advance):
     date = datetime.date.fromisoformat(get_date())
     days = datetime.timedelta(days=days_to_advance)
-    write_date(date + days)
+    set_date(date + days)
 
 
 def parse_args(argv):
@@ -52,12 +52,11 @@ def main(argv=None):
         return 1
     if args.command == "date":
         if args.date is not None:
-            write_date(args.date)
+            set_date(args.date)
         elif args.days_to_advance is not None:
             advance_date(args.days_to_advance)
         else:
-            date = get_date()
-            print(date)
+            print(get_date())
     elif args.command == "ledger":
         if args.ledger_path is not None:
             with open(".superpy.conf", "w") as conf:
