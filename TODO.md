@@ -10,4 +10,5 @@
 - [X] Rewrite argument parsing using 'argparse'
 - [X] 'date <date>' fails if <date> is not YYYY-MM-DD ISO format
 - [X] 'date --advance <days>' fails if <days> is not an integer
-- [ ] Can the application remember and recall a sequence of simple transactions?
+- [X] Can the application remember and recall a sequence of simple transactions?
+- [ ] Refactoring!
