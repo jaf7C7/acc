@@ -31,6 +31,7 @@ import superpy
             ["buy", "orange", "1.5"],
             argparse.Namespace(command="buy", product="orange", amount="1.5"),
         ),
+        (["report"], argparse.Namespace(command="report")),
     ],
 )
 def test_parse_args(args, expected):
