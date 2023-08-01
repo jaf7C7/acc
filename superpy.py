@@ -33,6 +33,8 @@ def parse_args(argv):
     buy_parser.add_argument("product")
     buy_parser.add_argument("amount")
 
+    report_parser = subparsers.add_parser("report", exit_on_error=False)  # noqa: F841
+
     return parser.parse_args(argv)
 
 
