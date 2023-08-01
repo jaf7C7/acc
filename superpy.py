@@ -1,3 +1,4 @@
+import sys
 import os.path
 import datetime
 import argparse
@@ -102,3 +103,7 @@ def main(argv=None):
     elif args.command == "report":
         report(get_ledger())
     return 0
+
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
