@@ -20,26 +20,11 @@ def set_config(key, value):
         c.write("\t".join(config.values()))
 
 
-def get_date():
-    return get_config().get("date")
-
-
-def set_date(date):
-    set_config("date", date.isoformat())
-
-
 def advance_date(days_to_advance):
-    date = datetime.date.fromisoformat(get_date())
+    date = datetime.date.fromisoformat(get_config().get("date"))
     days = datetime.timedelta(days=days_to_advance)
-    set_date(date + days)
-
-
-def get_ledger():
-    return get_config().get("ledger")
-
-
-def set_ledger(ledger_path):
-    set_config("ledger", ledger_path)
+    new_date = date + days
+    set_config("date", new_date.isoformat())
 
 
 def create_if_not_exists(ledger_path):
@@ -49,7 +34,7 @@ def create_if_not_exists(ledger_path):
 
 def write_transaction_to_ledger(product, amount):
     with open("superpy_ledger.csv", "a") as ledger:
-        fields = [get_date(), product, amount]
+        fields = [get_config().get("date"), product, amount]
         ledger.write("\t".join(fields) + "\n")
 
 
@@ -91,21 +76,21 @@ def main(argv=None):
         return 1
     if args.command == "date":
         if args.date is not None:
-            set_date(args.date)
+            set_config("date", args.date.isoformat())
         elif args.days_to_advance is not None:
             advance_date(args.days_to_advance)
         else:
-            print(get_date())
+            print(get_config().get("date"))
     elif args.command == "ledger":
         if args.ledger_path is not None:
-            set_ledger(args.ledger_path)
+            set_config("ledger", args.ledger_path)
         else:
-            print(get_ledger())
+            print(get_config().get("ledger"))
     elif args.command == "buy":
         create_if_not_exists("superpy_ledger.csv")
         write_transaction_to_ledger(args.product, args.amount)
     elif args.command == "report":
-        report(get_ledger())
+        report(get_config().get("ledger"))
     return 0
 
 
