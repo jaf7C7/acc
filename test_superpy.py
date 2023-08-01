@@ -70,6 +70,18 @@ def test_ledger_without_args_prints_the_default_ledger_path(capsys):
     assert out == "superpy_ledger.csv\n"
 
 
+def test_date_and_ledger_can_be_set_independently(capsys):
+    try:
+        superpy.main(["date", "1991-08-20"])
+        superpy.main(["ledger", "/tmp/foo"])
+        superpy.main(["date"])
+        superpy.main(["ledger"])
+        out, err = capsys.readouterr()
+        assert out.split() == ["1991-08-20", "/tmp/foo"]
+    finally:
+        clean_up_test_files()
+
+
 def test_can_set_and_get_the_ledger_path(capsys):
     try:
         superpy.main(["ledger", "/tmp/foo"])
