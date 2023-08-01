@@ -27,6 +27,10 @@ import superpy
             ["ledger", "/tmp/foo"],
             argparse.Namespace(command="ledger", ledger_path="/tmp/foo"),
         ),
+        (
+            ["buy", "orange", "1.5"],
+            argparse.Namespace(command="buy", product="orange", amount="1.5"),
+        ),
     ],
 )
 def test_parse_args(args, expected):
