@@ -31,6 +31,13 @@ def set_ledger(ledger_path):
         conf.write(ledger_path)
 
 
+def create_if_not_exists(ledger_path):
+    if not os.path.exists(ledger_path):
+        fieldnames = ["DATE", "PRODUCT", "AMOUNT"]
+        with open(ledger_path, "w") as ledger:
+            ledger.write("\t\t".join(fieldnames) + "\n")
+
+
 def advance_date(days_to_advance):
     date = datetime.date.fromisoformat(get_date())
     days = datetime.timedelta(days=days_to_advance)
@@ -77,9 +84,7 @@ def main(argv=None):
         else:
             print(get_ledger())
     elif args.command == "buy":
-        if not os.path.exists("superpy_ledger.csv"):
-            with open("superpy_ledger.csv", "w") as ledger:
-                ledger.write("\t\t".join(["DATE", "PRODUCT", "AMOUNT\n"]))
+        create_if_not_exists("superpy_ledger.csv")
         with open("superpy_ledger.csv", "a") as ledger:
             ledger.write("\t\t".join([get_date(), args.product, f"{args.amount}\n"]))
     elif args.command == "report":
