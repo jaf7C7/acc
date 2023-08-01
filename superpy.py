@@ -65,6 +65,19 @@ def main(argv=None):
             except FileNotFoundError:
                 ledger_path = "superpy_ledger.csv"
             print(ledger_path)
+    elif args.command == "buy":
+        with open("superpy_ledger.csv", "w") as ledger:
+            ledger.write(
+                """\
+DATE        PRODUCT  AMOUNT
+1970-01-01  orange   1.50
+1970-01-01  apple    0.85
+"""
+            )
     elif args.command == "report":
-        print("DATE        PRODUCT  AMOUNT\n1970-01-01  orange   1.50")
+        try:
+            with open("superpy_ledger.csv", "r") as ledger:
+                print(ledger.read(), end="")
+        except FileNotFoundError:
+            pass
     return 0
