@@ -17,6 +17,12 @@ def set_date(date):
         date_file.write(date.isoformat())
 
 
+def advance_date(days_to_advance):
+    date = datetime.date.fromisoformat(get_date())
+    days = datetime.timedelta(days=days_to_advance)
+    set_date(date + days)
+
+
 def get_ledger():
     try:
         with open(".superpy.conf", "r") as conf:
@@ -38,10 +44,10 @@ def create_if_not_exists(ledger_path):
             ledger.write("\t\t".join(fieldnames) + "\n")
 
 
-def advance_date(days_to_advance):
-    date = datetime.date.fromisoformat(get_date())
-    days = datetime.timedelta(days=days_to_advance)
-    set_date(date + days)
+def write_transaction_to_ledger(product, amount):
+    with open("superpy_ledger.csv", "a") as ledger:
+        fields = [get_date(), product, amount]
+        ledger.write("\t\t".join(fields) + "\n")
 
 
 def parse_args(argv):
@@ -85,8 +91,7 @@ def main(argv=None):
             print(get_ledger())
     elif args.command == "buy":
         create_if_not_exists("superpy_ledger.csv")
-        with open("superpy_ledger.csv", "a") as ledger:
-            ledger.write("\t\t".join([get_date(), args.product, f"{args.amount}\n"]))
+        write_transaction_to_ledger(args.product, args.amount)
     elif args.command == "report":
         try:
             with open("superpy_ledger.csv", "r") as ledger:
