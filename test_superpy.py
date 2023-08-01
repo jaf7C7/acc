@@ -28,6 +28,16 @@ def test_can_set_and_get_the_date(capsys):
         os.unlink(".superpy.conf")
 
 
+def test_fails_if_non_iso_format_date():
+    try:
+        assert superpy.main(["date", "01/01/1970"]) == 1
+    finally:
+        try:
+            os.unlink(".superpy.conf")
+        except FileNotFoundError:
+            pass
+
+
 @pytest.mark.parametrize(
     "days, expected",
     [("", "1970-01-02\n"), ("30", "1970-01-31\n"), ("366", "1971-01-02\n")],

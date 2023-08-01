@@ -1,4 +1,5 @@
 import argparse
+import datetime
 import pytest
 import superpy
 
@@ -9,7 +10,9 @@ import superpy
         (["date"], argparse.Namespace(command="date", date=None, days_to_advance=None)),
         (
             ["date", "2020-02-02"],
-            argparse.Namespace(command="date", date="2020-02-02", days_to_advance=None),
+            argparse.Namespace(
+                command="date", date=datetime.date(2020, 2, 2), days_to_advance=None
+            ),
         ),
         (
             ["date", "--advance", "1"],
