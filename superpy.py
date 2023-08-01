@@ -17,6 +17,15 @@ def set_date(date):
         date_file.write(date.isoformat())
 
 
+def get_ledger():
+    try:
+        with open(".superpy.conf", "r") as conf:
+            ledger_path = conf.read()
+    except FileNotFoundError:
+        ledger_path = "superpy_ledger.csv"
+    return ledger_path
+
+
 def set_ledger(ledger_path):
     with open(".superpy.conf", "w") as conf:
         conf.write(ledger_path)
@@ -66,12 +75,7 @@ def main(argv=None):
         if args.ledger_path is not None:
             set_ledger(args.ledger_path)
         else:
-            try:
-                with open(".superpy.conf", "r") as conf:
-                    ledger_path = conf.read()
-            except FileNotFoundError:
-                ledger_path = "superpy_ledger.csv"
-            print(ledger_path)
+            print(get_ledger())
     elif args.command == "buy":
         if not os.path.exists("superpy_ledger.csv"):
             with open("superpy_ledger.csv", "w") as ledger:
