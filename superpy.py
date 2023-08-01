@@ -17,6 +17,12 @@ def write_date(date):
         date_file.write(date.isoformat())
 
 
+def advance_date(days_to_advance):
+    date = datetime.date.fromisoformat(get_date())
+    days = datetime.timedelta(days=days_to_advance)
+    write_date(date + days)
+
+
 def parse_args(argv):
     parser = argparse.ArgumentParser(exit_on_error=False)
     subparsers = parser.add_subparsers(dest="command")
@@ -48,10 +54,7 @@ def main(argv=None):
         if args.date is not None:
             write_date(args.date)
         elif args.days_to_advance is not None:
-            date = datetime.date.fromisoformat(get_date())
-            days = datetime.timedelta(days=args.days_to_advance)
-            new_date = date + days
-            write_date(new_date)
+            advance_date(args.days_to_advance)
         else:
             date = get_date()
             print(date)
