@@ -83,10 +83,10 @@ def test_can_set_and_get_the_ledger_path(capsys):
 def test_can_record_and_recall_a_purchase(capsys):
     try:
         transactions = [("orange", "1.50"), ("apple", "0.85"), ("halibut", "4.99")]
-        expected = "\t\t".join(["DATE", "PRODUCT", "AMOUNT\n"])
+        expected = "\t".join(["DATE", "PRODUCT", "AMOUNT\n"])
         for product, price in transactions:
             superpy.main(["buy", product, price])
-            expected += "\t\t".join(["1970-01-01", product, f"{price}\n"])
+            expected += "\t".join(["1970-01-01", product, f"{price}\n"])
         superpy.main(["report"])
         out, err = capsys.readouterr()
         assert out == expected

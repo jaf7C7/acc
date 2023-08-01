@@ -45,13 +45,13 @@ def create_if_not_exists(ledger_path):
 def write_transaction_to_ledger(product, amount):
     with open("superpy_ledger.csv", "a") as ledger:
         fields = [get_date(), product, amount]
-        ledger.write("\t\t".join(fields) + "\n")
+        ledger.write("\t".join(fields) + "\n")
 
 
 def report(ledger_path):
     try:
         with open(ledger_path, "r") as ledger:
-            print("\t\t".join(["DATE", "PRODUCT", "AMOUNT"]))
+            print("\t".join(["DATE", "PRODUCT", "AMOUNT"]))
             print(ledger.read(), end="")
     except FileNotFoundError:
         pass
