@@ -50,6 +50,14 @@ def write_transaction_to_ledger(product, amount):
         ledger.write("\t\t".join(fields) + "\n")
 
 
+def report(ledger_path):
+    try:
+        with open(ledger_path, "r") as ledger:
+            print(ledger.read(), end="")
+    except FileNotFoundError:
+        pass
+
+
 def parse_args(argv):
     parser = argparse.ArgumentParser(exit_on_error=False)
     subparsers = parser.add_subparsers(dest="command")
@@ -93,9 +101,5 @@ def main(argv=None):
         create_if_not_exists("superpy_ledger.csv")
         write_transaction_to_ledger(args.product, args.amount)
     elif args.command == "report":
-        try:
-            with open("superpy_ledger.csv", "r") as ledger:
-                print(ledger.read(), end="")
-        except FileNotFoundError:
-            pass
+        report(get_ledger())
     return 0
