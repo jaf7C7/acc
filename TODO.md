@@ -14,4 +14,5 @@
 - [X] Refactoring!
 - [X] Do 'set_date' and 'set_ledger' reset each other?
 - [ ] Get test coverage up to 100%
+- [ ] What to do with the master branch? Clean up history and make a PR?
 - [ ] Can the user sell items as well as buying them?
