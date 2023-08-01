@@ -11,6 +11,13 @@ def get_config():
     return config
 
 
+def set_config(key, value):
+    config = get_config()
+    config.update({key: value})
+    with open(".superpy.conf", "w") as c:
+        c.write("\t".join(config.values()))
+
+
 def get_date():
     try:
         with open(".superpy.conf", "r") as date_file:
