@@ -39,9 +39,7 @@ def set_ledger(ledger_path):
 
 def create_if_not_exists(ledger_path):
     if not os.path.exists(ledger_path):
-        fieldnames = ["DATE", "PRODUCT", "AMOUNT"]
-        with open(ledger_path, "w") as ledger:
-            ledger.write("\t\t".join(fieldnames) + "\n")
+        open(ledger_path, "x").close()
 
 
 def write_transaction_to_ledger(product, amount):
@@ -53,6 +51,7 @@ def write_transaction_to_ledger(product, amount):
 def report(ledger_path):
     try:
         with open(ledger_path, "r") as ledger:
+            print("\t\t".join(["DATE", "PRODUCT", "AMOUNT"]))
             print(ledger.read(), end="")
     except FileNotFoundError:
         pass
