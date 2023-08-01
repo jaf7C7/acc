@@ -1,12 +1,21 @@
 import os
+import pytest
 import superpy
 
 
-def test_get_config():
+@pytest.mark.parametrize(
+    "param, expected",
+    [
+        (None, dict(date="2000-01-01", ledger="/tmp/bar")),
+        ("date", "2000-01-01"),
+        ("ledger", "/tmp/bar"),
+    ],
+)
+def test_get_config(param, expected):
     try:
         with open(".superpy.conf", "w") as c:
             c.write("\n".join(["2000-01-01", "/tmp/bar"]))
-        assert superpy.get_config() == dict(date="2000-01-01", ledger="/tmp/bar")
+        assert superpy.get_config(param) == expected
     finally:
         os.unlink(".superpy.conf")
 
