@@ -17,6 +17,11 @@ def set_date(date):
         date_file.write(date.isoformat())
 
 
+def set_ledger(ledger_path):
+    with open(".superpy.conf", "w") as conf:
+        conf.write(ledger_path)
+
+
 def advance_date(days_to_advance):
     date = datetime.date.fromisoformat(get_date())
     days = datetime.timedelta(days=days_to_advance)
@@ -59,8 +64,7 @@ def main(argv=None):
             print(get_date())
     elif args.command == "ledger":
         if args.ledger_path is not None:
-            with open(".superpy.conf", "w") as conf:
-                conf.write(args.ledger_path)
+            set_ledger(args.ledger_path)
         else:
             try:
                 with open(".superpy.conf", "r") as conf:
