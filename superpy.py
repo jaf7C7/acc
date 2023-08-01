@@ -1,3 +1,4 @@
+import os.path
 import datetime
 import argparse
 
@@ -66,12 +67,11 @@ def main(argv=None):
                 ledger_path = "superpy_ledger.csv"
             print(ledger_path)
     elif args.command == "buy":
-        with open("superpy_ledger.csv", "w") as ledger:
-            ledger.write(
-                "DATE\t\tPRODUCT\t\tAMOUNT\n"
-                "1970-01-01\t\torange\t\t1.50\n"
-                "1970-01-01\t\tapple\t\t0.85\n"
-            )
+        if not os.path.exists("superpy_ledger.csv"):
+            with open("superpy_ledger.csv", "w") as ledger:
+                ledger.write("DATE\t\tPRODUCT\t\tAMOUNT\n")
+        with open("superpy_ledger.csv", "a") as ledger:
+            ledger.write(f"{get_date()}\t\t{args.product}\t\t{args.amount}\n")
     elif args.command == "report":
         try:
             with open("superpy_ledger.csv", "r") as ledger:
