@@ -9,4 +9,5 @@
 - [X] Can the application set and get the ledger path?
 - [X] Rewrite argument parsing using 'argparse'
 - [X] 'date <date>' fails if <date> is not YYYY-MM-DD ISO format
-- [ ] 'date --advance <days>' fails if <days> is not an integer
+- [X] 'date --advance <days>' fails if <days> is not an integer
+- [ ] Can the application remember and recall a sequence of simple transactions?
