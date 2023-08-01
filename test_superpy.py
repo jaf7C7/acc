@@ -4,10 +4,11 @@ import superpy
 
 
 def clean_up_test_files():
-    try:
-        os.unlink(".superpy.conf")
-    except FileNotFoundError:
-        pass
+    for file in ".superpy.conf", "superpy_ledger.csv":
+        try:
+            os.unlink(".superpy.conf")
+        except FileNotFoundError:
+            pass
 
 
 @pytest.mark.parametrize("args", [[""], ["frobble"]])
@@ -75,5 +76,15 @@ def test_can_set_and_get_the_ledger_path(capsys):
         superpy.main(["ledger"])
         out, err = capsys.readouterr()
         assert out == "/tmp/foo\n"
+    finally:
+        clean_up_test_files()
+
+
+def test_can_record_and_recall_a_transaction(capsys):
+    try:
+        superpy.main(["buy", "orange", "1.50"])
+        superpy.main(["report"])
+        out, err = capsys.readouterr()
+        assert out == ("DATE        PRODUCT  AMOUNT\n" "1970-01-01  orange   1.50\n")
     finally:
         clean_up_test_files()
