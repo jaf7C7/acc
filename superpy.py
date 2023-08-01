@@ -4,6 +4,13 @@ import datetime
 import argparse
 
 
+def get_config():
+     with open(".superpy.conf", "r") as c:
+         config = dict(zip(["date", "ledger"], c.read().split()))
+        config = dict(date="1970-01-01", ledger="superpy_ledger.csv")
+    return config
+
+
 def get_date():
     try:
         with open(".superpy.conf", "r") as date_file:
