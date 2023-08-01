@@ -83,8 +83,16 @@ def test_can_set_and_get_the_ledger_path(capsys):
 def test_can_record_and_recall_a_transaction(capsys):
     try:
         superpy.main(["buy", "orange", "1.50"])
+        superpy.main(["buy", "apple", "0.85"])
         superpy.main(["report"])
         out, err = capsys.readouterr()
-        assert out == ("DATE        PRODUCT  AMOUNT\n" "1970-01-01  orange   1.50\n")
+        assert (
+            out
+            == """\
+DATE        PRODUCT  AMOUNT
+1970-01-01  orange   1.50
+1970-01-01  apple    0.85
+"""
+        )
     finally:
         clean_up_test_files()
