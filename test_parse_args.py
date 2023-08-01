@@ -31,3 +31,9 @@ import superpy
 )
 def test_parse_args(args, expected):
     assert superpy.parse_args(args) == expected
+
+
+@pytest.mark.parametrize("args", [["date", "01/01/1970"], ["date", "--advance", "0.5"]])
+def test_bad_arguments(args):
+    with pytest.raises(argparse.ArgumentError):
+        superpy.parse_args(args)

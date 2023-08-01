@@ -56,6 +56,13 @@ def test_can_advance_date_by_days(capsys, days, expected):
         clean_up_test_files()
 
 
+def test_fails_if_non_integer_days():
+    try:
+        assert superpy.main(["date", "--advance", "0.5"]) == 1
+    finally:
+        clean_up_test_files()
+
+
 def test_ledger_without_args_prints_the_default_ledger_path(capsys):
     superpy.main(["ledger"])
     out, err = capsys.readouterr()
