@@ -3,6 +3,13 @@ import pytest
 import superpy
 
 
+def clean_up_test_files():
+    try:
+        os.unlink(".superpy.conf")
+    except FileNotFoundError:
+        pass
+
+
 @pytest.mark.parametrize("args", [[""], ["frobble"]])
 def test_returns_1_if_no_or_unknown_args(args):
     assert superpy.main(args) == 1
@@ -25,17 +32,14 @@ def test_can_set_and_get_the_date(capsys):
         out, err = capsys.readouterr()
         assert out == "2020-02-02\n"
     finally:
-        os.unlink(".superpy.conf")
+        clean_up_test_files()
 
 
 def test_fails_if_non_iso_format_date():
     try:
         assert superpy.main(["date", "01/01/1970"]) == 1
     finally:
-        try:
-            os.unlink(".superpy.conf")
-        except FileNotFoundError:
-            pass
+        clean_up_test_files()
 
 
 @pytest.mark.parametrize(
@@ -49,7 +53,7 @@ def test_can_advance_date_by_days(capsys, days, expected):
         out, err = capsys.readouterr()
         assert out == expected
     finally:
-        os.unlink(".superpy.conf")
+        clean_up_test_files()
 
 
 def test_ledger_without_args_prints_the_default_ledger_path(capsys):
@@ -65,4 +69,4 @@ def test_can_set_and_get_the_ledger_path(capsys):
         out, err = capsys.readouterr()
         assert out == "/tmp/foo\n"
     finally:
-        os.unlink(".superpy.conf")
+        clean_up_test_files()
