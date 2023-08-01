@@ -68,11 +68,9 @@ def main(argv=None):
     elif args.command == "buy":
         with open("superpy_ledger.csv", "w") as ledger:
             ledger.write(
-                """\
-DATE        PRODUCT  AMOUNT
-1970-01-01  orange   1.50
-1970-01-01  apple    0.85
-"""
+                "DATE\t\tPRODUCT\t\tAMOUNT\n"
+                "1970-01-01\t\torange\t\t1.50\n"
+                "1970-01-01\t\tapple\t\t0.85\n"
             )
     elif args.command == "report":
         try:

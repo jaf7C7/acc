@@ -6,7 +6,7 @@ import superpy
 def clean_up_test_files():
     for file in ".superpy.conf", "superpy_ledger.csv":
         try:
-            os.unlink(".superpy.conf")
+            os.unlink(file)
         except FileNotFoundError:
             pass
 
@@ -80,19 +80,15 @@ def test_can_set_and_get_the_ledger_path(capsys):
         clean_up_test_files()
 
 
-def test_can_record_and_recall_a_transaction(capsys):
+def test_can_record_and_recall_a_purchase(capsys):
     try:
-        superpy.main(["buy", "orange", "1.50"])
-        superpy.main(["buy", "apple", "0.85"])
+        transactions = [("orange", "1.50"), ("apple", "0.85")]
+        expected = "\t\t".join(["DATE", "PRODUCT", "AMOUNT\n"])
+        for product, price in transactions:
+            superpy.main(["buy", product, price])
+            expected += "\t\t".join(["1970-01-01", product, f"{price}\n"])
         superpy.main(["report"])
         out, err = capsys.readouterr()
-        assert (
-            out
-            == """\
-DATE        PRODUCT  AMOUNT
-1970-01-01  orange   1.50
-1970-01-01  apple    0.85
-"""
-        )
+        assert out == expected
     finally:
         clean_up_test_files()
