@@ -69,9 +69,9 @@ def main(argv=None):
     elif args.command == "buy":
         if not os.path.exists("superpy_ledger.csv"):
             with open("superpy_ledger.csv", "w") as ledger:
-                ledger.write("DATE\t\tPRODUCT\t\tAMOUNT\n")
+                ledger.write("\t\t".join(["DATE", "PRODUCT", "AMOUNT\n"]))
         with open("superpy_ledger.csv", "a") as ledger:
-            ledger.write(f"{get_date()}\t\t{args.product}\t\t{args.amount}\n")
+            ledger.write("\t\t".join([get_date(), args.product, f"{args.amount}\n"]))
     elif args.command == "report":
         try:
             with open("superpy_ledger.csv", "r") as ledger:
