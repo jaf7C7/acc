@@ -5,8 +5,10 @@ import argparse
 
 
 def get_config():
-     with open(".superpy.conf", "r") as c:
-         config = dict(zip(["date", "ledger"], c.read().split()))
+    try:
+        with open(".superpy.conf", "r") as c:
+            config = dict(zip(["date", "ledger"], c.read().split()))
+    except FileNotFoundError:
         config = dict(date="1970-01-01", ledger="superpy_ledger.csv")
     return config
 
@@ -19,17 +21,11 @@ def set_config(key, value):
 
 
 def get_date():
-    try:
-        with open(".superpy.conf", "r") as date_file:
-            date = date_file.read()
-    except FileNotFoundError:
-        date = "1970-01-01"
-    return date
+    return get_config().get("date")
 
 
 def set_date(date):
-    with open(".superpy.conf", "w") as date_file:
-        date_file.write(date.isoformat())
+    set_config("date", date.isoformat())
 
 
 def advance_date(days_to_advance):
@@ -39,17 +35,11 @@ def advance_date(days_to_advance):
 
 
 def get_ledger():
-    try:
-        with open(".superpy.conf", "r") as conf:
-            ledger_path = conf.read()
-    except FileNotFoundError:
-        ledger_path = "superpy_ledger.csv"
-    return ledger_path
+    return get_config().get("ledger")
 
 
 def set_ledger(ledger_path):
-    with open(".superpy.conf", "w") as conf:
-        conf.write(ledger_path)
+    set_config("ledger", ledger_path)
 
 
 def create_if_not_exists(ledger_path):
