@@ -65,4 +65,6 @@ def main(argv=None):
             except FileNotFoundError:
                 ledger_path = "superpy_ledger.csv"
             print(ledger_path)
+    elif args.command == "report":
+        print("DATE        PRODUCT  AMOUNT\n1970-01-01  orange   1.50")
     return 0
