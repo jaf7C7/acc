@@ -11,4 +11,5 @@
 - [X] 'date <date>' fails if <date> is not YYYY-MM-DD ISO format
 - [X] 'date --advance <days>' fails if <days> is not an integer
 - [X] Can the application remember and recall a sequence of simple transactions?
-- [ ] Refactoring!
+- [X] Refactoring!
+- [ ] Can the user sell items as well as buying them?
