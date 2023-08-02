@@ -70,6 +70,7 @@ def main(argv=None):
         args = parse_args(argv)
     except argparse.ArgumentError:
         return 1
+
     if args.command == "date":
         if args.new_date is not None:
             set_config("date", args.new_date.isoformat())
@@ -77,17 +78,21 @@ def main(argv=None):
             advance_date(args.days_to_advance)
         else:
             print(get_config("date"))
+
     elif args.command == "ledger":
         if args.ledger_path is not None:
             set_config("ledger", args.ledger_path)
         else:
             print(get_config("ledger"))
+
     elif args.command == "buy":
         create_if_not_exists("superpy_ledger.csv")
         write_transaction_to_ledger(args.product, args.amount)
+
     elif args.command == "report":
         try:
             report(get_config("ledger"))
         except FileNotFoundError:
             return 1
+
     return 0
