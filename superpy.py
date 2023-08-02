@@ -28,14 +28,14 @@ def advance_date(days_to_advance):
 
 def write_transaction_to_ledger(product, amount):
     with open("superpy_ledger.csv", "a") as ledger:
-        fields = [get_config("date"), product, amount]
-        ledger.write("\t".join(fields) + "\n")
+        csv.writer(ledger).writerow([get_config("date"), product, amount])
 
 
 def report(ledger_path):
     with open(ledger_path, "r") as ledger:
         print("\t".join(["DATE", "PRODUCT", "AMOUNT"]))
-        print(ledger.read(), end="")
+        for transaction in csv.reader(ledger):
+            print("\t".join(transaction))
 
 
 def parse_args(argv):
