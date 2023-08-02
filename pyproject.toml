@@ -23,3 +23,6 @@ addopts = [
 markers = [
     "active: mark tests as active (run only the marked tests with '-m active')",
 ]
+
+[tool.coverage.report]
+show_missing = true
