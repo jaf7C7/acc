@@ -64,14 +64,24 @@ class TestMain:
         assert out == "/tmp/foo\n"
 
     def test_can_record_and_recall_a_purchase(self, capsys):
-        transactions = [("orange", "1.50"), ("apple", "0.85"), ("halibut", "4.99")]
-        expected = "\t".join(["DATE", "PRODUCT", "AMOUNT\n"])
+        transactions = [
+            ("orange", "1.50"),
+            ("apple", "0.85"),
+            ("a very large eastern halibut", "4.99"),
+        ]
         for product, price in transactions:
             superpy.main(["buy", product, price])
-            expected += "\t".join(["1970-01-01", product, f"{price}\n"])
         superpy.main(["report"])
         out, err = capsys.readouterr()
-        assert out == expected
+        assert (
+            out
+            == """\
+DATE        PRODUCT     AMOUNT
+1970-01-01  orange      1.50
+1970-01-01  apple       0.85
+1970-01-01  a very large eastern halibut  4.99
+"""
+        )
 
     def test_report_fails_if_no_ledger_file(self):
         assert not os.path.exists("superpy_ledger.csv")
