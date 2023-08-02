@@ -104,21 +104,23 @@ class TestParseArgs:
         [
             (
                 ["date"],
-                argparse.Namespace(command="date", date=None, days_to_advance=None),
+                argparse.Namespace(command="date", new_date=None, days_to_advance=None),
             ),
             (
                 ["date", "2020-02-02"],
                 argparse.Namespace(
-                    command="date", date=datetime.date(2020, 2, 2), days_to_advance=None
+                    command="date",
+                    new_date=datetime.date(2020, 2, 2),
+                    days_to_advance=None,
                 ),
             ),
             (
                 ["date", "--advance", "1"],
-                argparse.Namespace(command="date", date=None, days_to_advance=1),
+                argparse.Namespace(command="date", new_date=None, days_to_advance=1),
             ),
             (
                 ["date", "--advance"],
-                argparse.Namespace(command="date", date=None, days_to_advance=1),
+                argparse.Namespace(command="date", new_date=None, days_to_advance=1),
             ),
             (["ledger"], argparse.Namespace(command="ledger", ledger_path=None)),
             (

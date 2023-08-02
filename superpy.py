@@ -48,7 +48,7 @@ def parse_args(argv):
     subparsers = parser.add_subparsers(dest="command")
 
     date_parser = subparsers.add_parser("date", exit_on_error=False)
-    date_parser.add_argument("date", nargs="?", type=datetime.date.fromisoformat)
+    date_parser.add_argument("new_date", nargs="?", type=datetime.date.fromisoformat)
     date_parser.add_argument(
         "--advance", dest="days_to_advance", type=int, nargs="?", const=1
     )
@@ -71,8 +71,8 @@ def main(argv=None):
     except argparse.ArgumentError:
         return 1
     if args.command == "date":
-        if args.date is not None:
-            set_config("date", args.date.isoformat())
+        if args.new_date is not None:
+            set_config("date", args.new_date.isoformat())
         elif args.days_to_advance is not None:
             advance_date(args.days_to_advance)
         else:
