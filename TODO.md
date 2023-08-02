@@ -15,8 +15,7 @@
 - [X] Do `set_date` and `set_ledger` reset each other?
 - [X] Get test coverage up to 100%
 - [X] Does `report` fail if there`s no ledger file?
-- [ ] Refactor `main`
-- [ ] More refactoring
+- [X] Refactoring
 - [ ] CSV file formats
 - [ ] Output formatting
 - [ ] Helpful error messages
