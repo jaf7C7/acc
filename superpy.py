@@ -1,4 +1,3 @@
-import sys
 import os.path
 import datetime
 import argparse
@@ -39,12 +38,9 @@ def write_transaction_to_ledger(product, amount):
 
 
 def report(ledger_path):
-    try:
-        with open(ledger_path, "r") as ledger:
-            print("\t".join(["DATE", "PRODUCT", "AMOUNT"]))
-            print(ledger.read(), end="")
-    except FileNotFoundError:
-        pass
+    with open(ledger_path, "r") as ledger:
+        print("\t".join(["DATE", "PRODUCT", "AMOUNT"]))
+        print(ledger.read(), end="")
 
 
 def parse_args(argv):
@@ -92,7 +88,3 @@ def main(argv=None):
     elif args.command == "report":
         report(get_config("ledger"))
     return 0
-
-
-if __name__ == "__main__":
-    main(sys.argv[1:])
