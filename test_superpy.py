@@ -104,3 +104,8 @@ def test_can_record_and_recall_a_purchase(capsys):
         assert out == expected
     finally:
         clean_up_test_files()
+
+
+def test_report_fails_if_no_ledger_file():
+    assert not os.path.exists("superpy_ledger.csv")
+    assert superpy.main(["report"]) == 1
