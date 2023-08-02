@@ -100,6 +100,17 @@ class TestSetGetConfig:
             assert next(csv.reader(c)) == ["1664-08-17", "/tmp/frobble"]
 
 
+class TestReadWriteLedger:
+    def test_write(self):
+        superpy.write_transaction_to_ledger("Transonic Fremules", "5.97")
+        with open("superpy_ledger.csv", "r") as ledger:
+            assert next(csv.reader(ledger)) == [
+                "1970-01-01",
+                "Transonic Fremules",
+                "5.97",
+            ]
+
+
 class TestParseArgs:
     @pytest.mark.parametrize(
         "args, expected",
