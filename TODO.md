@@ -1,19 +1,25 @@
 # TODO
 - [x] Does the application return 1 if no args are passed?
-- [x] Does 'date' return "1970-01-01\n" to stdout?
-- [X] Does 'date' return 0 args are not 'None'?
+- [x] Does `date` return `1970-01-01\n` to stdout?
+- [X] Does `date` return 0 args are not `None`?
 - [X] Can the application set and get the date?
-- [X] Does 'date --advance N' advance the date by 'N' days??
-- [X] Does 'date --advance' default to 1 day?
-- [X] Does 'ledger' return "superpy_ledger.csv"
+- [X] Does `date --advance N` advance the date by `N` days??
+- [X] Does `date --advance` default to 1 day?
+- [X] Does `ledger` return `superpy_ledger.csv`
 - [X] Can the application set and get the ledger path?
-- [X] Rewrite argument parsing using 'argparse'
-- [X] 'date <date>' fails if <date> is not YYYY-MM-DD ISO format
-- [X] 'date --advance <days>' fails if <days> is not an integer
+- [X] Rewrite argument parsing using `argparse`
+- [X] `date <date>` fails if <date> is not YYYY-MM-DD ISO format
+- [X] `date --advance <days>` fails if <days> is not an integer
 - [X] Can the application remember and recall a sequence of simple transactions?
 - [X] Refactoring!
-- [X] Do 'set_date' and 'set_ledger' reset each other?
+- [X] Do `set_date` and `set_ledger` reset each other?
 - [X] Get test coverage up to 100%
-- [X] Does 'report' fail if there's no ledger file?
-- [ ] What to do with the master branch? Clean up history and make a PR?
+- [X] Does `report` fail if there`s no ledger file?
+- [ ] Refactor `main`
+- [ ] More refactoring
+- [ ] CSV file formats
+- [ ] Output formatting
+- [ ] Helpful error messages
 - [ ] Can the user sell items as well as buying them?
+- [ ] JSON file formats
+- [ ] What to do with the master branch? Clean up history and make a PR?
