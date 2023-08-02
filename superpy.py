@@ -86,5 +86,8 @@ def main(argv=None):
         create_if_not_exists("superpy_ledger.csv")
         write_transaction_to_ledger(args.product, args.amount)
     elif args.command == "report":
-        report(get_config("ledger"))
+        try:
+            report(get_config("ledger"))
+        except FileNotFoundError:
+            return 1
     return 0
