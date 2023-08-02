@@ -16,7 +16,7 @@
 - [X] Get test coverage up to 100%
 - [X] Does `report` fail if there`s no ledger file?
 - [X] Refactoring
-- [ ] CSV file formats
+- [X] CSV file formats
 - [ ] Output formatting
 - [ ] Helpful error messages
 - [ ] Can the user sell items as well as buying them?
