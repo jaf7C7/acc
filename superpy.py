@@ -33,9 +33,9 @@ def write_transaction_to_ledger(product, amount):
 
 def report(ledger_path):
     with open(ledger_path, "r") as ledger:
-        print("\t".join(["DATE", "PRODUCT", "AMOUNT"]))
-        for transaction in csv.reader(ledger):
-            print("\t".join(transaction))
+        print(f"{'DATE':10}  {'PRODUCT':10}  AMOUNT")
+        for date, product, amount in csv.reader(ledger):
+            print(f"{date:10}  {product:10}  {amount}")
 
 
 def parse_args(argv):
