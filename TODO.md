@@ -17,7 +17,7 @@
 - [X] Does `report` fail if there`s no ledger file?
 - [X] Refactoring
 - [X] CSV file formats
-- [ ] Output formatting
+- [X] Output formatting
 - [ ] Helpful error messages
 - [ ] Can the user sell items as well as buying them?
 - [ ] JSON file formats
