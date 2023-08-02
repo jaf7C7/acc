@@ -18,7 +18,7 @@
 - [X] Refactoring
 - [X] CSV file formats
 - [X] Output formatting
+- [ ] Clean up git history
 - [ ] Helpful error messages
 - [ ] Can the user sell items as well as buying them?
 - [ ] JSON file formats
-- [ ] What to do with the master branch? Clean up history and make a PR?
