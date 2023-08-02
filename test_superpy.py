@@ -1,6 +1,7 @@
 import os
 import argparse
 import datetime
+import csv
 import pytest
 import superpy
 
@@ -88,14 +89,15 @@ class TestSetGetConfig:
     )
     def test_get_config(self, param, expected):
         with open(".superpy.conf", "w") as c:
-            c.write("\n".join(["2000-01-01", "/tmp/bar"]))
+            writer = csv.writer(c)  # , fieldnames=["date", "ledger"])
+            writer.writerow(["2000-01-01", "/tmp/bar"])
         assert superpy.get_config(param) == expected
 
     def test_set_config(self):
         superpy.set_config("date", "1664-08-17")
         superpy.set_config("ledger", "/tmp/frobble")
         with open(".superpy.conf", "r") as c:
-            assert c.read().split() == ["1664-08-17", "/tmp/frobble"]
+            assert next(csv.reader(c)) == ["1664-08-17", "/tmp/frobble"]
 
 
 class TestParseArgs:
