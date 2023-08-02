@@ -1,11 +1,12 @@
 import datetime
 import argparse
+import csv
 
 
 def get_config(param=None):
     try:
         with open(".superpy.conf", "r") as c:
-            config = dict(zip(["date", "ledger"], c.read().split()))
+            config = dict(zip(["date", "ledger"], next(csv.reader(c))))
     except FileNotFoundError:
         config = dict(date="1970-01-01", ledger="superpy_ledger.csv")
     return config.get(param) if param is not None else config
@@ -15,7 +16,7 @@ def set_config(key, value):
     config = get_config()
     config.update({key: value})
     with open(".superpy.conf", "w") as c:
-        c.write("\t".join(config.values()))
+        csv.writer(c).writerow(config.values())
 
 
 def advance_date(days_to_advance):
