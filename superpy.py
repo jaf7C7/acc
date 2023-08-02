@@ -1,4 +1,3 @@
-import os.path
 import datetime
 import argparse
 
@@ -24,11 +23,6 @@ def advance_date(days_to_advance):
     days = datetime.timedelta(days=days_to_advance)
     new_date = date + days
     set_config("date", new_date.isoformat())
-
-
-def create_if_not_exists(ledger_path):
-    if not os.path.exists(ledger_path):
-        open(ledger_path, "x").close()
 
 
 def write_transaction_to_ledger(product, amount):
@@ -86,7 +80,6 @@ def main(argv=None):
             print(get_config("ledger"))
 
     elif args.command == "buy":
-        create_if_not_exists("superpy_ledger.csv")
         write_transaction_to_ledger(args.product, args.amount)
 
     elif args.command == "report":
