@@ -31,12 +31,6 @@ class Application:
         with open(".superpy.conf", "w") as c:
             csv.writer(c).writerow(config.values())
 
-    def advance_date(self, days_to_advance):
-        date = datetime.date.fromisoformat(self.date)
-        days = datetime.timedelta(days=days_to_advance)
-        new_date = date + days
-        self.set_config("date", new_date.isoformat())
-
     def report(self):
         with open(self.ledger, "r") as ledger:
             print(f"{'DATE':10}  {'PRODUCT':10}  AMOUNT")
