@@ -1,25 +1,26 @@
 # TODO
 - [x] Does the application return 1 if no args are passed?
 - [x] Does `date` return `1970-01-01\n` to stdout?
-- [X] Does `date` return 0 args are not `None`?
-- [X] Can the application set and get the date?
-- [X] Does `date --advance N` advance the date by `N` days??
-- [X] Does `date --advance` default to 1 day?
-- [X] Does `ledger` return `superpy_ledger.csv`
-- [X] Can the application set and get the ledger path?
-- [X] Rewrite argument parsing using `argparse`
-- [X] `date <date>` fails if <date> is not YYYY-MM-DD ISO format
-- [X] `date --advance <days>` fails if <days> is not an integer
-- [X] Can the application remember and recall a sequence of simple transactions?
-- [X] Refactoring!
-- [X] Do `set_date` and `set_ledger` reset each other?
-- [X] Get test coverage up to 100%
-- [X] Does `report` fail if there`s no ledger file?
-- [X] Refactoring
-- [X] CSV file formats
-- [X] Output formatting
-- [X] Clean up git history
-- [ ] OOP-ify
+- [x] Does `date` return 0 args are not `None`?
+- [x] Can the application set and get the date?
+- [x] Does `date --advance N` advance the date by `N` days??
+- [x] Does `date --advance` default to 1 day?
+- [x] Does `ledger` return `superpy_ledger.csv`
+- [x] Can the application set and get the ledger path?
+- [x] Rewrite argument parsing using `argparse`
+- [x] `date <date>` fails if <date> is not YYYY-MM-DD ISO format
+- [x] `date --advance <days>` fails if <days> is not an integer
+- [x] Can the application remember and recall a sequence of simple transactions?
+- [x] Refactoring!
+- [x] Do `set_date` and `set_ledger` reset each other?
+- [x] Get test coverage up to 100%
+- [x] Does `report` fail if there`s no ledger file?
+- [x] Refactoring
+- [x] CSV file formats
+- [x] Output formatting
+- [x] Clean up git history
+- [x] OOP-ify
+- [ ] Tests should invoke a separate application instance for each command
 - [ ] Helpful error messages
 - [ ] Can the user sell items as well as buying them?
 - [ ] JSON file formats
