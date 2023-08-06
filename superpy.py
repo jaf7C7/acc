@@ -46,6 +46,7 @@ class daydelta(datetime.timedelta):
 class Application:
     def __init__(self):
         self.date = datetime.date(1970, 1, 1)
+        self.ledger = "superpy_ledger.csv"
 
     @staticmethod
     def parse_args(argv):
@@ -93,9 +94,9 @@ class Application:
 
         elif args.command == "ledger":
             if args.ledger_path is not None:
-                set_config("ledger", args.ledger_path)
+                self.ledger = args.ledger_path
             else:
-                print(get_config("ledger"))
+                print(self.ledger)
 
         elif args.command == "buy":
             write_transaction_to_ledger(args.product, args.amount)
