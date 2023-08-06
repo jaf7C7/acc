@@ -19,6 +19,7 @@
 - [X] CSV file formats
 - [X] Output formatting
 - [X] Clean up git history
+- [ ] OOP-ify
 - [ ] Helpful error messages
 - [ ] Can the user sell items as well as buying them?
 - [ ] JSON file formats
