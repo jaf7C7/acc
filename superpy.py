@@ -15,7 +15,7 @@ class Application:
 
     def write_transaction_to_ledger(self, product, amount):
         with open("superpy_ledger.csv", "a") as ledger:
-            csv.writer(ledger).writerow([self.get_config("date"), product, amount])
+            csv.writer(ledger).writerow([self.date, product, amount])
 
     def get_config(self, param=None):
         try:
@@ -32,13 +32,13 @@ class Application:
             csv.writer(c).writerow(config.values())
 
     def advance_date(self, days_to_advance):
-        date = datetime.date.fromisoformat(self.get_config("date"))
+        date = datetime.date.fromisoformat(self.date)
         days = datetime.timedelta(days=days_to_advance)
         new_date = date + days
         self.set_config("date", new_date.isoformat())
 
-    def report(self, ledger_path):
-        with open(ledger_path, "r") as ledger:
+    def report(self):
+        with open(self.ledger, "r") as ledger:
             print(f"{'DATE':10}  {'PRODUCT':10}  AMOUNT")
             for date, product, amount in csv.reader(ledger):
                 print(f"{date:10}  {product:10}  {amount}")
@@ -98,7 +98,7 @@ class Application:
 
         elif args.command == "report":
             try:
-                self.report(self.get_config("ledger"))
+                self.report()
             except FileNotFoundError:
                 return 1
 
