@@ -3,6 +3,11 @@ import argparse
 import csv
 
 
+def cli(argv):
+    app = Application()
+    return app.run(argv)
+
+
 class daydelta(datetime.timedelta):
     def __new__(cls, days):
         return super().__new__(cls, days=int(days))
@@ -28,11 +33,10 @@ class Application:
 
     def write_config(self):
         with open(self.config, "w") as config:
-            csv.writer(config).writerow([self._date, self._ledger])
+            csv.writer(config).writerow([self.date, self.ledger])
 
     @property
     def date(self):
-        self.read_config()
         return self._date
 
     @date.setter
@@ -42,7 +46,6 @@ class Application:
 
     @property
     def ledger(self):
-        self.read_config()
         return self._ledger
 
     @ledger.setter
@@ -87,6 +90,7 @@ class Application:
         return parser.parse_args(argv)
 
     def run(self, argv=None):
+        self.read_config()
         try:
             args = self.parse_args(argv)
         except argparse.ArgumentError:
