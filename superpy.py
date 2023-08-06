@@ -18,37 +18,37 @@ class Application:
         with open("superpy_ledger.csv", "a") as ledger:
             csv.writer(ledger).writerow([self.date, product, amount])
 
-    @property
-    def date(self):
+    def read_config(self):
         try:
-            with open(self.config, "r") as ledger:
-                self._date = datetime.date.fromisoformat(
-                    next(csv.reader(ledger)).pop(0)
-                )
+            with open(self.config, "r") as config:
+                date_string, self._ledger = next(csv.reader(config))
+            self._date = datetime.date.fromisoformat(date_string)
         except FileNotFoundError:
             pass
+
+    def write_config(self):
+        with open(self.config, "w") as config:
+            csv.writer(config).writerow([self._date, self._ledger])
+
+    @property
+    def date(self):
+        self.read_config()
         return self._date
 
     @date.setter
     def date(self, new_date):
         self._date = new_date
-        with open(self.config, "w") as ledger:
-            csv.writer(ledger).writerow([self._date, self._ledger])
+        self.write_config()
 
     @property
     def ledger(self):
-        try:
-            with open(self.config, "r") as ledger:
-                self._ledger = next(csv.reader(ledger)).pop()
-        except FileNotFoundError:
-            pass
+        self.read_config()
         return self._ledger
 
     @ledger.setter
     def ledger(self, new_ledger):
         self._ledger = new_ledger
-        with open(self.config, "w") as ledger:
-            csv.writer(ledger).writerow([self._date, self._ledger])
+        self.write_config()
 
     def report(self):
         with open(self.ledger, "r") as ledger:
