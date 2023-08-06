@@ -6,6 +6,11 @@ import pytest
 import superpy
 
 
+@pytest.fixture
+def application():
+    return superpy.Application()
+
+
 @pytest.fixture(autouse=True)
 def clean_up_test_files():
     yield
@@ -17,61 +22,63 @@ def clean_up_test_files():
 
 
 class TestMain:
-    def test_date_without_args_prints_the_default_date(self, capsys):
-        superpy.main(["date"])
+    def test_date_without_args_prints_the_default_date(self, capsys, application):
+        application.run(["date"])
         out, err = capsys.readouterr()
         assert out == "1970-01-01\n"
 
-    def test_can_set_and_get_the_date(self, capsys):
-        superpy.main(["date", "2020-02-02"])
-        superpy.main(["date"])
+    def test_can_set_and_get_the_date(self, capsys, application):
+        application.run(["date", "2020-02-02"])
+        application.run(["date"])
         out, err = capsys.readouterr()
         assert out == "2020-02-02\n"
 
-    def test_fails_if_non_iso_format_date(self):
-        assert superpy.main(["date", "01/01/1970"]) == 1
+    def test_fails_if_non_iso_format_date(self, application):
+        assert application.run(["date", "01/01/1970"]) == 1
 
     @pytest.mark.parametrize(
         "days, expected",
         [("", "1970-01-02\n"), ("30", "1970-01-31\n"), ("366", "1971-01-02\n")],
     )
-    def test_can_advance_date_by_days(self, capsys, days, expected):
-        superpy.main(f"date --advance {days}".split())
-        superpy.main(["date"])
+    def test_can_advance_date_by_days(self, capsys, days, expected, application):
+        application.run(f"date --advance {days}".split())
+        application.run(["date"])
         out, err = capsys.readouterr()
         assert out == expected
 
-    def test_fails_if_non_integer_days(self):
-        assert superpy.main(["date", "--advance", "0.5"]) == 1
+    def test_fails_if_non_integer_days(self, application):
+        assert application.run(["date", "--advance", "0.5"]) == 1
 
-    def test_ledger_without_args_prints_the_default_ledger_path(self, capsys):
-        superpy.main(["ledger"])
+    def test_ledger_without_args_prints_the_default_ledger_path(
+        self, capsys, application
+    ):
+        application.run(["ledger"])
         out, err = capsys.readouterr()
         assert out == "superpy_ledger.csv\n"
 
-    def test_date_and_ledger_can_be_set_independently(self, capsys):
-        superpy.main(["date", "1991-08-20"])
-        superpy.main(["ledger", "/tmp/foo"])
-        superpy.main(["date"])
-        superpy.main(["ledger"])
+    def test_date_and_ledger_can_be_set_independently(self, capsys, application):
+        application.run(["date", "1991-08-20"])
+        application.run(["ledger", "/tmp/foo"])
+        application.run(["date"])
+        application.run(["ledger"])
         out, err = capsys.readouterr()
         assert out.split() == ["1991-08-20", "/tmp/foo"]
 
-    def test_can_set_and_get_the_ledger_path(self, capsys):
-        superpy.main(["ledger", "/tmp/foo"])
-        superpy.main(["ledger"])
+    def test_can_set_and_get_the_ledger_path(self, capsys, application):
+        application.run(["ledger", "/tmp/foo"])
+        application.run(["ledger"])
         out, err = capsys.readouterr()
         assert out == "/tmp/foo\n"
 
-    def test_can_record_and_recall_a_purchase(self, capsys):
+    def test_can_record_and_recall_a_purchase(self, capsys, application):
         transactions = [
             ("orange", "1.50"),
             ("apple", "0.85"),
             ("a very large eastern halibut", "4.99"),
         ]
         for product, price in transactions:
-            superpy.main(["buy", product, price])
-        superpy.main(["report"])
+            application.run(["buy", product, price])
+        application.run(["report"])
         out, err = capsys.readouterr()
         assert (
             out
@@ -83,9 +90,9 @@ DATE        PRODUCT     AMOUNT
 """
         )
 
-    def test_report_fails_if_no_ledger_file(self):
+    def test_report_fails_if_no_ledger_file(self, application):
         assert not os.path.exists("superpy_ledger.csv")
-        assert superpy.main(["report"]) == 1
+        assert application.run(["report"]) == 1
 
 
 class TestSetGetConfig:
