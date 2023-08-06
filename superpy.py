@@ -38,32 +38,36 @@ def report(ledger_path):
             print(f"{date:10}  {product:10}  {amount}")
 
 
-def parse_args(argv):
-    parser = argparse.ArgumentParser(exit_on_error=False)
-    subparsers = parser.add_subparsers(dest="command")
-
-    date_parser = subparsers.add_parser("date", exit_on_error=False)
-    date_parser.add_argument("new_date", nargs="?", type=datetime.date.fromisoformat)
-    date_parser.add_argument(
-        "--advance", dest="days_to_advance", type=int, nargs="?", const=1
-    )
-
-    ledger_parser = subparsers.add_parser("ledger", exit_on_error=False)
-    ledger_parser.add_argument("ledger_path", nargs="?")
-
-    buy_parser = subparsers.add_parser("buy", exit_on_error=False)
-    buy_parser.add_argument("product")
-    buy_parser.add_argument("amount")
-
-    report_parser = subparsers.add_parser("report", exit_on_error=False)  # noqa: F841
-
-    return parser.parse_args(argv)
-
-
 class Application:
+    @staticmethod
+    def parse_args(argv):
+        parser = argparse.ArgumentParser(exit_on_error=False)
+        subparsers = parser.add_subparsers(dest="command")
+
+        date_parser = subparsers.add_parser("date", exit_on_error=False)
+        date_parser.add_argument(
+            "new_date", nargs="?", type=datetime.date.fromisoformat
+        )
+        date_parser.add_argument(
+            "--advance", dest="days_to_advance", type=int, nargs="?", const=1
+        )
+
+        ledger_parser = subparsers.add_parser("ledger", exit_on_error=False)
+        ledger_parser.add_argument("ledger_path", nargs="?")
+
+        buy_parser = subparsers.add_parser("buy", exit_on_error=False)
+        buy_parser.add_argument("product")
+        buy_parser.add_argument("amount")
+
+        report_parser = subparsers.add_parser(  # noqa: F841
+            "report", exit_on_error=False
+        )
+
+        return parser.parse_args(argv)
+
     def run(self, argv=None):
         try:
-            args = parse_args(argv)
+            args = self.parse_args(argv)
         except argparse.ArgumentError:
             return 1
 

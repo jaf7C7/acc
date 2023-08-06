@@ -164,12 +164,12 @@ class TestParseArgs:
             (["report"], argparse.Namespace(command="report")),
         ],
     )
-    def test_returns_correct_namespace(self, args, expected):
-        assert superpy.parse_args(args) == expected
+    def test_returns_correct_namespace(self, args, expected, application):
+        assert application.parse_args(args) == expected
 
     @pytest.mark.parametrize(
         "args", [["date", "01/01/1970"], ["date", "--advance", "0.5"]]
     )
-    def test_bad_arguments(self, args):
+    def test_bad_arguments(self, args, application):
         with pytest.raises(argparse.ArgumentError):
-            superpy.parse_args(args)
+            application.parse_args(args)
