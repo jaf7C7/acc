@@ -10,26 +10,29 @@ class daydelta(datetime.timedelta):
 
 class Application:
     def __init__(self):
-        self.date = datetime.date(1970, 1, 1)
+        self._date = datetime.date(1970, 1, 1)
         self.ledger = "superpy_ledger.csv"
 
     def write_transaction_to_ledger(self, product, amount):
         with open("superpy_ledger.csv", "a") as ledger:
             csv.writer(ledger).writerow([self.date, product, amount])
 
-    def get_config(self, param=None):
+    @property
+    def date(self):
         try:
-            with open(".superpy.conf", "r") as c:
-                config = dict(zip(["date", "ledger"], next(csv.reader(c))))
+            with open(".superpy.conf", "r") as ledger:
+                self._date = datetime.date.fromisoformat(
+                    next(csv.reader(ledger)).pop(0)
+                )
         except FileNotFoundError:
-            config = dict(date="1970-01-01", ledger="superpy_ledger.csv")
-        return config.get(param) if param is not None else config
+            pass
+        return self._date
 
-    def set_config(self, key, value):
-        config = self.get_config()
-        config.update({key: value})
-        with open(".superpy.conf", "w") as c:
-            csv.writer(c).writerow(config.values())
+    @date.setter
+    def date(self, new_date):
+        self._date = new_date
+        with open(".superpy.conf", "w") as ledger:
+            csv.writer(ledger).writerow([self._date, self.ledger])
 
     def report(self):
         with open(self.ledger, "r") as ledger:
@@ -79,7 +82,7 @@ class Application:
             elif args.days_to_advance is not None:
                 self.date += args.days_to_advance
             else:
-                print(self.date.isoformat())
+                print(self.date)
 
         elif args.command == "ledger":
             if args.ledger_path is not None:
