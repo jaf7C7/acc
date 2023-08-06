@@ -44,6 +44,9 @@ class daydelta(datetime.timedelta):
 
 
 class Application:
+    def __init__(self):
+        self.date = datetime.date(1970, 1, 1)
+
     @staticmethod
     def parse_args(argv):
         parser = argparse.ArgumentParser(exit_on_error=False)
@@ -82,11 +85,11 @@ class Application:
 
         if args.command == "date":
             if args.new_date is not None:
-                set_config("date", args.new_date.isoformat())
+                self.date = args.new_date
             elif args.days_to_advance is not None:
-                advance_date(args.days_to_advance)
+                self.date += args.days_to_advance
             else:
-                print(get_config("date"))
+                print(self.date.isoformat())
 
         elif args.command == "ledger":
             if args.ledger_path is not None:
