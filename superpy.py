@@ -10,6 +10,7 @@ class daydelta(datetime.timedelta):
 
 class Application:
     def __init__(self):
+        self.config = ".superpy.conf"
         self._date = datetime.date(1970, 1, 1)
         self._ledger = "superpy_ledger.csv"
 
@@ -20,7 +21,7 @@ class Application:
     @property
     def date(self):
         try:
-            with open(".superpy.conf", "r") as ledger:
+            with open(self.config, "r") as ledger:
                 self._date = datetime.date.fromisoformat(
                     next(csv.reader(ledger)).pop(0)
                 )
@@ -31,13 +32,13 @@ class Application:
     @date.setter
     def date(self, new_date):
         self._date = new_date
-        with open(".superpy.conf", "w") as ledger:
+        with open(self.config, "w") as ledger:
             csv.writer(ledger).writerow([self._date, self._ledger])
 
     @property
     def ledger(self):
         try:
-            with open(".superpy.conf", "r") as ledger:
+            with open(self.config, "r") as ledger:
                 self._ledger = next(csv.reader(ledger)).pop()
         except FileNotFoundError:
             pass
@@ -46,7 +47,7 @@ class Application:
     @ledger.setter
     def ledger(self, new_ledger):
         self._ledger = new_ledger
-        with open(".superpy.conf", "w") as ledger:
+        with open(self.config, "w") as ledger:
             csv.writer(ledger).writerow([self._date, self._ledger])
 
     def report(self):
