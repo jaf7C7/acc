@@ -38,6 +38,11 @@ def report(ledger_path):
             print(f"{date:10}  {product:10}  {amount}")
 
 
+class daydelta(datetime.timedelta):
+    def __new__(cls, days):
+        return super().__new__(cls, days=int(days))
+
+
 class Application:
     @staticmethod
     def parse_args(argv):
@@ -49,7 +54,11 @@ class Application:
             "new_date", nargs="?", type=datetime.date.fromisoformat
         )
         date_parser.add_argument(
-            "--advance", dest="days_to_advance", type=int, nargs="?", const=1
+            "--advance",
+            dest="days_to_advance",
+            type=daydelta,
+            nargs="?",
+            const="1",
         )
 
         ledger_parser = subparsers.add_parser("ledger", exit_on_error=False)
