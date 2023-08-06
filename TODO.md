@@ -20,7 +20,7 @@
 - [x] Output formatting
 - [x] Clean up git history
 - [x] OOP-ify
-- [ ] Tests should invoke a separate application instance for each command
+- [x] Tests should invoke a separate application instance for each command
 - [ ] Helpful error messages
 - [ ] Can the user sell items as well as buying them?
 - [ ] JSON file formats
