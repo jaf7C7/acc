@@ -19,10 +19,6 @@ class Application:
         self._date = datetime.date(1970, 1, 1)
         self._ledger = "superpy_ledger.csv"
 
-    def write_transaction_to_ledger(self, product, amount):
-        with open("superpy_ledger.csv", "a") as ledger:
-            csv.writer(ledger).writerow([self.date, product, amount])
-
     def read_config(self):
         try:
             with open(self.config, "r") as config:
@@ -52,6 +48,10 @@ class Application:
     def ledger(self, new_ledger):
         self._ledger = new_ledger
         self.write_config()
+
+    def write_transaction_to_ledger(self, product, amount):
+        with open("superpy_ledger.csv", "a") as ledger:
+            csv.writer(ledger).writerow([self.date, product, amount])
 
     def report(self):
         with open(self.ledger, "r") as ledger:
