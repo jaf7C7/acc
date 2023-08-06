@@ -21,52 +21,52 @@ def clean_up_test_files():
             pass
 
 
-class TestMain:
+class TestCli:
     def test_date_without_args_prints_the_default_date(self, capsys, application):
-        application.run(["date"])
+        superpy.cli(["date"])
         out, err = capsys.readouterr()
         assert out == "1970-01-01\n"
 
     def test_can_set_and_get_the_date(self, capsys, application):
-        application.run(["date", "2020-02-02"])
-        application.run(["date"])
+        superpy.cli(["date", "2020-02-02"])
+        superpy.cli(["date"])
         out, err = capsys.readouterr()
         assert out == "2020-02-02\n"
 
     def test_fails_if_non_iso_format_date(self, application):
-        assert application.run(["date", "01/01/1970"]) == 1
+        assert superpy.cli(["date", "01/01/1970"]) == 1
 
     @pytest.mark.parametrize(
         "days, expected",
         [("", "1970-01-02\n"), ("30", "1970-01-31\n"), ("366", "1971-01-02\n")],
     )
     def test_can_advance_date_by_days(self, capsys, days, expected, application):
-        application.run(f"date --advance {days}".split())
-        application.run(["date"])
+        superpy.cli(f"date --advance {days}".split())
+        superpy.cli(["date"])
         out, err = capsys.readouterr()
         assert out == expected
 
     def test_fails_if_non_integer_days(self, application):
-        assert application.run(["date", "--advance", "0.5"]) == 1
+        assert superpy.cli(["date", "--advance", "0.5"]) == 1
 
     def test_ledger_without_args_prints_the_default_ledger_path(
         self, capsys, application
     ):
-        application.run(["ledger"])
+        superpy.cli(["ledger"])
         out, err = capsys.readouterr()
         assert out == "superpy_ledger.csv\n"
 
     def test_date_and_ledger_can_be_set_independently(self, capsys, application):
-        application.run(["date", "1991-08-20"])
-        application.run(["ledger", "/tmp/foo"])
-        application.run(["date"])
-        application.run(["ledger"])
+        superpy.cli(["date", "1991-08-20"])
+        superpy.cli(["ledger", "/tmp/foo"])
+        superpy.cli(["date"])
+        superpy.cli(["ledger"])
         out, err = capsys.readouterr()
         assert out.split() == ["1991-08-20", "/tmp/foo"]
 
     def test_can_set_and_get_the_ledger_path(self, capsys, application):
-        application.run(["ledger", "/tmp/foo"])
-        application.run(["ledger"])
+        superpy.cli(["ledger", "/tmp/foo"])
+        superpy.cli(["ledger"])
         out, err = capsys.readouterr()
         assert out == "/tmp/foo\n"
 
@@ -77,8 +77,8 @@ class TestMain:
             ("a very large eastern halibut", "4.99"),
         ]
         for product, price in transactions:
-            application.run(["buy", product, price])
-        application.run(["report"])
+            superpy.cli(["buy", product, price])
+        superpy.cli(["report"])
         out, err = capsys.readouterr()
         assert (
             out
@@ -92,7 +92,7 @@ DATE        PRODUCT     AMOUNT
 
     def test_report_fails_if_no_ledger_file(self, application):
         assert not os.path.exists("superpy_ledger.csv")
-        assert application.run(["report"]) == 1
+        assert superpy.cli(["report"]) == 1
 
 
 class TestReadWriteLedger:
