@@ -11,7 +11,7 @@ class daydelta(datetime.timedelta):
 class Application:
     def __init__(self):
         self._date = datetime.date(1970, 1, 1)
-        self.ledger = "superpy_ledger.csv"
+        self._ledger = "superpy_ledger.csv"
 
     def write_transaction_to_ledger(self, product, amount):
         with open("superpy_ledger.csv", "a") as ledger:
@@ -32,7 +32,22 @@ class Application:
     def date(self, new_date):
         self._date = new_date
         with open(".superpy.conf", "w") as ledger:
-            csv.writer(ledger).writerow([self._date, self.ledger])
+            csv.writer(ledger).writerow([self._date, self._ledger])
+
+    @property
+    def ledger(self):
+        try:
+            with open(".superpy.conf", "r") as ledger:
+                self._ledger = next(csv.reader(ledger)).pop()
+        except FileNotFoundError:
+            pass
+        return self._ledger
+
+    @ledger.setter
+    def ledger(self, new_ledger):
+        self._ledger = new_ledger
+        with open(".superpy.conf", "w") as ledger:
+            csv.writer(ledger).writerow([self._date, self._ledger])
 
     def report(self):
         with open(self.ledger, "r") as ledger:
