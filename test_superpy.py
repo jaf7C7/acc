@@ -106,7 +106,7 @@ class TestSetGetConfig:
     )
     def test_get_config(self, param, expected):
         with open(".superpy.conf", "w") as c:
-            writer = csv.writer(c)  # , fieldnames=["date", "ledger"])
+            writer = csv.writer(c)
             writer.writerow(["2000-01-01", "/tmp/bar"])
         assert superpy.get_config(param) == expected
 
@@ -146,11 +146,15 @@ class TestParseArgs:
             ),
             (
                 ["date", "--advance", "1"],
-                argparse.Namespace(command="date", new_date=None, days_to_advance=1),
+                argparse.Namespace(
+                    command="date", new_date=None, days_to_advance=superpy.daydelta(1)
+                ),
             ),
             (
                 ["date", "--advance"],
-                argparse.Namespace(command="date", new_date=None, days_to_advance=1),
+                argparse.Namespace(
+                    command="date", new_date=None, days_to_advance=superpy.daydelta(1)
+                ),
             ),
             (["ledger"], argparse.Namespace(command="ledger", ledger_path=None)),
             (
