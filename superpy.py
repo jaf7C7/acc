@@ -3,41 +3,6 @@ import argparse
 import csv
 
 
-def get_config(param=None):
-    try:
-        with open(".superpy.conf", "r") as c:
-            config = dict(zip(["date", "ledger"], next(csv.reader(c))))
-    except FileNotFoundError:
-        config = dict(date="1970-01-01", ledger="superpy_ledger.csv")
-    return config.get(param) if param is not None else config
-
-
-def set_config(key, value):
-    config = get_config()
-    config.update({key: value})
-    with open(".superpy.conf", "w") as c:
-        csv.writer(c).writerow(config.values())
-
-
-def advance_date(days_to_advance):
-    date = datetime.date.fromisoformat(get_config("date"))
-    days = datetime.timedelta(days=days_to_advance)
-    new_date = date + days
-    set_config("date", new_date.isoformat())
-
-
-def write_transaction_to_ledger(product, amount):
-    with open("superpy_ledger.csv", "a") as ledger:
-        csv.writer(ledger).writerow([get_config("date"), product, amount])
-
-
-def report(ledger_path):
-    with open(ledger_path, "r") as ledger:
-        print(f"{'DATE':10}  {'PRODUCT':10}  AMOUNT")
-        for date, product, amount in csv.reader(ledger):
-            print(f"{date:10}  {product:10}  {amount}")
-
-
 class daydelta(datetime.timedelta):
     def __new__(cls, days):
         return super().__new__(cls, days=int(days))
@@ -47,6 +12,36 @@ class Application:
     def __init__(self):
         self.date = datetime.date(1970, 1, 1)
         self.ledger = "superpy_ledger.csv"
+
+    def write_transaction_to_ledger(self, product, amount):
+        with open("superpy_ledger.csv", "a") as ledger:
+            csv.writer(ledger).writerow([self.get_config("date"), product, amount])
+
+    def get_config(self, param=None):
+        try:
+            with open(".superpy.conf", "r") as c:
+                config = dict(zip(["date", "ledger"], next(csv.reader(c))))
+        except FileNotFoundError:
+            config = dict(date="1970-01-01", ledger="superpy_ledger.csv")
+        return config.get(param) if param is not None else config
+
+    def set_config(self, key, value):
+        config = self.get_config()
+        config.update({key: value})
+        with open(".superpy.conf", "w") as c:
+            csv.writer(c).writerow(config.values())
+
+    def advance_date(self, days_to_advance):
+        date = datetime.date.fromisoformat(self.get_config("date"))
+        days = datetime.timedelta(days=days_to_advance)
+        new_date = date + days
+        self.set_config("date", new_date.isoformat())
+
+    def report(self, ledger_path):
+        with open(ledger_path, "r") as ledger:
+            print(f"{'DATE':10}  {'PRODUCT':10}  AMOUNT")
+            for date, product, amount in csv.reader(ledger):
+                print(f"{date:10}  {product:10}  {amount}")
 
     @staticmethod
     def parse_args(argv):
@@ -99,11 +94,11 @@ class Application:
                 print(self.ledger)
 
         elif args.command == "buy":
-            write_transaction_to_ledger(args.product, args.amount)
+            self.write_transaction_to_ledger(args.product, args.amount)
 
         elif args.command == "report":
             try:
-                report(get_config("ledger"))
+                self.report(self.get_config("ledger"))
             except FileNotFoundError:
                 return 1
 

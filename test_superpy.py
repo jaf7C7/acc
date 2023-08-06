@@ -104,22 +104,22 @@ class TestSetGetConfig:
             ("ledger", "/tmp/bar"),
         ],
     )
-    def test_get_config(self, param, expected):
+    def test_get_config(self, param, expected, application):
         with open(".superpy.conf", "w") as c:
             writer = csv.writer(c)
             writer.writerow(["2000-01-01", "/tmp/bar"])
-        assert superpy.get_config(param) == expected
+        assert application.get_config(param) == expected
 
-    def test_set_config(self):
-        superpy.set_config("date", "1664-08-17")
-        superpy.set_config("ledger", "/tmp/frobble")
+    def test_set_config(self, application):
+        application.set_config("date", "1664-08-17")
+        application.set_config("ledger", "/tmp/frobble")
         with open(".superpy.conf", "r") as c:
             assert next(csv.reader(c)) == ["1664-08-17", "/tmp/frobble"]
 
 
 class TestReadWriteLedger:
-    def test_write(self):
-        superpy.write_transaction_to_ledger("Transonic Fremules", "5.97")
+    def test_write(self, application):
+        application.write_transaction_to_ledger("Transonic Fremules", "5.97")
         with open("superpy_ledger.csv", "r") as ledger:
             assert next(csv.reader(ledger)) == [
                 "1970-01-01",
