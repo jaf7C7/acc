@@ -8,8 +8,8 @@
 - [x] Does `ledger` return `superpy_ledger.csv`
 - [x] Can the application set and get the ledger path?
 - [x] Rewrite argument parsing using `argparse`
-- [x] `date <date>` fails if <date> is not YYYY-MM-DD ISO format
-- [x] `date --advance <days>` fails if <days> is not an integer
+- [x] `date <date>` fails if `<date>` is not YYYY-MM-DD ISO format
+- [x] `date --advance <days>` fails if `<days>` is not an integer
 - [x] Can the application remember and recall a sequence of simple transactions?
 - [x] Refactoring!
 - [x] Do `set_date` and `set_ledger` reset each other?
@@ -21,6 +21,8 @@
 - [x] Clean up git history
 - [x] OOP-ify
 - [x] Tests should invoke a separate application instance for each command
+- [ ] Add `__repr__` to classes
 - [ ] Helpful error messages
 - [ ] Can the user sell items as well as buying them?
 - [ ] JSON file formats
+- [ ] Reports with calculations etc.
