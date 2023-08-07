@@ -21,7 +21,7 @@
 - [x] Clean up git history
 - [x] OOP-ify
 - [x] Tests should invoke a separate application instance for each command
-- [ ] Add `__repr__` to classes
+- [x] Add `__repr__` to classes
 - [ ] Helpful error messages
 - [ ] Can the user sell items as well as buying them?
 - [ ] JSON file formats
