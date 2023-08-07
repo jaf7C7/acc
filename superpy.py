@@ -19,6 +19,9 @@ class Application:
         self._date = datetime.date(1970, 1, 1)
         self._ledger = "superpy_ledger.csv"
 
+    def __repr__(self):
+        return f"Application(config='{self.config}', date='{self._date}', ledger='{self._ledger}')"  # noqa: E501
+
     def read_config(self):
         try:
             with open(self.config, "r") as config:
