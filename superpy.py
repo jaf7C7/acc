@@ -54,15 +54,18 @@ class Application:
         self._ledger = ledger
         self.write_config()
 
-    def write_transaction_to_ledger(self, product, price):
+    def write_transaction_to_ledger(self, type, product, price, units):
         with open("superpy_ledger.csv", "a") as ledger:
-            csv.writer(ledger).writerow([self.date, product, price])
+            csv.writer(ledger).writerow([self.date, type, product, price, units])
 
     def report(self):
         with open(self.ledger, "r") as ledger:
-            print(f"{'DATE':10}  {'PRODUCT':10}  AMOUNT")
-            for date, product, price in csv.reader(ledger):
-                print(f"{date:10}  {product:10}  {price}")
+            print("DATE        TYPE      PRODUCT     PRICE   UNITS   TOTAL")
+            for date, type, product, price, units in csv.reader(ledger):
+                price, units = int(price), int(units)
+                print(
+                    f"{date:10}  {type:8}  {product:10}  {price:<6}  {units:<6}  {price*units:<}"  # noqa: E501
+                )
 
     @staticmethod
     def parse_args(argv):
@@ -106,11 +109,12 @@ class Application:
             "product", metavar="<product>", help="the name of the product to be bought"
         )
         buy_parser.add_argument(
-            "price", metavar="<price>", help="the transaction price in cents"
+            "price", type=int, metavar="<price>", help="the transaction price in cents"
         )
         buy_parser.add_argument(
             "--units",
             default="1",
+            type=int,
             metavar="<units>",
             help="how many units to buy (default %(default)s)",
         )
@@ -146,7 +150,9 @@ class Application:
                 print(self.ledger)
 
         elif args.command == "buy":
-            self.write_transaction_to_ledger(args.product, args.price)
+            self.write_transaction_to_ledger(
+                "Purchase", args.product, args.price, args.units
+            )
 
         elif args.command == "report":
             try:
