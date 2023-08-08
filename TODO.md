@@ -25,7 +25,9 @@
 - [X] Helpful error messages
 - [x] Decide a ledger format which can record purchases and sales
 - [x] Can the user sell items as well as buying them?
-- [ ] Report profit
+- [x] Report profit
+- [ ] Refactor report methods
+- [ ] Add 'Total' field to ledger file?
 - [ ] Report income
 - [ ] Report expenses
 - [ ] Report over a range of dates
