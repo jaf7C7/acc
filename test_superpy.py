@@ -69,28 +69,23 @@ class TestCli:
         assert out == "/tmp/foo\n"
 
     def test_can_record_and_recall_transactions(self, capsys, application):
-        transactions = (
+        commands = [
             ["buy", "orange", "150"],
             ["buy", "apple", "85", "--units", "10"],
             ["buy", "a very large eastern halibut", "499", "--units", "5"],
             ["sell", "apple", "100", "--units", "5"],
             ["sell", "a very large eastern halibut", "250"],
-        )
-        for transaction in transactions:
-            superpy.cli(transaction)
-        superpy.cli(["report"])
-        out, err = capsys.readouterr()
-        assert (
-            out
-            == """\
-DATE        TYPE      PRODUCT     PRICE   UNITS   TOTAL
-1970-01-01  Purchase  orange      150     1       -150
-1970-01-01  Purchase  apple       85      10      -850
-1970-01-01  Purchase  a very large eastern halibut  499     5       -2495
-1970-01-01  Sale      apple       100     5       +500
-1970-01-01  Sale      a very large eastern halibut  250     1       +250
-"""
-        )
+        ]
+        for command in commands:
+            superpy.cli(command)
+        with open("superpy_ledger.csv", "r") as ledger:
+            assert list(csv.reader(ledger)) == [
+                ["1970-01-01", "Purchase", "orange", "150", "1"],
+                ["1970-01-01", "Purchase", "apple", "85", "10"],
+                ["1970-01-01", "Purchase", "a very large eastern halibut", "499", "5"],
+                ["1970-01-01", "Sale", "apple", "100", "5"],
+                ["1970-01-01", "Sale", "a very large eastern halibut", "250", "1"],
+            ]
 
     def test_report_fails_if_no_ledger_file(self, application):
         assert not os.path.exists("superpy_ledger.csv")
@@ -162,3 +157,32 @@ class TestParseArgs:
     def test_bad_arguments(self, args, application):
         with pytest.raises(argparse.ArgumentError):
             application.parse_args(args)
+
+
+class TestReport:
+    transactions = [
+        ["1970-01-01", "Purchase", "orange", "150", "1"],
+        ["1970-01-01", "Purchase", "apple", "85", "10"],
+        ["1970-01-01", "Purchase", "a very large eastern halibut", "499", "5"],
+        ["1970-01-01", "Sale", "apple", "100", "5"],
+        ["1970-01-01", "Sale", "a very large eastern halibut", "250", "1"],
+    ]
+
+    def test_default(self, capsys):
+        with open("superpy_ledger.csv", "w") as ledger:
+            writer = csv.writer(ledger)
+            for transaction in self.transactions:
+                writer.writerow(transaction)
+        superpy.cli(["report"])
+        out, err = capsys.readouterr()
+        assert (
+            out
+            == """\
+DATE        TYPE      PRODUCT     PRICE   UNITS   TOTAL
+1970-01-01  Purchase  orange      150     1       -150
+1970-01-01  Purchase  apple       85      10      -850
+1970-01-01  Purchase  a very large eastern halibut  499     5       -2495
+1970-01-01  Sale      apple       100     5       +500
+1970-01-01  Sale      a very large eastern halibut  250     1       +250
+"""
+        )
