@@ -30,3 +30,12 @@
 - [ ] Report income
 - [ ] Report expenses
 - [ ] Report over a range of dates
+
+
+Ledger format:
+```
+DATE        TYPE      PRODUCT     PRICE  UNITS  TOTAL
+1970-01-01  Purchase  orange      150    1      150
+1970-01-01  Purchase  apple       85     10     850
+1970-01-01  Purchase  a very large eastern halibut  499  5  2495
+```
