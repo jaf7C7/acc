@@ -68,6 +68,14 @@ class Application:
                     f"{date:10}  {type:8}  {product:10}  {price:<6}  {units:<6}  {total:<+}"  # noqa: E501
                 )
 
+    def report_profit(self):
+        profit = 0
+        with open(self.ledger, "r") as ledger:
+            for _, type, _, price, units in csv.reader(ledger):
+                price, units = int(price), int(units)
+                profit += price * units if type == "Sale" else -price * units
+        print(profit if profit > 0 else 0)
+
     @staticmethod
     def parse_args(argv):
         parser = argparse.ArgumentParser(exit_on_error=False)
@@ -142,6 +150,9 @@ class Application:
             exit_on_error=False,
             help="display information about past transactions",
         )
+        report_parser.add_argument(
+            "--profit", action="store_true", help="see how much profit has been made"
+        )
 
         return parser.parse_args(argv)
 
@@ -178,9 +189,15 @@ class Application:
             )
 
         elif args.command == "report":
-            try:
-                self.report()
-            except FileNotFoundError:
-                return 1
+            if args.profit is True:
+                try:
+                    self.report_profit()
+                except FileNotFoundError:
+                    return 1
+            else:
+                try:
+                    self.report()
+                except FileNotFoundError:
+                    return 1
 
         return 0
