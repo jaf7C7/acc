@@ -160,29 +160,31 @@ class TestParseArgs:
 
 
 class TestReport:
-    transactions = [
-        ["1970-01-01", "Purchase", "orange", "150", "1"],
-        ["1970-01-01", "Purchase", "apple", "85", "10"],
-        ["1970-01-01", "Purchase", "a very large eastern halibut", "499", "5"],
-        ["1970-01-01", "Sale", "apple", "100", "5"],
-        ["1970-01-01", "Sale", "a very large eastern halibut", "250", "1"],
-    ]
-
-    def test_default(self, capsys):
+    @pytest.fixture(autouse=True)
+    def ledger_file(self):
+        transactions = [
+            ["1970-01-01", "Purchase", "frobule", "150", "1"],
+            ["1970-01-01", "Purchase", "wobjock", "85", "10"],
+            ["1970-01-01", "Purchase", "frobulator", "499", "5"],
+            ["1970-01-01", "Sale", "wobjock", "400", "10"],
+            ["1970-01-01", "Sale", "frobulator", "1050", "5"],
+        ]
         with open("superpy_ledger.csv", "w") as ledger:
             writer = csv.writer(ledger)
-            for transaction in self.transactions:
+            for transaction in transactions:
                 writer.writerow(transaction)
+
+    def test_default(self, capsys):
         superpy.cli(["report"])
         out, err = capsys.readouterr()
         assert (
             out
             == """\
 DATE        TYPE      PRODUCT     PRICE   UNITS   TOTAL
-1970-01-01  Purchase  orange      150     1       -150
-1970-01-01  Purchase  apple       85      10      -850
-1970-01-01  Purchase  a very large eastern halibut  499     5       -2495
-1970-01-01  Sale      apple       100     5       +500
-1970-01-01  Sale      a very large eastern halibut  250     1       +250
+1970-01-01  Purchase  frobule     150     1       -150
+1970-01-01  Purchase  wobjock     85      10      -850
+1970-01-01  Purchase  frobulator  499     5       -2495
+1970-01-01  Sale      wobjock     400     10      +4000
+1970-01-01  Sale      frobulator  1050    5       +5250
 """
         )
