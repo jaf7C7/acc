@@ -1,3 +1,4 @@
+import sys
 import datetime
 import argparse
 import csv
@@ -96,7 +97,8 @@ class Application:
         self.read_config()
         try:
             args = self.parse_args(argv)
-        except argparse.ArgumentError:
+        except argparse.ArgumentError as err:
+            print(err, file=sys.stderr)
             return 1
 
         if args.command == "date":
