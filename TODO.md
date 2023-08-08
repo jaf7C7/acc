@@ -24,12 +24,12 @@
 - [x] Add `__repr__` to classes
 - [X] Helpful error messages
 - [x] Decide a ledger format which can record purchases and sales
-- [ ] Can the user sell items as well as buying them?
-- [ ] JSON file formats
+- [x] Can the user sell items as well as buying them?
 - [ ] Report profit
 - [ ] Report income
 - [ ] Report expenses
 - [ ] Report over a range of dates
+- [ ] JSON file formats
 
 
 Ledger format:
