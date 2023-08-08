@@ -63,8 +63,9 @@ class Application:
             print("DATE        TYPE      PRODUCT     PRICE   UNITS   TOTAL")
             for date, type, product, price, units in csv.reader(ledger):
                 price, units = int(price), int(units)
+                total = price * units if type == "Sale" else -price * units
                 print(
-                    f"{date:10}  {type:8}  {product:10}  {price:<6}  {units:<6}  {price*units:<}"  # noqa: E501
+                    f"{date:10}  {type:8}  {product:10}  {price:<6}  {units:<6}  {total:<+}"  # noqa: E501
                 )
 
     @staticmethod
@@ -109,7 +110,7 @@ class Application:
             "product", metavar="<product>", help="the name of the product to be bought"
         )
         buy_parser.add_argument(
-            "price", type=int, metavar="<price>", help="the transaction price in cents"
+            "price", type=int, metavar="<price>", help="the product price in cents"
         )
         buy_parser.add_argument(
             "--units",
@@ -117,6 +118,23 @@ class Application:
             type=int,
             metavar="<units>",
             help="how many units to buy (default %(default)s)",
+        )
+
+        sell_parser = subparsers.add_parser(
+            "sell", exit_on_error=False, help="record a sale in the ledger"
+        )
+        sell_parser.add_argument(
+            "product", metavar="<product>", help="the name of the product to be sold"
+        )
+        sell_parser.add_argument(
+            "price", type=int, metavar="<price>", help="the product price in cents"
+        )
+        sell_parser.add_argument(
+            "--units",
+            default="1",
+            type=int,
+            metavar="<units>",
+            help="how many units to sell (default %(default)s)",
         )
 
         report_parser = subparsers.add_parser(  # noqa: F841
@@ -152,6 +170,11 @@ class Application:
         elif args.command == "buy":
             self.write_transaction_to_ledger(
                 "Purchase", args.product, args.price, args.units
+            )
+
+        elif args.command == "sell":
+            self.write_transaction_to_ledger(
+                "Sale", args.product, args.price, args.units
             )
 
         elif args.command == "report":
