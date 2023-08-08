@@ -22,7 +22,7 @@
 - [x] OOP-ify
 - [x] Tests should invoke a separate application instance for each command
 - [x] Add `__repr__` to classes
-- [ ] Helpful error messages
+- [X] Helpful error messages
 - [ ] Can the user sell items as well as buying them?
 - [ ] JSON file formats
 - [ ] Reports with calculations etc.
