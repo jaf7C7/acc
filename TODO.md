@@ -23,6 +23,10 @@
 - [x] Tests should invoke a separate application instance for each command
 - [x] Add `__repr__` to classes
 - [X] Helpful error messages
+- [ ] Decide a ledger format which can record purchases and sales
 - [ ] Can the user sell items as well as buying them?
 - [ ] JSON file formats
-- [ ] Reports with calculations etc.
+- [ ] Report profit
+- [ ] Report income
+- [ ] Report expenses
+- [ ] Report over a range of dates
