@@ -68,23 +68,27 @@ class TestCli:
         out, err = capsys.readouterr()
         assert out == "/tmp/foo\n"
 
-    def test_can_record_and_recall_a_purchase(self, capsys, application):
-        purchases = [
-            ("orange", "150"),
-            ("apple", "85", "--units", "10"),
-            ("a very large eastern halibut", "499", "--units", "5"),
-        ]
-        for purchase in purchases:
-            superpy.cli(["buy", *purchase])
+    def test_can_record_and_recall_transactions(self, capsys, application):
+        transactions = (
+            ["buy", "orange", "150"],
+            ["buy", "apple", "85", "--units", "10"],
+            ["buy", "a very large eastern halibut", "499", "--units", "5"],
+            ["sell", "apple", "100", "--units", "5"],
+            ["sell", "a very large eastern halibut", "250"],
+        )
+        for transaction in transactions:
+            superpy.cli(transaction)
         superpy.cli(["report"])
         out, err = capsys.readouterr()
         assert (
             out
             == """\
 DATE        TYPE      PRODUCT     PRICE   UNITS   TOTAL
-1970-01-01  Purchase  orange      150     1       150
-1970-01-01  Purchase  apple       85      10      850
-1970-01-01  Purchase  a very large eastern halibut  499     5       2495
+1970-01-01  Purchase  orange      150     1       -150
+1970-01-01  Purchase  apple       85      10      -850
+1970-01-01  Purchase  a very large eastern halibut  499     5       -2495
+1970-01-01  Sale      apple       100     5       +500
+1970-01-01  Sale      a very large eastern halibut  250     1       +250
 """
         )
 
