@@ -53,15 +53,15 @@ class Application:
         self._ledger = ledger
         self.write_config()
 
-    def write_transaction_to_ledger(self, product, amount):
+    def write_transaction_to_ledger(self, product, price):
         with open("superpy_ledger.csv", "a") as ledger:
-            csv.writer(ledger).writerow([self.date, product, amount])
+            csv.writer(ledger).writerow([self.date, product, price])
 
     def report(self):
         with open(self.ledger, "r") as ledger:
             print(f"{'DATE':10}  {'PRODUCT':10}  AMOUNT")
-            for date, product, amount in csv.reader(ledger):
-                print(f"{date:10}  {product:10}  {amount}")
+            for date, product, price in csv.reader(ledger):
+                print(f"{date:10}  {product:10}  {price}")
 
     @staticmethod
     def parse_args(argv):
@@ -105,7 +105,13 @@ class Application:
             "product", metavar="<product>", help="the name of the product to be bought"
         )
         buy_parser.add_argument(
-            "amount", metavar="<amount>", help="the transaction amount in cents"
+            "price", metavar="<price>", help="the transaction price in cents"
+        )
+        buy_parser.add_argument(
+            "--units",
+            default="1",
+            metavar="<units>",
+            help="how many units to buy (default %(default)s)",
         )
 
         report_parser = subparsers.add_parser(  # noqa: F841
@@ -139,7 +145,7 @@ class Application:
                 print(self.ledger)
 
         elif args.command == "buy":
-            self.write_transaction_to_ledger(args.product, args.amount)
+            self.write_transaction_to_ledger(args.product, args.price)
 
         elif args.command == "report":
             try:
