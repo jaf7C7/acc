@@ -109,6 +109,7 @@ class TestReadWriteLedger:
 
 
 class TestParseArgs:
+    @pytest.mark.active
     @pytest.mark.parametrize(
         "args, expected",
         [
