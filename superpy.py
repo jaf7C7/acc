@@ -20,6 +20,7 @@ class Application:
         self._date = datetime.date(1970, 1, 1)
         self._ledger = "superpy_ledger.csv"
 
+    # TODO: Refactor this
     def __repr__(self):
         return f"Application(config='{self.config}', date='{self._date}', ledger='{self._ledger}')"  # noqa: E501
 
