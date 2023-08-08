@@ -69,22 +69,22 @@ class TestCli:
         assert out == "/tmp/foo\n"
 
     def test_can_record_and_recall_a_purchase(self, capsys, application):
-        transactions = [
-            ("orange", "1.50"),
-            ("apple", "0.85"),
-            ("a very large eastern halibut", "4.99"),
+        purchases = [
+            ("orange", "150"),
+            ("apple", "85", "--units", "10"),
+            ("a very large eastern halibut", "499", "--units", "5"),
         ]
-        for product, price in transactions:
-            superpy.cli(["buy", product, price])
+        for purchase in purchases:
+            superpy.cli(["buy", *purchase])
         superpy.cli(["report"])
         out, err = capsys.readouterr()
         assert (
             out
             == """\
-DATE        PRODUCT     AMOUNT
-1970-01-01  orange      1.50
-1970-01-01  apple       0.85
-1970-01-01  a very large eastern halibut  4.99
+DATE        TYPE      PRODUCT     PRICE   UNITS   TOTAL
+1970-01-01  Purchase  orange      150     1       150
+1970-01-01  Purchase  apple       85      10      850
+1970-01-01  Purchase  a very large eastern halibut  499     5       2495
 """
         )
 
@@ -95,12 +95,16 @@ DATE        PRODUCT     AMOUNT
 
 class TestReadWriteLedger:
     def test_write(self, application):
-        application.write_transaction_to_ledger("Transonic Fremules", "5.97")
+        application.write_transaction_to_ledger(
+            type="Purchase", product="Transonic Fremules", price=597, units=1
+        )
         with open("superpy_ledger.csv", "r") as ledger:
             assert next(csv.reader(ledger)) == [
                 "1970-01-01",
+                "Purchase",
                 "Transonic Fremules",
-                "5.97",
+                "597",
+                "1",
             ]
 
 
@@ -134,8 +138,12 @@ class TestParseArgs:
                 argparse.Namespace(command="ledger", ledger="/tmp/foo"),
             ),
             (
-                ["buy", "orange", "1.5"],
-                argparse.Namespace(command="buy", product="orange", amount="1.5"),
+                ["buy", "orange", "15"],
+                argparse.Namespace(command="buy", product="orange", price=15, units=1),
+            ),
+            (
+                ["buy", "apple", "75", "--units", "42"],
+                argparse.Namespace(command="buy", product="apple", price=75, units=42),
             ),
             (["report"], argparse.Namespace(command="report")),
         ],
