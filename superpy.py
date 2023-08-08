@@ -40,8 +40,8 @@ class Application:
         return self._date
 
     @date.setter
-    def date(self, new_date):
-        self._date = new_date
+    def date(self, date):
+        self._date = date
         self.write_config()
 
     @property
@@ -49,8 +49,8 @@ class Application:
         return self._ledger
 
     @ledger.setter
-    def ledger(self, new_ledger):
-        self._ledger = new_ledger
+    def ledger(self, ledger):
+        self._ledger = ledger
         self.write_config()
 
     def write_transaction_to_ledger(self, product, amount):
@@ -68,27 +68,50 @@ class Application:
         parser = argparse.ArgumentParser(exit_on_error=False)
         subparsers = parser.add_subparsers(dest="command")
 
-        date_parser = subparsers.add_parser("date", exit_on_error=False)
+        date_parser = subparsers.add_parser(
+            "date", exit_on_error=False, help="set a new application date"
+        )
         date_parser.add_argument(
-            "new_date", nargs="?", type=datetime.date.fromisoformat
+            "date",
+            nargs="?",
+            type=datetime.date.fromisoformat,
+            metavar="<date>",
+            help="a date in yyyy-mm-dd iso format",
         )
         date_parser.add_argument(
             "--advance",
-            dest="days_to_advance",
+            dest="days",
             type=daydelta,
             nargs="?",
             const="1",
+            metavar="<days>",
+            help="the number of days to advance (default %(const)s day)",
         )
 
-        ledger_parser = subparsers.add_parser("ledger", exit_on_error=False)
-        ledger_parser.add_argument("ledger_path", nargs="?")
+        ledger_parser = subparsers.add_parser(
+            "ledger", exit_on_error=False, help="select a new ledger file"
+        )
+        ledger_parser.add_argument(
+            "ledger",
+            nargs="?",
+            metavar="<ledger>",
+            help="the path to the new ledger file",
+        )
 
-        buy_parser = subparsers.add_parser("buy", exit_on_error=False)
-        buy_parser.add_argument("product")
-        buy_parser.add_argument("amount")
+        buy_parser = subparsers.add_parser(
+            "buy", exit_on_error=False, help="record a purchase in the ledger"
+        )
+        buy_parser.add_argument(
+            "product", metavar="<product>", help="the name of the product to be bought"
+        )
+        buy_parser.add_argument(
+            "amount", metavar="<amount>", help="the transaction amount in cents"
+        )
 
         report_parser = subparsers.add_parser(  # noqa: F841
-            "report", exit_on_error=False
+            "report",
+            exit_on_error=False,
+            help="display information about past transactions",
         )
 
         return parser.parse_args(argv)
@@ -102,16 +125,16 @@ class Application:
             return 1
 
         if args.command == "date":
-            if args.new_date is not None:
-                self.date = args.new_date
-            elif args.days_to_advance is not None:
-                self.date += args.days_to_advance
+            if args.date is not None:
+                self.date = args.date
+            elif args.days is not None:
+                self.date += args.days
             else:
                 print(self.date)
 
         elif args.command == "ledger":
-            if args.ledger_path is not None:
-                self.ledger = args.ledger_path
+            if args.ledger is not None:
+                self.ledger = args.ledger
             else:
                 print(self.ledger)
 
@@ -125,3 +148,7 @@ class Application:
                 return 1
 
         return 0
+
+
+############################################################################
+# cli("report --help".split())

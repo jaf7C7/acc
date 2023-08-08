@@ -49,9 +49,7 @@ class TestCli:
     def test_fails_if_non_integer_days(self, application):
         assert superpy.cli(["date", "--advance", "0.5"]) == 1
 
-    def test_ledger_without_args_prints_the_default_ledger_path(
-        self, capsys, application
-    ):
+    def test_ledger_without_args_prints_the_default_ledger(self, capsys, application):
         superpy.cli(["ledger"])
         out, err = capsys.readouterr()
         assert out == "superpy_ledger.csv\n"
@@ -64,7 +62,7 @@ class TestCli:
         out, err = capsys.readouterr()
         assert out.split() == ["1991-08-20", "/tmp/foo"]
 
-    def test_can_set_and_get_the_ledger_path(self, capsys, application):
+    def test_can_set_and_get_the_ledger(self, capsys, application):
         superpy.cli(["ledger", "/tmp/foo"])
         superpy.cli(["ledger"])
         out, err = capsys.readouterr()
@@ -112,32 +110,28 @@ class TestParseArgs:
         [
             (
                 ["date"],
-                argparse.Namespace(command="date", new_date=None, days_to_advance=None),
+                argparse.Namespace(command="date", date=None, days=None),
             ),
             (
                 ["date", "2020-02-02"],
                 argparse.Namespace(
                     command="date",
-                    new_date=datetime.date(2020, 2, 2),
-                    days_to_advance=None,
+                    date=datetime.date(2020, 2, 2),
+                    days=None,
                 ),
             ),
             (
                 ["date", "--advance", "1"],
-                argparse.Namespace(
-                    command="date", new_date=None, days_to_advance=superpy.daydelta(1)
-                ),
+                argparse.Namespace(command="date", date=None, days=superpy.daydelta(1)),
             ),
             (
                 ["date", "--advance"],
-                argparse.Namespace(
-                    command="date", new_date=None, days_to_advance=superpy.daydelta(1)
-                ),
+                argparse.Namespace(command="date", date=None, days=superpy.daydelta(1)),
             ),
-            (["ledger"], argparse.Namespace(command="ledger", ledger_path=None)),
+            (["ledger"], argparse.Namespace(command="ledger", ledger=None)),
             (
                 ["ledger", "/tmp/foo"],
-                argparse.Namespace(command="ledger", ledger_path="/tmp/foo"),
+                argparse.Namespace(command="ledger", ledger="/tmp/foo"),
             ),
             (
                 ["buy", "orange", "1.5"],
