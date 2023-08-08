@@ -145,7 +145,8 @@ class TestParseArgs:
                 ["buy", "apple", "75", "--units", "42"],
                 argparse.Namespace(command="buy", product="apple", price=75, units=42),
             ),
-            (["report"], argparse.Namespace(command="report")),
+            (["report"], argparse.Namespace(command="report", profit=False)),
+            (["report", "--profit"], argparse.Namespace(command="report", profit=True)),
         ],
     )
     def test_returns_correct_namespace(self, args, expected, application):
@@ -188,3 +189,8 @@ DATE        TYPE      PRODUCT     PRICE   UNITS   TOTAL
 1970-01-01  Sale      frobulator  1050    5       +5250
 """
         )
+
+    def test_profit(self, capsys):
+        superpy.cli(["report", "--profit"])
+        out, err = capsys.readouterr()
+        assert out == "5755\n"
