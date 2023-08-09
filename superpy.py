@@ -151,7 +151,11 @@ class Application:
             help="display information about past transactions",
         )
         report_parser.add_argument(
-            "--profit", action="store_true", help="see how much profit has been made"
+            "--profit",
+            action="store_const",
+            const="profit",
+            dest="report_type",
+            help="see how much profit has been made",
         )
 
         return parser.parse_args(argv)
@@ -189,7 +193,7 @@ class Application:
             )
 
         elif args.command == "report":
-            if args.profit is True:
+            if args.report_type == "profit":
                 try:
                     self.report_profit()
                 except FileNotFoundError:

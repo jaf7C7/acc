@@ -145,8 +145,11 @@ class TestParseArgs:
                 ["buy", "apple", "75", "--units", "42"],
                 argparse.Namespace(command="buy", product="apple", price=75, units=42),
             ),
-            (["report"], argparse.Namespace(command="report", profit=False)),
-            (["report", "--profit"], argparse.Namespace(command="report", profit=True)),
+            (["report"], argparse.Namespace(command="report", report_type=None)),
+            (
+                ["report", "--profit"],
+                argparse.Namespace(command="report", report_type="profit"),
+            ),
         ],
     )
     def test_returns_correct_namespace(self, args, expected, application):
