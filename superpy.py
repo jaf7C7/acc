@@ -148,7 +148,7 @@ class Application:
             help="how many units to sell (default %(default)s)",
         )
 
-        report_parser = subparsers.add_parser(  # noqa: F841
+        report_parser = subparsers.add_parser(
             "report",
             exit_on_error=False,
             help="display information about past transactions",
