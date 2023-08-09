@@ -1,4 +1,5 @@
 # TODO
+
 - [x] Does the application return 1 if no args are passed?
 - [x] Does `date` return `1970-01-01\n` to stdout?
 - [x] Does `date` return 0 args are not `None`?
@@ -26,6 +27,7 @@
 - [x] Decide a ledger format which can record purchases and sales
 - [x] Can the user sell items as well as buying them?
 - [x] Report profit
+- [ ] Redesign ledger format (need to use double-entry bookkeeping)
 - [ ] Refactor report methods
 - [ ] Add 'Total' field to ledger file?
 - [ ] Report income
@@ -34,10 +36,11 @@
 - [ ] JSON file formats
 
 
-Ledger format:
+ledger format: <https://www.wikihow.com/Write-an-Accounting-Ledger>
+
+> NOTE: *credit* => money going out, *debit* => money going in
+
+superpy_ledger.csv
 ```
-DATE        TYPE      PRODUCT     PRICE  UNITS  TOTAL
-1970-01-01  Purchase  orange      150    1      150
-1970-01-01  Purchase  apple       85     10     850
-1970-01-01  Purchase  a very large eastern halibut  499  5  2495
+date,product,units,debit,credit,balance
 ```
