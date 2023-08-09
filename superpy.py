@@ -58,23 +58,23 @@ class Application:
         with open("superpy_ledger.csv", "a") as ledger:
             csv.writer(ledger).writerow([self.date, type, product, price, units])
 
-    def report(self):
-        with open(self.ledger, "r") as ledger:
-            print("DATE        TYPE      PRODUCT     PRICE   UNITS   TOTAL")
-            for date, type, product, price, units in csv.reader(ledger):
-                price, units = int(price), int(units)
-                total = price * units if type == "Sale" else -price * units
-                print(
-                    f"{date:10}  {type:8}  {product:10}  {price:<6}  {units:<6}  {total:<+}"  # noqa: E501
-                )
-
-    def report_profit(self):
-        profit = 0
-        with open(self.ledger, "r") as ledger:
-            for _, type, _, price, units in csv.reader(ledger):
-                price, units = int(price), int(units)
-                profit += price * units if type == "Sale" else -price * units
-        print(profit if profit > 0 else 0)
+    def report(self, report_type):
+        if report_type == "profit":
+            profit = 0
+            with open(self.ledger, "r") as ledger:
+                for _, type, _, price, units in csv.reader(ledger):
+                    price, units = int(price), int(units)
+                    profit += price * units if type == "Sale" else -price * units
+            print(profit if profit > 0 else 0)
+        else:
+            with open(self.ledger, "r") as ledger:
+                print("DATE        TYPE      PRODUCT     PRICE   UNITS   TOTAL")
+                for date, type, product, price, units in csv.reader(ledger):
+                    price, units = int(price), int(units)
+                    total = price * units if type == "Sale" else -price * units
+                    print(
+                        f"{date:10}  {type:8}  {product:10}  {price:<6}  {units:<6}  {total:<+}"  # noqa: E501
+                    )
 
     @staticmethod
     def parse_args(argv):
@@ -193,15 +193,8 @@ class Application:
             )
 
         elif args.command == "report":
-            if args.report_type == "profit":
-                try:
-                    self.report_profit()
-                except FileNotFoundError:
-                    return 1
-            else:
-                try:
-                    self.report()
-                except FileNotFoundError:
-                    return 1
-
+            try:
+                self.report(args.report_type)
+            except FileNotFoundError:
+                return 1
         return 0
