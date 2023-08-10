@@ -28,8 +28,8 @@
 - [x] Can the user sell items as well as buying them?
 - [x] Report profit
 - [x] Redesign ledger format (need to use double-entry bookkeeping)
-- [ ] Refactor report methods
-- [ ] Add 'Total' field to ledger file?
+- [x] Refactor report methods
+- [ ] Ledger, Transaction and Product objects to simplify business logic
 - [ ] Report income
 - [ ] Report expenses
 - [ ] Report over a range of dates
