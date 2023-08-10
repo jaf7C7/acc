@@ -54,6 +54,8 @@ class Application:
         self._ledger = ledger
         self.write_config()
 
+    # TODO: open with `newline=""`
+    # TODO: ledger.add_transaction(...)
     def write_transaction_to_ledger(self, type, product, price, units):
         with open("superpy_ledger.csv", "a") as ledger:
             csv.writer(ledger).writerow([self.date, type, product, price, units])
@@ -61,16 +63,14 @@ class Application:
     def report(self, report_type):
         with open(self.ledger, "r") as ledger:
             if report_type == "profit":
-                # TODO:
-                # print(self.ledger.profit())
+                # TODO: print(ledger.profit())
                 profit = 0
                 for _, type, _, price, units in csv.reader(ledger):
                     price, units = int(price), int(units)
                     profit += price * units if type == "Sale" else -price * units
                 print(profit if profit > 0 else 0)
             else:
-                # TODO:
-                # print(self.ledger.transactions())
+                # TODO: print(ledger.transactions())
                 print("DATE        TYPE      PRODUCT     PRICE   UNITS   TOTAL")
                 for date, type, product, price, units in csv.reader(ledger):
                     price, units = int(price), int(units)
