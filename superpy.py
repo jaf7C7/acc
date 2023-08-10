@@ -73,13 +73,19 @@ class Application:
                 print(profit if profit > 0 else 0)
             else:
                 # TODO: print(ledger.transactions())
-                print("DATE        TYPE      PRODUCT     PRICE   UNITS   TOTAL")
-                for date, type, product, price, units in csv.reader(ledger):
-                    price, units = int(price), int(units)
-                    total = price * units if type == "Sale" else -price * units
-                    print(
-                        f"{date:10}  {type:8}  {product:10}  {price:<6}  {units:<6}  {total:<+}"  # noqa: E501
+                print("DATE        PRODUCT     UNITS   DEBIT  CREDIT  BALANCE")
+                for date, product, units, debit, credit, balance in csv.reader(ledger):
+                    transaction = "  ".join(
+                        [
+                            f"{date:10}",
+                            f"{product:10}",
+                            f"{int(units):5}",
+                            f"{int(debit):6}",
+                            f"{int(credit):6}",
+                            f"{int(balance):+7}",
+                        ]
                     )
+                    print(transaction)
 
     @staticmethod
     def parse_args(argv):
