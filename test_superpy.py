@@ -78,7 +78,7 @@ class TestCli:
         ]
         for command in commands:
             superpy.cli(command)
-        with open("superpy_ledger.csv", "r") as ledger:
+        with open("superpy_ledger.csv", "r", newline="") as ledger:
             assert list(csv.reader(ledger)) == [
                 ["1970-01-01", "orange", "1", "0", "150", "-150"],
                 ["1970-01-01", "apple", "10", "0", "850", "-850"],
@@ -106,7 +106,7 @@ def test_write_transaction_to_ledger(application):
         units=1,
         credit=597,
     )
-    with open("superpy_ledger.csv", "r") as ledger:
+    with open("superpy_ledger.csv", "r", newline="") as ledger:
         assert next(csv.reader(ledger)) == [
             "1970-01-01",
             "Transonic Fremules",
@@ -182,7 +182,7 @@ class TestReport:
             ["1970-01-01", "Sale", "wobjock", "400", "10"],
             ["1970-01-01", "Sale", "frobulator", "1050", "5"],
         ]
-        with open("superpy_ledger.csv", "w") as ledger:
+        with open("superpy_ledger.csv", "w", newline="") as ledger:
             writer = csv.writer(ledger)
             for transaction in transactions:
                 writer.writerow(transaction)

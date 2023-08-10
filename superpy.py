@@ -26,14 +26,14 @@ class Application:
 
     def read_config(self):
         try:
-            with open(self.config, "r") as config:
+            with open(self.config, "r", newline="") as config:
                 date_string, self._ledger = next(csv.reader(config))
             self._date = datetime.date.fromisoformat(date_string)
         except FileNotFoundError:
             pass
 
     def write_config(self):
-        with open(self.config, "w") as config:
+        with open(self.config, "w", newline="") as config:
             csv.writer(config).writerow([self.date, self.ledger])
 
     @property
@@ -54,17 +54,16 @@ class Application:
         self._ledger = ledger
         self.write_config()
 
-    # TODO: open with `newline=""`
     # TODO: ledger.add_transaction(...)
     @staticmethod
     def write_transaction_to_ledger(date, product, units=1, debit=0, credit=0):
-        with open("superpy_ledger.csv", "a") as ledger:
+        with open("superpy_ledger.csv", "a", newline="") as ledger:
             csv.writer(ledger).writerow(
                 [date, product, units, debit, credit, (debit - credit)]
             )
 
     def report(self, report_type):
-        with open(self.ledger, "r") as ledger:
+        with open(self.ledger, "r", newline="") as ledger:
             if report_type == "profit":
                 # TODO: print(ledger.profit())
                 profit = 0
