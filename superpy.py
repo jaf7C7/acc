@@ -54,7 +54,6 @@ class Application:
         self._ledger = ledger
         self.write_config()
 
-    # TODO: ledger.add_transaction(...)
     @staticmethod
     def write_transaction_to_ledger(date, product, units=1, debit=0, credit=0):
         with open("superpy_ledger.csv", "a", newline="") as ledger:
@@ -65,7 +64,6 @@ class Application:
     def report(self, report_type):
         with open(self.ledger, "r", newline="") as ledger:
             if report_type == "profit":
-                # TODO: print(ledger.profit())
                 fieldnames = [
                     "date",
                     "product",
@@ -78,7 +76,6 @@ class Application:
                 profit = sum(map(lambda t: int(t.get("balance")), transactions))
                 print(profit)
             else:
-                # TODO: print(ledger.transactions())
                 print("DATE        PRODUCT     UNITS   DEBIT  CREDIT  BALANCE")
                 for date, product, units, debit, credit, balance in csv.reader(ledger):
                     print(
