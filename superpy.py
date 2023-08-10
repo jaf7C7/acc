@@ -56,9 +56,12 @@ class Application:
 
     # TODO: open with `newline=""`
     # TODO: ledger.add_transaction(...)
-    def write_transaction_to_ledger(self, type, product, price, units):
+    @staticmethod
+    def write_transaction_to_ledger(date, product, units=1, debit=0, credit=0):
         with open("superpy_ledger.csv", "a") as ledger:
-            csv.writer(ledger).writerow([self.date, type, product, price, units])
+            csv.writer(ledger).writerow(
+                [date, product, units, debit, credit, (debit - credit)]
+            )
 
     def report(self, report_type):
         with open(self.ledger, "r") as ledger:
@@ -187,12 +190,20 @@ class Application:
 
         elif args.command == "buy":
             self.write_transaction_to_ledger(
-                "Purchase", args.product, args.price, args.units
+                date=self.date,
+                product=args.product,
+                units=args.units,
+                debit=0,
+                credit=(args.price * args.units),
             )
 
         elif args.command == "sell":
             self.write_transaction_to_ledger(
-                "Sale", args.product, args.price, args.units
+                date=self.date,
+                product=args.product,
+                units=args.units,
+                debit=(args.price * args.units),
+                credit=0,
             )
 
         elif args.command == "report":

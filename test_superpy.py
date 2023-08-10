@@ -68,7 +68,7 @@ class TestCli:
         out, err = capsys.readouterr()
         assert out == "/tmp/foo\n"
 
-    def test_can_record_and_recall_transactions(self, capsys, application):
+    def test_can_record_transactions(self, capsys, application):
         commands = [
             ["buy", "orange", "150"],
             ["buy", "apple", "85", "--units", "10"],
@@ -80,11 +80,18 @@ class TestCli:
             superpy.cli(command)
         with open("superpy_ledger.csv", "r") as ledger:
             assert list(csv.reader(ledger)) == [
-                ["1970-01-01", "Purchase", "orange", "150", "1"],
-                ["1970-01-01", "Purchase", "apple", "85", "10"],
-                ["1970-01-01", "Purchase", "a very large eastern halibut", "499", "5"],
-                ["1970-01-01", "Sale", "apple", "100", "5"],
-                ["1970-01-01", "Sale", "a very large eastern halibut", "250", "1"],
+                ["1970-01-01", "orange", "1", "0", "150", "-150"],
+                ["1970-01-01", "apple", "10", "0", "850", "-850"],
+                [
+                    "1970-01-01",
+                    "a very large eastern halibut",
+                    "5",
+                    "0",
+                    "2495",
+                    "-2495",
+                ],
+                ["1970-01-01", "apple", "5", "500", "0", "500"],
+                ["1970-01-01", "a very large eastern halibut", "1", "250", "0", "250"],
             ]
 
     def test_report_fails_if_no_ledger_file(self, application):
@@ -92,23 +99,25 @@ class TestCli:
         assert superpy.cli(["report"]) == 1
 
 
-class TestReadWriteLedger:
-    def test_write(self, application):
-        application.write_transaction_to_ledger(
-            type="Purchase", product="Transonic Fremules", price=597, units=1
-        )
-        with open("superpy_ledger.csv", "r") as ledger:
-            assert next(csv.reader(ledger)) == [
-                "1970-01-01",
-                "Purchase",
-                "Transonic Fremules",
-                "597",
-                "1",
-            ]
+def test_write_transaction_to_ledger(application):
+    application.write_transaction_to_ledger(
+        date=datetime.date(1970, 1, 1),
+        product="Transonic Fremules",
+        units=1,
+        credit=597,
+    )
+    with open("superpy_ledger.csv", "r") as ledger:
+        assert next(csv.reader(ledger)) == [
+            "1970-01-01",
+            "Transonic Fremules",
+            "1",
+            "0",
+            "597",
+            "-597",
+        ]
 
 
 class TestParseArgs:
-    @pytest.mark.active
     @pytest.mark.parametrize(
         "args, expected",
         [
