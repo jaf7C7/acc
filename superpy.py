@@ -66,26 +66,24 @@ class Application:
         with open(self.ledger, "r", newline="") as ledger:
             if report_type == "profit":
                 # TODO: print(ledger.profit())
-                profit = 0
-                for _, type, _, price, units in csv.reader(ledger):
-                    price, units = int(price), int(units)
-                    profit += price * units if type == "Sale" else -price * units
-                print(profit if profit > 0 else 0)
+                fieldnames = [
+                    "date",
+                    "product",
+                    "units",
+                    "debit",
+                    "credit",
+                    "balance",
+                ]
+                transactions = csv.DictReader(ledger, fieldnames=fieldnames)
+                profit = sum(map(lambda t: int(t.get("balance")), transactions))
+                print(profit)
             else:
                 # TODO: print(ledger.transactions())
                 print("DATE        PRODUCT     UNITS   DEBIT  CREDIT  BALANCE")
                 for date, product, units, debit, credit, balance in csv.reader(ledger):
-                    transaction = "  ".join(
-                        [
-                            f"{date:10}",
-                            f"{product:10}",
-                            f"{int(units):5}",
-                            f"{int(debit):6}",
-                            f"{int(credit):6}",
-                            f"{int(balance):+7}",
-                        ]
+                    print(
+                        f"{date:10}  {product:10}  {int(units):5}  {int(debit):6}  {int(credit):6}  {int(balance):+7}"
                     )
-                    print(transaction)
 
     @staticmethod
     def parse_args(argv):

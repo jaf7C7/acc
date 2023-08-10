@@ -199,7 +199,6 @@ DATE        PRODUCT     UNITS   DEBIT  CREDIT  BALANCE
 1970-01-01  frobulator      5    5250       0    +5250
 """
 
-    @pytest.mark.skip
     def test_profit(self, capsys):
         superpy.cli(["report", "--profit"])
         out, err = capsys.readouterr()
