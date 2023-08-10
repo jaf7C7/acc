@@ -27,7 +27,7 @@
 - [x] Decide a ledger format which can record purchases and sales
 - [x] Can the user sell items as well as buying them?
 - [x] Report profit
-- [ ] Redesign ledger format (need to use double-entry bookkeeping)
+- [x] Redesign ledger format (need to use double-entry bookkeeping)
 - [ ] Refactor report methods
 - [ ] Add 'Total' field to ledger file?
 - [ ] Report income
