@@ -68,13 +68,22 @@ class Ledger:
     def __eq__(self, other):
         return self.path == other.path
 
-    def add_transaction(self, transaction):
+    def __iter__(self):
+        try:
+            with open(self.path, "r", newline="") as f:
+                yield from map(lambda t: Transaction(*t), csv.reader(f))
+        except FileNotFoundError:
+            pass
+
+    def append(self, transaction):
         with open(self.path, "a", newline="") as f:
             csv.writer(f).writerow(vars(transaction).values())
 
-    def transactions(self):
-        with open(self.path, "r", newline="") as f:
-            yield from map(lambda t: Transaction(*t), csv.reader(f))
+    def profit(self):
+        try:
+            return sum(map(lambda t: t.balance, self))
+        except FileNotFoundError:
+            return 0
 
 
 class Application:
@@ -103,14 +112,6 @@ class Application:
     def ledger(self, ledger):
         self._ledger = ledger
         self.config.write("ledger", ledger)
-
-    def report(self, report_type):
-        if report_type == "profit":
-            profit = sum(map(lambda t: t.balance, self.ledger.transactions()))
-            print(profit)
-        else:
-            for transaction in self.ledger.transactions():
-                print(transaction)
 
     @staticmethod
     def parse_args(argv):
@@ -226,7 +227,7 @@ class Application:
                 credit=(args.price * args.units),
                 balance=-(args.price * args.units),
             )
-            self.ledger.add_transaction(transaction)
+            self.ledger.append(transaction)
 
         elif args.command == "sell":
             transaction = Transaction(
@@ -236,11 +237,12 @@ class Application:
                 debit=(args.price * args.units),
                 balance=(args.price * args.units),
             )
-            self.ledger.add_transaction(transaction)
+            self.ledger.append(transaction)
 
         elif args.command == "report":
-            try:
-                self.report(args.report_type)
-            except FileNotFoundError:
-                return 1
+            if args.report_type == "profit":
+                print(self.ledger.profit())
+            else:
+                for transaction in self.ledger:
+                    print(transaction)
         return 0

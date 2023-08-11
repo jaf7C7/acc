@@ -94,10 +94,6 @@ class TestCli:
                 ["1970-01-01", "a very large eastern halibut", "1", "250", "0", "250"],
             ]
 
-    def test_report_fails_if_no_ledger_file(self, application):
-        assert not os.path.exists("superpy_ledger.csv")
-        assert superpy.cli(["report"]) == 1
-
 
 class TestLedger:
     def test_write(application):
@@ -109,7 +105,7 @@ class TestLedger:
             credit=597,
             balance=-597,
         )
-        ledger.add_transaction(transaction)
+        ledger.append(transaction)
         with open("superpy_ledger.csv", "r", newline="") as ledger:
             assert next(csv.reader(ledger)) == [
                 "1970-01-01",
