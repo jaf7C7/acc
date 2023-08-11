@@ -41,6 +41,7 @@ class Transaction:
     def __init__(self, date, product, units=1, debit=0, credit=0, balance=0):
         self.date = date
         self.product = product
+        self.units = int(units)
         self.debit = int(debit)
         self.credit = int(credit)
         self.balance = int(balance)
@@ -67,10 +68,9 @@ class Ledger:
     def __eq__(self, other):
         return self.path == other.path
 
-    def add_transaction(self, date, product, units=1, debit=0, credit=0):
-        balance = debit - credit
+    def add_transaction(self, transaction):
         with open(self.path, "a", newline="") as f:
-            csv.writer(f).writerow([date, product, units, debit, credit, balance])
+            csv.writer(f).writerow(vars(transaction).values())
 
     def transactions(self):
         with open(self.path, "r", newline="") as f:
@@ -219,22 +219,24 @@ class Application:
                 print(self.ledger)
 
         elif args.command == "buy":
-            self.ledger.add_transaction(
+            transaction = Transaction(
                 date=self.date,
                 product=args.product,
                 units=args.units,
-                debit=0,
                 credit=(args.price * args.units),
+                balance=-(args.price * args.units),
             )
+            self.ledger.add_transaction(transaction)
 
         elif args.command == "sell":
-            self.ledger.add_transaction(
+            transaction = Transaction(
                 date=self.date,
                 product=args.product,
                 units=args.units,
                 debit=(args.price * args.units),
-                credit=0,
+                balance=(args.price * args.units),
             )
+            self.ledger.add_transaction(transaction)
 
         elif args.command == "report":
             try:
