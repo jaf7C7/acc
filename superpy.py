@@ -37,6 +37,22 @@ class Config:
             csv.writer(f).writerow(config.values())
 
 
+class Transaction:
+    def __init__(self, date, product, units=1, debit=0, credit=0, balance=0):
+        self.date = date
+        self.product = product
+        self.debit = int(debit)
+        self.credit = int(credit)
+        self.balance = int(balance)
+
+    def __str__(self):
+        return f"{self.date:12}{self.product:12}{self.debit:6}{self.credit:6}{self.balance:6}"  # noqa: E501
+
+    def __repr__(self):
+        attrs = ", ".join(f"{k}='{v}'" for k, v in self.__dict__.items())
+        return f"{self.__class__.__name__}({attrs})"
+
+
 class Ledger:
     def __init__(self, path):
         self.path = path
@@ -53,8 +69,12 @@ class Ledger:
 
     def add_transaction(self, date, product, units=1, debit=0, credit=0):
         balance = debit - credit
-        with open(self.path, "a", newline="") as ledger:
-            csv.writer(ledger).writerow([date, product, units, debit, credit, balance])
+        with open(self.path, "a", newline="") as f:
+            csv.writer(f).writerow([date, product, units, debit, credit, balance])
+
+    def transactions(self):
+        with open(self.path, "r", newline="") as f:
+            yield from map(lambda t: Transaction(*t), csv.reader(f))
 
 
 class Application:
@@ -85,25 +105,12 @@ class Application:
         self.config.write("ledger", ledger)
 
     def report(self, report_type):
-        with open(self.ledger.path, "r", newline="") as ledger:
-            if report_type == "profit":
-                fieldnames = [
-                    "date",
-                    "product",
-                    "units",
-                    "debit",
-                    "credit",
-                    "balance",
-                ]
-                transactions = csv.DictReader(ledger, fieldnames=fieldnames)
-                profit = sum(map(lambda t: int(t.get("balance")), transactions))
-                print(profit)
-            else:
-                print("DATE        PRODUCT     UNITS   DEBIT  CREDIT  BALANCE")
-                for date, product, units, debit, credit, balance in csv.reader(ledger):
-                    print(
-                        f"{date:10}  {product:10}  {int(units):5}  {int(debit):6}  {int(credit):6}  {int(balance):+7}"  # noqa: E501
-                    )
+        if report_type == "profit":
+            profit = sum(map(lambda t: t.balance, self.ledger.transactions()))
+            print(profit)
+        else:
+            for transaction in self.ledger.transactions():
+                print(transaction)
 
     @staticmethod
     def parse_args(argv):
