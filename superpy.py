@@ -219,23 +219,16 @@ class Application:
             else:
                 print(self.ledger)
 
-        elif args.command == "buy":
+        elif args.command in {"buy", "sell"}:
+            debit = args.price * args.units if args.command == "sell" else 0
+            credit = args.price * args.units if args.command == "buy" else 0
             transaction = Transaction(
                 date=self.date,
                 product=args.product,
                 units=args.units,
-                credit=(args.price * args.units),
-                balance=-(args.price * args.units),
-            )
-            self.ledger.append(transaction)
-
-        elif args.command == "sell":
-            transaction = Transaction(
-                date=self.date,
-                product=args.product,
-                units=args.units,
-                debit=(args.price * args.units),
-                balance=(args.price * args.units),
+                debit=debit,
+                credit=credit,
+                balance=(debit - credit),
             )
             self.ledger.append(transaction)
 
