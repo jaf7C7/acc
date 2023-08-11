@@ -14,12 +14,42 @@ class daydelta(datetime.timedelta):
         return super().__new__(cls, days=int(days))
 
 
+class Config:
+    def __init__(self, path):
+        self.path = path
+
+    def __repr__(self):
+        attrs = ", ".join(f"{k}='{v}'" for k, v in self.__dict__.items())
+        return f"{self.__class__.__name__}({attrs})"
+
+    def read(self):
+        try:
+            with open(self.path, "r", newline="") as f:
+                date_string, ledger_path = next(csv.reader(f))
+            return (datetime.date.fromisoformat(date_string), Ledger(ledger_path))
+        except FileNotFoundError:
+            return (datetime.date(1970, 1, 1), Ledger("superpy_ledger.csv"))
+
+    def write(self, attr, val):
+        config = dict(zip(["date", "ledger"], self.read()))
+        config.update({attr: val})
+        with open(self.path, "w", newline="") as f:
+            csv.writer(f).writerow(config.values())
+
+
 class Ledger:
     def __init__(self, path):
         self.path = path
 
     def __str__(self):
         return self.path
+
+    def __repr__(self):
+        attrs = ", ".join(f"{k}='{v}'" for k, v in self.__dict__.items())
+        return f"{self.__class__.__name__}({attrs})"
+
+    def __eq__(self, other):
+        return self.path == other.path
 
     def add_transaction(self, date, product, units=1, debit=0, credit=0):
         balance = debit - credit
@@ -28,27 +58,13 @@ class Ledger:
 
 
 class Application:
-    def __init__(self):
-        self.config = ".superpy.conf"
-        self._date = datetime.date(1970, 1, 1)
-        self._ledger = Ledger("superpy_ledger.csv")
+    def __init__(self, config_path=".superpy.conf"):
+        self.config = Config(config_path)
+        self._date, self._ledger = self.config.read()
 
     def __repr__(self):
         attrs = ", ".join(f"{k.lstrip('_')}='{v}'" for k, v in self.__dict__.items())
-        return f"Application({attrs})"
-
-    def read_config(self):
-        try:
-            with open(self.config, "r", newline="") as config:
-                date_string, ledger_path = next(csv.reader(config))
-            self._date = datetime.date.fromisoformat(date_string)
-            self._ledger = Ledger(ledger_path)
-        except FileNotFoundError:
-            pass
-
-    def write_config(self):
-        with open(self.config, "w", newline="") as config:
-            csv.writer(config).writerow([self.date, self.ledger])
+        return f"{self.__class__.__name__}({attrs})"
 
     @property
     def date(self):
@@ -57,16 +73,16 @@ class Application:
     @date.setter
     def date(self, date):
         self._date = date
-        self.write_config()
+        self.config.write("date", date)
 
     @property
     def ledger(self):
         return self._ledger
 
     @ledger.setter
-    def ledger(self, ledger_path):
-        self._ledger = Ledger(ledger_path)
-        self.write_config()
+    def ledger(self, ledger):
+        self._ledger = ledger
+        self.config.write("ledger", ledger)
 
     def report(self, report_type):
         with open(self.ledger.path, "r", newline="") as ledger:
@@ -119,6 +135,7 @@ class Application:
         )
         ledger_parser.add_argument(
             "ledger",
+            type=Ledger,
             nargs="?",
             metavar="<ledger>",
             help="the path to the new ledger file",
@@ -174,7 +191,6 @@ class Application:
         return parser.parse_args(argv)
 
     def run(self, argv=None):
-        self.read_config()
         try:
             args = self.parse_args(argv)
         except argparse.ArgumentError as err:

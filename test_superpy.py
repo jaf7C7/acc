@@ -146,7 +146,7 @@ class TestParseArgs:
             (["ledger"], argparse.Namespace(command="ledger", ledger=None)),
             (
                 ["ledger", "/tmp/foo"],
-                argparse.Namespace(command="ledger", ledger="/tmp/foo"),
+                argparse.Namespace(command="ledger", ledger=superpy.Ledger("/tmp/foo")),
             ),
             (
                 ["buy", "orange", "15"],
