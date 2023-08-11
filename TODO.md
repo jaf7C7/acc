@@ -29,7 +29,10 @@
 - [x] Report profit
 - [x] Redesign ledger format (need to use double-entry bookkeeping)
 - [x] Refactor report methods
-- [ ] Ledger, Transaction and Product objects to simplify business logic
+- [x] Ledger, Transaction and Product objects to simplify business logic
+- [ ] Add doc strings
+- [ ] Add type hints
+- [ ] Dependency injection (see <https://www.youtube.com/watch?v=lX9UQp2NwTk&t=858s>)
 - [ ] Report income
 - [ ] Report expenses
 - [ ] Report over a range of dates
