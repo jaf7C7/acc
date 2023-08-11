@@ -190,7 +190,9 @@ class TestReport:
     def test_default(self, capsys):
         superpy.cli(["report"])
         out, err = capsys.readouterr()
-        assert out == """\
+        assert (
+            out
+            == """\
 DATE        PRODUCT     UNITS   DEBIT  CREDIT  BALANCE
 1970-01-01  frobule         1       0     150     -150
 1970-01-01  wobjock        10       0     850     -850
@@ -198,6 +200,7 @@ DATE        PRODUCT     UNITS   DEBIT  CREDIT  BALANCE
 1970-01-01  wobjock        10    4000       0    +4000
 1970-01-01  frobulator      5    5250       0    +5250
 """
+        )
 
     def test_profit(self, capsys):
         superpy.cli(["report", "--profit"])
