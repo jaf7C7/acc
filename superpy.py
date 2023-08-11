@@ -14,11 +14,24 @@ class daydelta(datetime.timedelta):
         return super().__new__(cls, days=int(days))
 
 
+class Ledger:
+    def __init__(self, path):
+        self.path = path
+
+    def __str__(self):
+        return self.path
+
+    def add_transaction(self, date, product, units=1, debit=0, credit=0):
+        balance = debit - credit
+        with open(self.path, "a", newline="") as ledger:
+            csv.writer(ledger).writerow([date, product, units, debit, credit, balance])
+
+
 class Application:
     def __init__(self):
         self.config = ".superpy.conf"
         self._date = datetime.date(1970, 1, 1)
-        self._ledger = "superpy_ledger.csv"
+        self._ledger = Ledger("superpy_ledger.csv")
 
     def __repr__(self):
         attrs = ", ".join(f"{k.lstrip('_')}='{v}'" for k, v in self.__dict__.items())
@@ -27,8 +40,9 @@ class Application:
     def read_config(self):
         try:
             with open(self.config, "r", newline="") as config:
-                date_string, self._ledger = next(csv.reader(config))
+                date_string, ledger_path = next(csv.reader(config))
             self._date = datetime.date.fromisoformat(date_string)
+            self._ledger = Ledger(ledger_path)
         except FileNotFoundError:
             pass
 
@@ -50,19 +64,12 @@ class Application:
         return self._ledger
 
     @ledger.setter
-    def ledger(self, ledger):
-        self._ledger = ledger
+    def ledger(self, ledger_path):
+        self._ledger = Ledger(ledger_path)
         self.write_config()
 
-    @staticmethod
-    def write_transaction_to_ledger(date, product, units=1, debit=0, credit=0):
-        with open("superpy_ledger.csv", "a", newline="") as ledger:
-            csv.writer(ledger).writerow(
-                [date, product, units, debit, credit, (debit - credit)]
-            )
-
     def report(self, report_type):
-        with open(self.ledger, "r", newline="") as ledger:
+        with open(self.ledger.path, "r", newline="") as ledger:
             if report_type == "profit":
                 fieldnames = [
                     "date",
@@ -79,7 +86,7 @@ class Application:
                 print("DATE        PRODUCT     UNITS   DEBIT  CREDIT  BALANCE")
                 for date, product, units, debit, credit, balance in csv.reader(ledger):
                     print(
-                        f"{date:10}  {product:10}  {int(units):5}  {int(debit):6}  {int(credit):6}  {int(balance):+7}"
+                        f"{date:10}  {product:10}  {int(units):5}  {int(debit):6}  {int(credit):6}  {int(balance):+7}"  # noqa: E501
                     )
 
     @staticmethod
@@ -189,7 +196,7 @@ class Application:
                 print(self.ledger)
 
         elif args.command == "buy":
-            self.write_transaction_to_ledger(
+            self.ledger.add_transaction(
                 date=self.date,
                 product=args.product,
                 units=args.units,
@@ -198,7 +205,7 @@ class Application:
             )
 
         elif args.command == "sell":
-            self.write_transaction_to_ledger(
+            self.ledger.add_transaction(
                 date=self.date,
                 product=args.product,
                 units=args.units,

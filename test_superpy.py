@@ -99,22 +99,24 @@ class TestCli:
         assert superpy.cli(["report"]) == 1
 
 
-def test_write_transaction_to_ledger(application):
-    application.write_transaction_to_ledger(
-        date=datetime.date(1970, 1, 1),
-        product="Transonic Fremules",
-        units=1,
-        credit=597,
-    )
-    with open("superpy_ledger.csv", "r", newline="") as ledger:
-        assert next(csv.reader(ledger)) == [
-            "1970-01-01",
-            "Transonic Fremules",
-            "1",
-            "0",
-            "597",
-            "-597",
-        ]
+class TestLedger:
+    def test_write(application):
+        ledger = superpy.Ledger("superpy_ledger.csv")
+        ledger.add_transaction(
+            date=datetime.date(1970, 1, 1),
+            product="Transonic Fremules",
+            units=1,
+            credit=597,
+        )
+        with open("superpy_ledger.csv", "r", newline="") as ledger:
+            assert next(csv.reader(ledger)) == [
+                "1970-01-01",
+                "Transonic Fremules",
+                "1",
+                "0",
+                "597",
+                "-597",
+            ]
 
 
 class TestParseArgs:
