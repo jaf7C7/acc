@@ -1,5 +1,6 @@
 import sys
 import datetime
+from datetime import date as Date
 import argparse
 import csv
 
@@ -86,7 +87,7 @@ class Application:
     def __init__(self, config_path=".superpy.conf"):
         self.config = Config(config_path)
         date_string, ledger_path = self.config.read()
-        self._date = datetime.date.fromisoformat(date_string)
+        self._date = Date.fromisoformat(date_string)
         self._ledger = Ledger(ledger_path)
 
     def __repr__(self):
@@ -122,7 +123,7 @@ class Application:
         date_parser.add_argument(
             "date",
             nargs="?",
-            type=datetime.date.fromisoformat,
+            type=Date.fromisoformat,
             metavar="<date>",
             help="a date in yyyy-mm-dd iso format",
         )
