@@ -31,8 +31,7 @@
 - [x] Refactor report methods
 - [x] Ledger, Transaction and Product objects to simplify business logic
 - [x] Remove unnecessary dependencies on datetime and Ledger from Config
-- [ ] from datetime import date as Date daydelta => DayDelta
-- [ ] Config should implement __setattr__() and __getattr__(), to allow in Application.__init__(): self.date = Date.fromisoformat(getattr(self.config, 'date', '1970-01-01')) what about FileNotFoundError in the above? maybe try except only option
+- [x] from datetime import date as Date daydelta => DayDelta
 - [ ] Get rid of @property date and ledger (and setters), and _date and _ledger, just do: self.date = args.date, self.config.write(self.__dict__.values())
 - [ ] Transaction should be a short-lived dict internal to Ledger and NOT a class
 - [ ] simplify __repr__() on all?
