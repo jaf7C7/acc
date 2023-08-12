@@ -19,8 +19,7 @@ class Config:
         self.path = path
 
     def __repr__(self):
-        attrs = ", ".join(f"{k}='{v}'" for k, v in self.__dict__.items())
-        return f"{self.__class__.__name__}({attrs})"
+        return f"{self.__class__.__name__}(path={self.path})"
 
     def read(self):
         try:
