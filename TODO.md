@@ -30,6 +30,19 @@
 - [x] Redesign ledger format (need to use double-entry bookkeeping)
 - [x] Refactor report methods
 - [x] Ledger, Transaction and Product objects to simplify business logic
+- [ ] Remove unnecessary dependencies on datetime and Ledger from Config from datetime import date as Date daydelta => DayDelta
+- [ ] Config should implement __setattr__() and __getattr__(), to allow in Application.__init__(): self.date = Date.fromisoformat(getattr(self.config, 'date', '1970-01-01')) what about FileNotFoundError in the above? maybe try except only option
+- [ ] Get rid of @property date and ledger (and setters), and _date and _ledger, just do: self.date = args.date, self.config.write(self.__dict__.values())
+- [ ] Transaction should be a short-lived dict internal to Ledger and NOT a class
+- [ ] simplify __repr__() on all?
+- [ ] DictReader : fieldnames optional (read from first line of file, so write a header)
+- [ ] Ledger.fieldnames @property, read first line (header) from ledger file
+- [ ] Ledger.__init__ accepts default fieldnames in case file is empty
+- [ ] Ledger.__iter__() should yield from csv.DictReader(f, fieldnames=self.fieldnames)
+- [ ] Ledger.append() should take the transaction keyword arguments and do csv.DictWriter(f, fieldnames=self.fieldnames).writerow() you can omit items from dictwriter rows see docs and 'restkey' param BUT: DictWriter: fieldnames mandatory and determine write order, with corresponding values from input dict. using regular csv.reader might be easier and you can still write a header manually
+- [ ] Ledger.profit should return sum(t['balance'] for t in self)
+- [ ] make parse args put all the transaction info in a dict to pass to dictwriter using a custom action? maybe will simplify the api or just make it worse (like Transaction)
+- [ ] can parse_args be refactored
 - [ ] Add doc strings
 - [ ] Add type hints
 - [ ] Dependency injection (see <https://www.youtube.com/watch?v=lX9UQp2NwTk&t=858s>)
@@ -47,3 +60,9 @@ superpy_ledger.csv
 ```
 date,product,units,debit,credit,balance
 ```
+
+
+superpy TODO
+
+12 August 2023
+04:31
