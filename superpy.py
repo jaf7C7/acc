@@ -24,10 +24,9 @@ class Config:
     def read(self):
         try:
             with open(self.path, "r", newline="") as f:
-                date_string, ledger_path = next(csv.reader(f))
-            return (datetime.date.fromisoformat(date_string), Ledger(ledger_path))
+                return next(csv.reader(f))
         except FileNotFoundError:
-            return (datetime.date(1970, 1, 1), Ledger("superpy_ledger.csv"))
+            return "1970-01-01", "superpy_ledger.csv"
 
     def write(self, attr, val):
         config = dict(zip(["date", "ledger"], self.read()))
@@ -88,7 +87,9 @@ class Ledger:
 class Application:
     def __init__(self, config_path=".superpy.conf"):
         self.config = Config(config_path)
-        self._date, self._ledger = self.config.read()
+        date_string, ledger_path = self.config.read()
+        self._date = datetime.date.fromisoformat(date_string)
+        self._ledger = Ledger(ledger_path)
 
     def __repr__(self):
         attrs = ", ".join(f"{k.lstrip('_')}='{v}'" for k, v in self.__dict__.items())
