@@ -9,7 +9,7 @@ def cli(argv):
     return app.run(argv)
 
 
-class daydelta(datetime.timedelta):
+class DayDelta(datetime.timedelta):
     def __new__(cls, days):
         return super().__new__(cls, days=int(days))
 
@@ -129,7 +129,7 @@ class Application:
         date_parser.add_argument(
             "--advance",
             dest="days",
-            type=daydelta,
+            type=DayDelta,
             nargs="?",
             const="1",
             metavar="<days>",

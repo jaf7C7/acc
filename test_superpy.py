@@ -135,11 +135,11 @@ class TestParseArgs:
             ),
             (
                 ["date", "--advance", "1"],
-                argparse.Namespace(command="date", date=None, days=superpy.daydelta(1)),
+                argparse.Namespace(command="date", date=None, days=superpy.DayDelta(1)),
             ),
             (
                 ["date", "--advance"],
-                argparse.Namespace(command="date", date=None, days=superpy.daydelta(1)),
+                argparse.Namespace(command="date", date=None, days=superpy.DayDelta(1)),
             ),
             (["ledger"], argparse.Namespace(command="ledger", ledger=None)),
             (
