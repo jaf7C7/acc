@@ -28,11 +28,9 @@ class Config:
         except FileNotFoundError:
             return "1970-01-01", "superpy_ledger.csv"
 
-    def write(self, attr, val):
-        config = dict(zip(["date", "ledger"], self.read()))
-        config.update({attr: val})
+    def write(self, attrs):
         with open(self.path, "w", newline="") as f:
-            csv.writer(f).writerow(config.values())
+            csv.writer(f).writerow(attrs)
 
 
 class Transaction:
@@ -102,7 +100,7 @@ class Application:
     @date.setter
     def date(self, date):
         self._date = date
-        self.config.write("date", date)
+        self.config.write((self._date, self._ledger))
 
     @property
     def ledger(self):
@@ -111,7 +109,7 @@ class Application:
     @ledger.setter
     def ledger(self, ledger):
         self._ledger = ledger
-        self.config.write("ledger", ledger)
+        self.config.write((self._date, self._ledger))
 
     @staticmethod
     def parse_args(argv):
