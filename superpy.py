@@ -18,6 +18,7 @@ class DayDelta(datetime.timedelta):
 class Config:
     def __init__(self, path):
         self.path = path
+        self.defaults = "1970-01-01", "superpy_ledger.csv"
 
     def __repr__(self):
         return f"{self.__class__.__name__}(path={self.path})"
@@ -27,7 +28,7 @@ class Config:
             with open(self.path, "r", newline="") as f:
                 return next(csv.reader(f))
         except FileNotFoundError:
-            return "1970-01-01", "superpy_ledger.csv"
+            return self.defaults
 
     def write(self, attrs):
         with open(self.path, "w", newline="") as f:
