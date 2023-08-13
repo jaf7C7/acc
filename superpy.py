@@ -38,16 +38,13 @@ class Config:
 class Ledger:
     def __init__(self, path):
         self.path = path
-        try:
-            with open(self.path, "r", newline="") as f:
-                self.fieldnames = next(csv.reader(f))
-        except FileNotFoundError:
-            self.fieldnames = ["date", "product", "units", "debit", "credit", "balance"]
-            with open(self.path, "w", newline="") as f:
-                csv.writer(f).writerow(self.fieldnames)
 
     def __str__(self):
         return self.path
+
+    def __len__(self):
+        with open(self.path, "r", newline="") as f:
+            return len(list(csv.reader(f)))
 
     def __repr__(self):
         attrs = ", ".join(f"{k}={repr(v)}" for k, v in self.__dict__.items())
@@ -65,6 +62,8 @@ class Ledger:
 
     def append(self, **transaction):
         with open(self.path, "a", newline="") as f:
+            if len(self) == 0:
+                csv.writer(f).writerow(transaction.keys())
             csv.writer(f).writerow(transaction.values())
 
     def profit(self):
