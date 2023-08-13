@@ -96,24 +96,6 @@ class TestCli:
             ]
 
 
-class TestLedger:
-    def test_write(application):
-        ledger = superpy.Ledger("superpy_ledger.csv")
-        ledger.append(
-            date=datetime.date(1970, 1, 1),
-            product="Transonic Fremules",
-            units=1,
-            debit=0,
-            credit=597,
-            balance=-597,
-        )
-        with open("superpy_ledger.csv", "r", newline="") as ledger:
-            assert list(csv.reader(ledger)) == [
-                ["date", "product", "units", "debit", "credit", "balance"],
-                ["1970-01-01", "Transonic Fremules", "1", "0", "597", "-597"],
-            ]
-
-
 class TestParseArgs:
     @pytest.mark.parametrize(
         "args, expected",
@@ -169,9 +151,9 @@ class TestParseArgs:
             application.parse_args(args)
 
 
-class TestReport:
-    @pytest.fixture(autouse=True)
-    def ledger_file(self):
+class TestLedger:
+    @pytest.fixture
+    def mock_ledger(self):
         ledger = [
             ["date", "product", "units", "debit", "credit", "balance"],
             ["1970-01-01", "frobule", "1", "0", "150", "-150"],
@@ -185,22 +167,35 @@ class TestReport:
             for transaction in ledger:
                 writer.writerow(transaction)
 
-    def test_default(self, capsys):
+    def test_write(self, application):
+        ledger = superpy.Ledger("superpy_ledger.csv")
+        ledger.append(
+            date=datetime.date(1970, 1, 1),
+            product="Transonic Fremules",
+            units=1,
+            debit=0,
+            credit=597,
+            balance=-597,
+        )
+        with open("superpy_ledger.csv", "r", newline="") as ledger:
+            assert list(csv.reader(ledger)) == [
+                ["date", "product", "units", "debit", "credit", "balance"],
+                ["1970-01-01", "Transonic Fremules", "1", "0", "597", "-597"],
+            ]
+
+    def test_print(self, capsys, mock_ledger):
         superpy.cli(["report"])
         out, err = capsys.readouterr()
-        assert (
-            out
-            == """\
-DATE        PRODUCT        UNITS   DEBIT  CREDIT BALANCE
-1970-01-01  frobule            1       0     150    -150
-1970-01-01  wobjock           10       0     850    -850
-1970-01-01  frobulator         5       0    2495   -2495
-1970-01-01  wobjock           10    4000       0    4000
-1970-01-01  frobulator         5    5250       0    5250
-"""
+        assert out == (
+            "DATE        PRODUCT        UNITS   DEBIT  CREDIT BALANCE\n"
+            "1970-01-01  frobule            1       0     150    -150\n"
+            "1970-01-01  wobjock           10       0     850    -850\n"
+            "1970-01-01  frobulator         5       0    2495   -2495\n"
+            "1970-01-01  wobjock           10    4000       0    4000\n"
+            "1970-01-01  frobulator         5    5250       0    5250\n"
         )
 
-    def test_balance(self, capsys):
+    def test_balance(self, capsys, mock_ledger):
         superpy.cli(["report", "--balance"])
         out, err = capsys.readouterr()
         assert out == "5755\n"
