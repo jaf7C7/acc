@@ -80,6 +80,7 @@ class TestCli:
             superpy.cli(command)
         with open("superpy_ledger.csv", "r", newline="") as ledger:
             assert list(csv.reader(ledger)) == [
+                ["date", "product", "units", "debit", "credit", "balance"],
                 ["1970-01-01", "orange", "1", "0", "150", "-150"],
                 ["1970-01-01", "apple", "10", "0", "850", "-850"],
                 [
@@ -107,13 +108,9 @@ class TestLedger:
             balance=-597,
         )
         with open("superpy_ledger.csv", "r", newline="") as ledger:
-            assert next(csv.reader(ledger)) == [
-                "1970-01-01",
-                "Transonic Fremules",
-                "1",
-                "0",
-                "597",
-                "-597",
+            assert list(csv.reader(ledger)) == [
+                ["date", "product", "units", "debit", "credit", "balance"],
+                ["1970-01-01", "Transonic Fremules", "1", "0", "597", "-597"],
             ]
 
 
@@ -175,16 +172,17 @@ class TestParseArgs:
 class TestReport:
     @pytest.fixture(autouse=True)
     def ledger_file(self):
-        transactions = [
+        ledger = [
+            ["date", "product", "units", "debit", "credit", "balance"],
             ["1970-01-01", "frobule", "1", "0", "150", "-150"],
             ["1970-01-01", "wobjock", "10", "0", "850", "-850"],
             ["1970-01-01", "frobulator", "5", "0", "2495", "-2495"],
             ["1970-01-01", "wobjock", "10", "4000", "0", "4000"],
             ["1970-01-01", "frobulator", "5", "5250", "0", "5250"],
         ]
-        with open("superpy_ledger.csv", "w", newline="") as ledger:
-            writer = csv.writer(ledger)
-            for transaction in transactions:
+        with open("superpy_ledger.csv", "w", newline="") as f:
+            writer = csv.writer(f)
+            for transaction in ledger:
                 writer.writerow(transaction)
 
     def test_default(self, capsys):

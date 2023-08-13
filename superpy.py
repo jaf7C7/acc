@@ -38,6 +38,13 @@ class Config:
 class Ledger:
     def __init__(self, path):
         self.path = path
+        try:
+            with open(self.path, "r", newline="") as f:
+                self.fieldnames = next(csv.reader(f))
+        except FileNotFoundError:
+            self.fieldnames = ["date", "product", "units", "debit", "credit", "balance"]
+            with open(self.path, "w", newline="") as f:
+                csv.writer(f).writerow(self.fieldnames)
 
     def __str__(self):
         return self.path
@@ -52,7 +59,9 @@ class Ledger:
     def __iter__(self):
         try:
             with open(self.path, "r", newline="") as f:
-                yield from csv.reader(f)
+                reader = csv.reader(f)
+                next(reader)
+                yield from reader
         except FileNotFoundError:
             pass
 
