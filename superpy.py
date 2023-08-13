@@ -21,7 +21,7 @@ class Config:
         self.defaults = "1970-01-01", "superpy_ledger.csv"
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(path={self.path})"
+        return f"{self.__class__.__name__}(path='{self.path}')"
 
     def read(self):
         try:
@@ -48,7 +48,7 @@ class Transaction:
         return f"{self.date:12}{self.product:12}{self.debit:6}{self.credit:6}{self.balance:6}"  # noqa: E501
 
     def __repr__(self):
-        attrs = ", ".join(f"{k}='{v}'" for k, v in self.__dict__.items())
+        attrs = ", ".join(f"{k}={repr(v)}" for k, v in self.__dict__.items())
         return f"{self.__class__.__name__}({attrs})"
 
 
@@ -60,7 +60,7 @@ class Ledger:
         return self.path
 
     def __repr__(self):
-        attrs = ", ".join(f"{k}='{v}'" for k, v in self.__dict__.items())
+        attrs = ", ".join(f"{k}={repr(v)}" for k, v in self.__dict__.items())
         return f"{self.__class__.__name__}({attrs})"
 
     def __eq__(self, other):
@@ -92,7 +92,9 @@ class Application:
         self.ledger = Ledger(ledger_path)
 
     def __repr__(self):
-        attrs = ", ".join(f"{k.lstrip('_')}='{v}'" for k, v in self.__dict__.items())
+        attrs = ", ".join(
+            f"{k.lstrip('_')}={repr(v)}" for k, v in self.__dict__.items()
+        )
         return f"{self.__class__.__name__}({attrs})"
 
     @staticmethod
