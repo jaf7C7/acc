@@ -72,12 +72,13 @@ class Ledger:
         date, product, units, debit, credit, balance = line
         return f"{date:12}{product:12}{units:>8}{debit:>8}{credit:>8}{balance:>8}"
 
-    def tabulate(self):
-        """A generator which yields the ledger file in table format"""
+    def print(self):
+        """Print the contents of the ledger in table form"""
         ledger = iter(self)
-        header = list(field.upper() for field in next(ledger))
-        yield self.format(header)
-        yield from (self.format(line) for line in ledger)
+        header = next(ledger)
+        print(self.format(field.upper() for field in header))
+        for line in ledger:
+            print(self.format(line))
 
     def append(self, **transaction):
         """Writes a transaction to the ledger file"""
@@ -243,6 +244,5 @@ class Application:
             if args.report_type == "balance":
                 print(self.ledger.balance())
             else:
-                for line in self.ledger.tabulate():
-                    print(line)
+                self.ledger.print()
         return 0
