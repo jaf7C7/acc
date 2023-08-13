@@ -88,30 +88,12 @@ class Application:
     def __init__(self, config_path=".superpy.conf"):
         self.config = Config(config_path)
         date_string, ledger_path = self.config.read()
-        self._date = Date.fromisoformat(date_string)
-        self._ledger = Ledger(ledger_path)
+        self.date = Date.fromisoformat(date_string)
+        self.ledger = Ledger(ledger_path)
 
     def __repr__(self):
         attrs = ", ".join(f"{k.lstrip('_')}='{v}'" for k, v in self.__dict__.items())
         return f"{self.__class__.__name__}({attrs})"
-
-    @property
-    def date(self):
-        return self._date
-
-    @date.setter
-    def date(self, date):
-        self._date = date
-        self.config.write((self._date, self._ledger))
-
-    @property
-    def ledger(self):
-        return self._ledger
-
-    @ledger.setter
-    def ledger(self, ledger):
-        self._ledger = ledger
-        self.config.write((self._date, self._ledger))
 
     @staticmethod
     def parse_args(argv):
@@ -208,14 +190,18 @@ class Application:
         if args.command == "date":
             if args.date is not None:
                 self.date = args.date
+                self.config.write([self.date, self.ledger])
             elif args.days is not None:
                 self.date += args.days
+                self.config.write([self.date, self.ledger])
+
             else:
                 print(self.date)
 
         elif args.command == "ledger":
             if args.ledger is not None:
                 self.ledger = args.ledger
+                self.config.write([self.date, self.ledger])
             else:
                 print(self.ledger)
 
