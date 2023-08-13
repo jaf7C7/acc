@@ -153,8 +153,8 @@ class TestParseArgs:
             ),
             (["report"], argparse.Namespace(command="report", report_type=None)),
             (
-                ["report", "--profit"],
-                argparse.Namespace(command="report", report_type="profit"),
+                ["report", "--balance"],
+                argparse.Namespace(command="report", report_type="balance"),
             ),
         ],
     )
@@ -200,7 +200,7 @@ DATE        PRODUCT        UNITS   DEBIT  CREDIT BALANCE
 """
         )
 
-    def test_profit(self, capsys):
-        superpy.cli(["report", "--profit"])
+    def test_balance(self, capsys):
+        superpy.cli(["report", "--balance"])
         out, err = capsys.readouterr()
         assert out == "5755\n"

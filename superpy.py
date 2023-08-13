@@ -94,7 +94,7 @@ class Ledger:
         except FileNotFoundError:
             pass
 
-    def profit(self):
+    def balance(self):
         """Calculates the total balance from all transactions in the ledger"""
         try:
             return sum(int(transaction["balance"]) for transaction in self.transactions())
@@ -192,11 +192,11 @@ class Application:
             help="display information about past transactions",
         )
         report_parser.add_argument(
-            "--profit",
+            "--balance",
             action="store_const",
-            const="profit",
+            const="balance",
             dest="report_type",
-            help="see how much profit has been made",
+            help="the net value of ledger transactions",
         )
 
         return parser.parse_args(argv)
@@ -240,8 +240,8 @@ class Application:
             )
 
         elif args.command == "report":
-            if args.report_type == "profit":
-                print(self.ledger.profit())
+            if args.report_type == "balance":
+                print(self.ledger.balance())
             else:
                 for line in self.ledger.tabulate():
                     print(line)
