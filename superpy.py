@@ -55,16 +55,18 @@ class Ledger:
         return self.path == other.path
 
     def __iter__(self):
-        try:
-            with open(self.path, "r", newline="") as f:
-                yield from csv.DictReader(f)
-        except FileNotFoundError:
-            pass
+        with open(self.path, "r", newline="") as f:
+            yield from csv.reader(f)
 
     @staticmethod
     def format(line):
         date, product, units, debit, credit, balance = line
         return f"{date:12}{product:12}{units:>8}{debit:>8}{credit:>8}{balance:>8}"
+
+    def tabulate(self):
+        ledger = iter(self)
+        yield self.format(field.upper() for field in next(ledger))
+        yield from (self.format(line) for line in ledger)
 
     def append(self, **transaction):
         with open(self.path, "a", newline="") as f:
@@ -72,12 +74,12 @@ class Ledger:
                 csv.writer(f).writerow(transaction.keys())
             csv.writer(f).writerow(transaction.values())
 
-    def list(self):
-        with open(self.path, "r", newline="") as f:
-            ledger = csv.reader(f)
-            print(self.format(field.upper() for field in next(ledger)))
-            for line in ledger:
-                print(self.format(line))
+    def transactions(self):
+        try:
+            with open(self.path, "r", newline="") as f:
+                yield from csv.DictReader(f)
+        except FileNotFoundError:
+            pass
 
     def profit(self):
         try:
@@ -223,5 +225,6 @@ class Application:
             if args.report_type == "profit":
                 print(self.ledger.profit())
             else:
-                self.ledger.list()
+                for line in self.ledger.tabulate():
+                    print(line)
         return 0
