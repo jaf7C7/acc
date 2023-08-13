@@ -189,9 +189,7 @@ class Application:
         )
         report_parser.add_argument(
             "--balance",
-            action="store_const",
-            const="balance",
-            dest="report_type",
+            action="store_true",
             help="the net value of ledger transactions",
         )
 
@@ -236,7 +234,7 @@ class Application:
             )
 
         elif args.command == "report":
-            if args.report_type == "balance":
+            if args.balance:
                 print(self.ledger.balance())
             else:
                 self.ledger.print()

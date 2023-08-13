@@ -151,10 +151,10 @@ class TestParseArgs:
                 ["buy", "apple", "75", "--units", "42"],
                 argparse.Namespace(command="buy", product="apple", price=75, units=42),
             ),
-            (["report"], argparse.Namespace(command="report", report_type=None)),
+            (["report"], argparse.Namespace(command="report", balance=False)),
             (
                 ["report", "--balance"],
-                argparse.Namespace(command="report", report_type="balance"),
+                argparse.Namespace(command="report", balance=True),
             ),
         ],
     )
