@@ -33,8 +33,8 @@
 - [x] Remove unnecessary dependencies on datetime and Ledger from Config
 - [x] from datetime import date as Date daydelta => DayDelta
 - [x] Get rid of @property date and ledger (and setters), and _date and _ledger, just do: self.date = args.date, self.config.write(self.__dict__.values())
+- [x] simplify __repr__() on all?
 - [ ] Transaction should be a short-lived dict internal to Ledger and NOT a class
-- [ ] simplify __repr__() on all?
 - [ ] DictReader : fieldnames optional (read from first line of file, so write a header)
 - [ ] Ledger.fieldnames @property, read first line (header) from ledger file
 - [ ] Ledger.__init__ accepts default fieldnames in case file is empty
