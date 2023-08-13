@@ -95,10 +95,7 @@ class Ledger:
 
     def balance(self):
         """Calculates the total balance from all transactions in the ledger"""
-        try:
-            return sum(int(transaction["balance"]) for transaction in self.transactions())
-        except FileNotFoundError:
-            return 0
+        return sum(int(transaction["balance"]) for transaction in self.transactions())
 
 
 class Application:
