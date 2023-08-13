@@ -89,11 +89,9 @@ class Ledger:
 
     def transactions(self):
         """A generator which yields transactions from the ledger file"""
-        try:
-            with open(self.path, "r", newline="") as f:
-                yield from csv.DictReader(f)
-        except FileNotFoundError:
-            pass
+        ledger = iter(self)
+        fieldnames = next(ledger)
+        yield from (dict(zip(fieldnames, fields)) for fields in ledger)  # noqa: B905
 
     def balance(self):
         """Calculates the total balance from all transactions in the ledger"""
