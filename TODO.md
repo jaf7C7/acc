@@ -37,8 +37,6 @@
 - [x] Transaction should be a short-lived dict internal to Ledger and NOT a class
 - [x] DictReader : fieldnames optional (read from first line of file, so write a header)
 - [x] Ledger.__iter__() should yield from csv.DictReader(f, fieldnames=self.fieldnames)
-- [ ] make parse args put all the transaction info in a dict to pass to dictwriter using a custom action? maybe will simplify the api or just make it worse (like Transaction)
-- [ ] can parse_args be refactored
 - [ ] Add doc strings
 - [ ] Add type hints
 - [ ] Dependency injection (see <https://www.youtube.com/watch?v=lX9UQp2NwTk&t=858s>)
