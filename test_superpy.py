@@ -98,14 +98,14 @@ class TestCli:
 class TestLedger:
     def test_write(application):
         ledger = superpy.Ledger("superpy_ledger.csv")
-        transaction = superpy.Transaction(
+        ledger.append(
             date=datetime.date(1970, 1, 1),
             product="Transonic Fremules",
             units=1,
+            debit=0,
             credit=597,
             balance=-597,
         )
-        ledger.append(transaction)
         with open("superpy_ledger.csv", "r", newline="") as ledger:
             assert next(csv.reader(ledger)) == [
                 "1970-01-01",

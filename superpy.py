@@ -73,9 +73,9 @@ class Ledger:
         except FileNotFoundError:
             pass
 
-    def append(self, transaction):
+    def append(self, **transaction):
         with open(self.path, "a", newline="") as f:
-            csv.writer(f).writerow(vars(transaction).values())
+            csv.writer(f).writerow(transaction.values())
 
     def profit(self):
         try:
@@ -210,7 +210,7 @@ class Application:
         elif args.command in {"buy", "sell"}:
             debit = args.price * args.units if args.command == "sell" else 0
             credit = args.price * args.units if args.command == "buy" else 0
-            transaction = Transaction(
+            self.ledger.append(
                 date=self.date,
                 product=args.product,
                 units=args.units,
@@ -218,7 +218,6 @@ class Application:
                 credit=credit,
                 balance=(debit - credit),
             )
-            self.ledger.append(transaction)
 
         elif args.command == "report":
             if args.report_type == "profit":
