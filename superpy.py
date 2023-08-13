@@ -59,9 +59,7 @@ class Ledger:
     def __iter__(self):
         try:
             with open(self.path, "r", newline="") as f:
-                reader = csv.reader(f)
-                next(reader)
-                yield from reader
+                yield from csv.DictReader(f)
         except FileNotFoundError:
             pass
 
@@ -71,7 +69,7 @@ class Ledger:
 
     def profit(self):
         try:
-            return sum(int(transaction[-1]) for transaction in self)
+            return sum(int(transaction["balance"]) for transaction in self)
         except FileNotFoundError:
             return 0
 
@@ -215,7 +213,8 @@ class Application:
             if args.report_type == "profit":
                 print(self.ledger.profit())
             else:
-                for date, product, units, debit, credit, balance in self.ledger:
+                for transaction in self.ledger:
+                    date, product, units, debit, credit, balance = transaction.values()
                     print(
                         f"{date:12}{product:12}{int(units):8}{int(debit):8}{int(credit):8}{int(balance):8}"  # noqa: E501
                     )
