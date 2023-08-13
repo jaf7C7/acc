@@ -37,8 +37,10 @@
 - [x] Transaction should be a short-lived dict internal to Ledger and NOT a class
 - [x] DictReader : fieldnames optional (read from first line of file, so write a header)
 - [x] Ledger.__iter__() should yield from csv.DictReader(f, fieldnames=self.fieldnames)
-- [ ] Add doc strings
+- [x] Add doc strings
 - [ ] Add type hints
+- [ ] Change app design to implement double-entry accounting
+  * e.g. <https://www.youtube.com/watch?v=AoVxJ4JwMtM>
 - [ ] Dependency injection (see <https://www.youtube.com/watch?v=lX9UQp2NwTk&t=858s>)
 - [ ] Report income
 - [ ] Report expenses
