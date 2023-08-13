@@ -193,11 +193,11 @@ class TestReport:
         assert (
             out
             == """\
-1970-01-01  frobule          0   150  -150
-1970-01-01  wobjock          0   850  -850
-1970-01-01  frobulator       0  2495 -2495
-1970-01-01  wobjock       4000     0  4000
-1970-01-01  frobulator    5250     0  5250
+1970-01-01  frobule            1       0     150    -150
+1970-01-01  wobjock           10       0     850    -850
+1970-01-01  frobulator         5       0    2495   -2495
+1970-01-01  wobjock           10    4000       0    4000
+1970-01-01  frobulator         5    5250       0    5250
 """
         )
 

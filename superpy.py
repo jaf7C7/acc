@@ -35,23 +35,6 @@ class Config:
             csv.writer(f).writerow(attrs)
 
 
-class Transaction:
-    def __init__(self, date, product, units=1, debit=0, credit=0, balance=0):
-        self.date = date
-        self.product = product
-        self.units = int(units)
-        self.debit = int(debit)
-        self.credit = int(credit)
-        self.balance = int(balance)
-
-    def __str__(self):
-        return f"{self.date:12}{self.product:12}{self.debit:6}{self.credit:6}{self.balance:6}"  # noqa: E501
-
-    def __repr__(self):
-        attrs = ", ".join(f"{k}={repr(v)}" for k, v in self.__dict__.items())
-        return f"{self.__class__.__name__}({attrs})"
-
-
 class Ledger:
     def __init__(self, path):
         self.path = path
@@ -69,7 +52,7 @@ class Ledger:
     def __iter__(self):
         try:
             with open(self.path, "r", newline="") as f:
-                yield from map(lambda t: Transaction(*t), csv.reader(f))
+                yield from csv.reader(f)
         except FileNotFoundError:
             pass
 
@@ -79,7 +62,7 @@ class Ledger:
 
     def profit(self):
         try:
-            return sum(map(lambda t: t.balance, self))
+            return sum(int(transaction[-1]) for transaction in self)
         except FileNotFoundError:
             return 0
 
@@ -223,6 +206,8 @@ class Application:
             if args.report_type == "profit":
                 print(self.ledger.profit())
             else:
-                for transaction in self.ledger:
-                    print(transaction)
+                for date, product, units, debit, credit, balance in self.ledger:
+                    print(
+                        f"{date:12}{product:12}{int(units):8}{int(debit):8}{int(credit):8}{int(balance):8}"  # noqa: E501
+                    )
         return 0
