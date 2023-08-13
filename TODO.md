@@ -37,9 +37,6 @@
 - [x] Transaction should be a short-lived dict internal to Ledger and NOT a class
 - [x] DictReader : fieldnames optional (read from first line of file, so write a header)
 - [x] Ledger.__iter__() should yield from csv.DictReader(f, fieldnames=self.fieldnames)
-- [ ] Ledger.append() should take the transaction keyword arguments and do csv.DictWriter(f, fieldnames=self.fieldnames).writerow() you can omit items from dictwriter rows see docs and 'restkey' param BUT: DictWriter: fieldnames mandatory and determine write order, with corresponding values from input dict. using regular csv.reader might be easier and you can still write a header manually
-- [ ] Ledger.profit should return sum(t['balance'] for t in self)
-- [ ] Ledger.__init__ accepts default fieldnames in case file is empty
 - [ ] make parse args put all the transaction info in a dict to pass to dictwriter using a custom action? maybe will simplify the api or just make it worse (like Transaction)
 - [ ] can parse_args be refactored
 - [ ] Add doc strings
