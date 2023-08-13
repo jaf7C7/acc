@@ -83,7 +83,7 @@ class Ledger:
 
     def profit(self):
         try:
-            return sum(int(transaction["balance"]) for transaction in self)
+            return sum(int(transaction["balance"]) for transaction in self.transactions())
         except FileNotFoundError:
             return 0
 
