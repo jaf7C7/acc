@@ -44,8 +44,7 @@ class Ledger:
         return self.path
 
     def __len__(self):
-        with open(self.path, "r", newline="") as f:
-            return len(list(csv.reader(f)))
+        return len(list(iter(self)))
 
     def __repr__(self):
         attrs = ", ".join(f"{k}={repr(v)}" for k, v in self.__dict__.items())
