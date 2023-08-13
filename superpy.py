@@ -64,7 +64,8 @@ class Ledger:
 
     def tabulate(self):
         ledger = iter(self)
-        yield self.format(field.upper() for field in next(ledger))
+        header = list(field.upper() for field in next(ledger))
+        yield self.format(header)
         yield from (self.format(line) for line in ledger)
 
     def append(self, **transaction):
