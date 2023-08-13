@@ -191,6 +191,7 @@ class TestReport:
         assert (
             out
             == """\
+DATE        PRODUCT        UNITS   DEBIT  CREDIT BALANCE
 1970-01-01  frobule            1       0     150    -150
 1970-01-01  wobjock           10       0     850    -850
 1970-01-01  frobulator         5       0    2495   -2495

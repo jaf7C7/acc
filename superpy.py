@@ -60,11 +60,23 @@ class Ledger:
         except FileNotFoundError:
             pass
 
+    @staticmethod
+    def format(line):
+        date, product, units, debit, credit, balance = line
+        return f"{date:12}{product:12}{units:>8}{debit:>8}{credit:>8}{balance:>8}"
+
     def append(self, **transaction):
         with open(self.path, "a", newline="") as f:
             if len(self) == 0:
                 csv.writer(f).writerow(transaction.keys())
             csv.writer(f).writerow(transaction.values())
+
+    def list(self):
+        with open(self.path, "r", newline="") as f:
+            ledger = csv.reader(f)
+            print(self.format(field.upper() for field in next(ledger)))
+            for line in ledger:
+                print(self.format(line))
 
     def profit(self):
         try:
@@ -212,9 +224,5 @@ class Application:
             if args.report_type == "profit":
                 print(self.ledger.profit())
             else:
-                for transaction in self.ledger:
-                    date, product, units, debit, credit, balance = transaction.values()
-                    print(
-                        f"{date:12}{product:12}{int(units):8}{int(debit):8}{int(credit):8}{int(balance):8}"  # noqa: E501
-                    )
+                self.ledger.list()
         return 0
