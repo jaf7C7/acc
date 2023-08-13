@@ -6,16 +6,21 @@ import csv
 
 
 def cli(argv):
+    """Handles creating and running an Application instance"""
     app = Application()
     return app.run(argv)
 
 
 class DayDelta(datetime.timedelta):
+    """A datetime.timedelta object with a resolution of 1 day"""
+
     def __new__(cls, days):
         return super().__new__(cls, days=int(days))
 
 
 class Config:
+    """A wrapper for reading and writing a configuration file in csv format"""
+
     def __init__(self, path):
         self.path = path
         self.defaults = "1970-01-01", "superpy_ledger.csv"
@@ -25,6 +30,7 @@ class Config:
         return f"{self.__class__.__name__}({attrs})"
 
     def read(self):
+        """Read csv data from the configuration file"""
         try:
             with open(self.path, "r", newline="") as f:
                 return next(csv.reader(f))
@@ -32,11 +38,14 @@ class Config:
             return self.defaults
 
     def write(self, attrs):
+        """Write csv data to the configuration file"""
         with open(self.path, "w", newline="") as f:
             csv.writer(f).writerow(attrs)
 
 
 class Ledger:
+    """A wrapper for reading, writing and processing transaction data in csv format"""
+
     def __init__(self, path):
         self.path = path
 
@@ -59,22 +68,26 @@ class Ledger:
 
     @staticmethod
     def format(line):
+        """Formats a line in the ledger into a readable form"""
         date, product, units, debit, credit, balance = line
         return f"{date:12}{product:12}{units:>8}{debit:>8}{credit:>8}{balance:>8}"
 
     def tabulate(self):
+        """A generator which yields the ledger file in table format"""
         ledger = iter(self)
         header = list(field.upper() for field in next(ledger))
         yield self.format(header)
         yield from (self.format(line) for line in ledger)
 
     def append(self, **transaction):
+        """Writes a transaction to the ledger file"""
         with open(self.path, "a", newline="") as f:
             if len(self) == 0:
                 csv.writer(f).writerow(transaction.keys())
             csv.writer(f).writerow(transaction.values())
 
     def transactions(self):
+        """A generator which yields transactions from the ledger file"""
         try:
             with open(self.path, "r", newline="") as f:
                 yield from csv.DictReader(f)
@@ -82,6 +95,7 @@ class Ledger:
             pass
 
     def profit(self):
+        """Calculates the total balance from all transactions in the ledger"""
         try:
             return sum(int(transaction["balance"]) for transaction in self.transactions())
         except FileNotFoundError:
@@ -89,6 +103,8 @@ class Ledger:
 
 
 class Application:
+    """Handles the top-level running of the application"""
+
     def __init__(self, config_path=".superpy.conf"):
         self.config = Config(config_path)
         date_string, ledger_path = self.config.read()
@@ -101,6 +117,7 @@ class Application:
 
     @staticmethod
     def parse_args(argv):
+        """Handles parsing, type-checking and casting of command line arguments"""
         parser = argparse.ArgumentParser(exit_on_error=False)
         subparsers = parser.add_subparsers(dest="command")
 
@@ -185,6 +202,7 @@ class Application:
         return parser.parse_args(argv)
 
     def run(self, argv=None):
+        """Run the program with the given arguments"""
         try:
             args = self.parse_args(argv)
         except argparse.ArgumentError as err:
