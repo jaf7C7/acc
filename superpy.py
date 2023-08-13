@@ -21,7 +21,8 @@ class Config:
         self.defaults = "1970-01-01", "superpy_ledger.csv"
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(path='{self.path}')"
+        attrs = ", ".join(f"{k}={repr(v)}" for k, v in self.__dict__.items())
+        return f"{self.__class__.__name__}({attrs})"
 
     def read(self):
         try:
@@ -93,9 +94,7 @@ class Application:
         self.ledger = Ledger(ledger_path)
 
     def __repr__(self):
-        attrs = ", ".join(
-            f"{k.lstrip('_')}={repr(v)}" for k, v in self.__dict__.items()
-        )
+        attrs = ", ".join(f"{k}={repr(v)}" for k, v in self.__dict__.items())
         return f"{self.__class__.__name__}({attrs})"
 
     @staticmethod
