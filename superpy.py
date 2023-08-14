@@ -78,9 +78,9 @@ class Application:
 
     def __init__(self, config_path=".superpy.conf"):
         self.config = config_path
-        self._date = Date(1970, 1, 1)
-        self._ledger = Ledger("superpy_ledger.csv")
-        self.read_config()
+        config = self.read_config()
+        self._date = Date.fromisoformat(config.get("date", "1970-01-01"))
+        self._ledger = Ledger(config.get("ledger", "superpy_ledger.csv"))
 
     def __repr__(self):
         attrs = ", ".join(f"{k}={repr(v)}" for k, v in self.__dict__.items())
@@ -92,8 +92,6 @@ class Application:
 
     @date.setter
     def date(self, date):
-        if not isinstance(date, Date):
-            date = Date.fromisoformat(date)
         self._date = date
         self.write_config()
 
@@ -103,8 +101,6 @@ class Application:
 
     @ledger.setter
     def ledger(self, ledger):
-        if not isinstance(ledger, Ledger):
-            ledger = Ledger(ledger)
         self._ledger = ledger
         self.write_config()
 
@@ -112,14 +108,16 @@ class Application:
         """Set application attributes from the configuration file"""
         try:
             with open(self.config, "r", newline="") as f:
-                self.date, self.ledger = next(csv.reader(f))
+                return next(csv.DictReader(f))
         except FileNotFoundError:
-            pass
+            return dict()
 
     def write_config(self):
         """Write application attributes to the configuration file"""
         with open(self.config, "w", newline="") as f:
-            csv.writer(f).writerow([self.date, self.ledger])
+            writer = csv.writer(f)
+            writer.writerow(["date", "ledger"])
+            writer.writerow([self.date, self.ledger])
 
     def date_cmd(self, args):
         if args.date is not None:
