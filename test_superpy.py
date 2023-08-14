@@ -206,31 +206,16 @@ class TestConfig:
     def configuration(self):
         return superpy.Config()
 
-    @pytest.mark.active
     @pytest.mark.parametrize(
-        "date, ledger, expected",
-        [
-            ("2020-02-02", "", ("2020-02-02", "superpy_ledger.csv")),
-            ("", "/tmp/foo", ("1970-01-01", "/tmp/foo")),
-        ],
+        "attr, val", [("date", "1970-01-01"), ("ledger", "superpy_ledger.csv")]
     )
-    def test_get(self, configuration, monkeypatch, date, ledger, expected):
-        monkeypatch.setattr(configuration, "read", lambda: dict(date=date, ledger=ledger))
-        assert configuration.get("date"), configuration.get("ledger") == expected
+    def test_file_not_found(self, configuration, attr, val):
+        assert not os.path.exists(configuration.path)
+        assert configuration.get(attr) == val
 
     @pytest.mark.parametrize(
-        "args, date, ledger",
-        [
-            ("date 2020-02-02".split(), "2020-02-02", "superpy_ledger.csv"),
-            ("ledger foo".split(), "1970-01-01", "foo"),
-        ],
+        "attr, val", [("date", "2020-02-02"), ("ledger", "/tmp/foo")]
     )
-    def test_set(self, configuration, monkeypatch, capsys, args, date, ledger):
-        monkeypatch.setattr(
-            configuration,
-            "write",
-            lambda x: print("Passed" if x == dict(date=date, ledger=ledger) else x),
-        )
-        configuration.set(*args)
-        out, err = capsys.readouterr()
-        assert out.rstrip() == "Passed"
+    def test_get_set(self, configuration, attr, val):
+        configuration.set(attr, val)
+        assert configuration.get(attr) == val

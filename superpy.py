@@ -30,8 +30,11 @@ class Config:
         )
 
     def read(self):
-        with open(self.path, "r", newline="") as f:
-            return next(csv.DictReader(f))
+        try:
+            with open(self.path, "r", newline="") as f:
+                return next(csv.DictReader(f))
+        except FileNotFoundError:
+            return self.defaults
 
     def write(self, config):
         with open(self.path, "w", newline="") as f:
@@ -40,11 +43,10 @@ class Config:
             writer.writerow(config)
 
     def get(self, attr):
-        _attr = self.read()[attr]
-        return _attr if _attr else self.defaults[attr]
+        return self.read()[attr]
 
     def set(self, attr, val):
-        config = self.defaults | {attr: val}
+        config = self.read() | {attr: val}
         self.write(config)
 
 
