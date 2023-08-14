@@ -53,25 +53,30 @@ class Config:
 class Ledger:
     """A wrapper for reading, writing and processing transaction data in csv format"""
 
-    def __init__(self, path):
+    def __init__(self, path, fieldnames=None):
         self.path = path
-
-    def __str__(self):
-        return self.path
+        self.fieldnames = (
+            ["date", "product", "units", "debit", "credit", "balance"]
+            if fieldnames is None
+            else fieldnames
+        )
 
     def __len__(self):
         return len(list(iter(self)))
 
-    def __repr__(self):
-        attrs = ", ".join(f"{k}={repr(v)}" for k, v in self.__dict__.items())
-        return f"{self.__class__.__name__}({attrs})"
+    def __str__(self):
+        return self.path
 
     def __eq__(self, other):
         return self.path == other.path
 
     def __iter__(self):
         with open(self.path, "r", newline="") as f:
-            yield from csv.reader(f)
+            yield from csv.DictReader(f)
+
+    def __repr__(self):
+        attrs = ", ".join(f"{k}={repr(v)}" for k, v in self.__dict__.items())
+        return f"{self.__class__.__name__}({attrs})"
 
     @staticmethod
     def _format(line):
@@ -81,28 +86,21 @@ class Ledger:
 
     def print(self):
         """Print the contents of the ledger in table form"""
-        ledger = iter(self)
-        header = next(ledger)
-        print(self._format(field.upper() for field in header))
-        for line in ledger:
-            print(self._format(line))
+        print(self._format(f.upper() for f in self.fieldnames))
+        for transaction in self:
+            print(self._format(transaction.values()))
 
     def append(self, **transaction):
         """Writes a transaction to the ledger file"""
         with open(self.path, "a", newline="") as f:
+            writer = csv.DictWriter(f, fieldnames=self.fieldnames)
             if len(self) == 0:
-                csv.writer(f).writerow(transaction.keys())
-            csv.writer(f).writerow(transaction.values())
-
-    def transactions(self):
-        """A generator which yields transactions from the ledger file"""
-        ledger = iter(self)
-        fieldnames = next(ledger)
-        yield from (dict(zip(fieldnames, fields)) for fields in ledger)  # noqa: B905
+                writer.writeheader()
+            writer.writerow(transaction)
 
     def balance(self):
         """Calculates the total balance from all transactions in the ledger"""
-        return sum(int(transaction["balance"]) for transaction in self.transactions())
+        return sum(int(transaction["balance"]) for transaction in self)
 
 
 class Application:
