@@ -42,7 +42,7 @@ class Ledger:
             yield from csv.reader(f)
 
     @staticmethod
-    def format(line):
+    def _format(line):
         """Formats a line in the ledger into a readable form"""
         date, product, units, debit, credit, balance = line
         return f"{date:12}{product:12}{units:>8}{debit:>8}{credit:>8}{balance:>8}"
@@ -51,9 +51,9 @@ class Ledger:
         """Print the contents of the ledger in table form"""
         ledger = iter(self)
         header = next(ledger)
-        print(self.format(field.upper() for field in header))
+        print(self._format(field.upper() for field in header))
         for line in ledger:
-            print(self.format(line))
+            print(self._format(line))
 
     def append(self, **transaction):
         """Writes a transaction to the ledger file"""
