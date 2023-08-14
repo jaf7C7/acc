@@ -38,9 +38,9 @@
 - [x] DictReader : fieldnames optional (read from first line of file, so write a header)
 - [x] Ledger.__iter__() should yield from csv.DictReader(f, fieldnames=self.fieldnames)
 - [x] Add doc strings
-- [ ] Refactor 'run': Let parse_args choose the function to be called
+- [x] Refactor 'run': Let parse_args choose the function to be called
   * See <https://docs.python.org/3/library/argparse.html#other-utilities>
-- [ ] Refactor to reduct [cohesion and coupling](https://youtu.be/eiDyK_ofPPM)
+- [ ] Refactor to reduce [cohesion and coupling](https://youtu.be/eiDyK_ofPPM)
 - [ ] Add type hints
 - [ ] Change app design to implement double-entry accounting
   * e.g. <https://www.youtube.com/watch?v=AoVxJ4JwMtM>
