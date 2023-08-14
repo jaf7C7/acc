@@ -76,23 +76,45 @@ class Ledger:
 class Application:
     """Handles the top-level running of the application"""
 
-    def __init__(self, config=".superpy.conf"):
-        self.config = config
+    def __init__(self, config_path=".superpy.conf"):
+        self.config = config_path
+        self._date = Date(1970, 1, 1)
+        self._ledger = Ledger("superpy_ledger.csv")
         self.read_config()
 
     def __repr__(self):
         attrs = ", ".join(f"{k}={repr(v)}" for k, v in self.__dict__.items())
         return f"{self.__class__.__name__}({attrs})"
 
+    @property
+    def date(self):
+        return self._date
+
+    @date.setter
+    def date(self, date):
+        if not isinstance(date, Date):
+            date = Date.fromisoformat(date)
+        self._date = date
+        self.write_config()
+
+    @property
+    def ledger(self):
+        return self._ledger
+
+    @ledger.setter
+    def ledger(self, ledger):
+        if not isinstance(ledger, Ledger):
+            ledger = Ledger(ledger)
+        self._ledger = ledger
+        self.write_config()
+
     def read_config(self):
         """Set application attributes from the configuration file"""
         try:
             with open(self.config, "r", newline="") as f:
-                date_string, ledger_path = next(csv.reader(f))
+                self.date, self.ledger = next(csv.reader(f))
         except FileNotFoundError:
-            date_string, ledger_path = "1970-01-01", "superpy_ledger.csv"
-        self.date = Date.fromisoformat(date_string)
-        self.ledger = Ledger(ledger_path)
+            pass
 
     def write_config(self):
         """Write application attributes to the configuration file"""
@@ -102,17 +124,14 @@ class Application:
     def date_cmd(self, args):
         if args.date is not None:
             self.date = args.date
-            self.write_config()
         elif args.days is not None:
             self.date += args.days
-            self.write_config()
         else:
             print(self.date)
 
     def ledger_cmd(self, args):
         if args.ledger is not None:
             self.ledger = args.ledger
-            self.write_config()
         else:
             print(self.ledger)
 
