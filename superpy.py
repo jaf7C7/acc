@@ -18,31 +18,6 @@ class DayDelta(datetime.timedelta):
         return super().__new__(cls, days=int(days))
 
 
-class Config:
-    """A wrapper for reading and writing a configuration file in csv format"""
-
-    def __init__(self, path):
-        self.path = path
-        self.defaults = "1970-01-01", "superpy_ledger.csv"
-
-    def __repr__(self):
-        attrs = ", ".join(f"{k}={repr(v)}" for k, v in self.__dict__.items())
-        return f"{self.__class__.__name__}({attrs})"
-
-    def read(self):
-        """Read csv data from the configuration file"""
-        try:
-            with open(self.path, "r", newline="") as f:
-                return next(csv.reader(f))
-        except FileNotFoundError:
-            return self.defaults
-
-    def write(self, attrs):
-        """Write csv data to the configuration file"""
-        with open(self.path, "w", newline="") as f:
-            csv.writer(f).writerow(attrs)
-
-
 class Ledger:
     """A wrapper for reading, writing and processing transaction data in csv format"""
 
@@ -101,15 +76,28 @@ class Ledger:
 class Application:
     """Handles the top-level running of the application"""
 
-    def __init__(self, config_path=".superpy.conf"):
-        self.config = Config(config_path)
-        date_string, ledger_path = self.config.read()
-        self.date = Date.fromisoformat(date_string)
-        self.ledger = Ledger(ledger_path)
+    def __init__(self, config=".superpy.conf"):
+        self.config = config
+        self.read_config()
 
     def __repr__(self):
         attrs = ", ".join(f"{k}={repr(v)}" for k, v in self.__dict__.items())
         return f"{self.__class__.__name__}({attrs})"
+
+    def read_config(self):
+        """Set application attributes from the configuration file"""
+        try:
+            with open(self.config, "r", newline="") as f:
+                date_string, ledger_path = next(csv.reader(f))
+        except FileNotFoundError:
+            date_string, ledger_path = "1970-01-01", "superpy_ledger.csv"
+        self.date = Date.fromisoformat(date_string)
+        self.ledger = Ledger(ledger_path)
+
+    def write_config(self):
+        """Write application attributes to the configuration file"""
+        with open(self.config, "w", newline="") as f:
+            csv.writer(f).writerow([self.date, self.ledger])
 
     @staticmethod
     def parse_args(argv):
@@ -206,18 +194,17 @@ class Application:
         if args.command == "date":
             if args.date is not None:
                 self.date = args.date
-                self.config.write([self.date, self.ledger])
+                self.write_config()
             elif args.days is not None:
                 self.date += args.days
-                self.config.write([self.date, self.ledger])
-
+                self.write_config()
             else:
                 print(self.date)
 
         elif args.command == "ledger":
             if args.ledger is not None:
                 self.ledger = args.ledger
-                self.config.write([self.date, self.ledger])
+                self.write_config()
             else:
                 print(self.ledger)
 
