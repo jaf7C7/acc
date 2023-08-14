@@ -1,6 +1,6 @@
 import sys
-import datetime
 from datetime import date as Date
+from datetime import timedelta as TimeDelta
 import argparse
 import csv
 
@@ -11,8 +11,8 @@ def cli(argv):
     return app.run(argv)
 
 
-class DayDelta(datetime.timedelta):
-    """A datetime.timedelta object with a resolution of 1 day"""
+class DayDelta(TimeDelta):
+    """A TimeDelta object with a resolution of 1 day"""
 
     def __new__(cls, days):
         return super().__new__(cls, days=int(days))
