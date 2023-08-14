@@ -206,11 +206,17 @@ class TestConfig:
     def configuration(self):
         return superpy.Config()
 
-    def test_get(self, configuration, monkeypatch):
-        monkeypatch.setattr(configuration, "read", lambda: dict(date="", ledger=""))
-        assert configuration.read() == dict(date="", ledger="")
-        assert configuration.get("date", "foo") == "foo"
-        assert configuration.get("ledger", "bar") == "bar"
+    @pytest.mark.active
+    @pytest.mark.parametrize(
+        "date, ledger, expected",
+        [
+            ("2020-02-02", "", ("2020-02-02", "superpy_ledger.csv")),
+            ("", "/tmp/foo", ("1970-01-01", "/tmp/foo")),
+        ],
+    )
+    def test_get(self, configuration, monkeypatch, date, ledger, expected):
+        monkeypatch.setattr(configuration, "read", lambda: dict(date=date, ledger=ledger))
+        assert configuration.get("date"), configuration.get("ledger") == expected
 
     @pytest.mark.parametrize(
         "args, date, ledger",

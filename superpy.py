@@ -33,16 +33,15 @@ class Config:
         with open(self.path, "r", newline="") as f:
             return next(csv.DictReader(f))
 
-    def get(self, attr, default):
-        config = self.read()
-        attr = config.get(attr, default)
-        return attr if attr != "" else default
-
     def write(self, config):
         with open(self.path, "w", newline="") as f:
             writer = csv.DictWriter(f, fieldnames=self.defaults.keys())
             writer.writeheader()
             writer.writerow(config)
+
+    def get(self, attr):
+        _attr = self.read()[attr]
+        return _attr if _attr else self.defaults[attr]
 
     def set(self, attr, val):
         config = self.defaults | {attr: val}
@@ -108,59 +107,28 @@ class Application:
     """Handles the top-level running of the application"""
 
     def __init__(self, config_path=".superpy.conf"):
-        self.config = config_path
-        config = self.read_config()
-        self._date = Date.fromisoformat(config.get("date", "1970-01-01"))
-        self._ledger = Ledger(config.get("ledger", "superpy_ledger.csv"))
+        self.config = Config(config_path)
+        self.date = Date.fromisoformat(self.config.get("date"))
+        self.ledger = Ledger(self.config.get("ledger"))
 
     def __repr__(self):
         attrs = ", ".join(f"{k}={repr(v)}" for k, v in self.__dict__.items())
         return f"{self.__class__.__name__}({attrs})"
 
-    @property
-    def date(self):
-        return self._date
-
-    @date.setter
-    def date(self, date):
-        self._date = date
-        self.write_config()
-
-    @property
-    def ledger(self):
-        return self._ledger
-
-    @ledger.setter
-    def ledger(self, ledger):
-        self._ledger = ledger
-        self.write_config()
-
-    def read_config(self):
-        """Set application attributes from the configuration file"""
-        try:
-            with open(self.config, "r", newline="") as f:
-                return next(csv.DictReader(f))
-        except FileNotFoundError:
-            return dict()
-
-    def write_config(self):
-        """Write application attributes to the configuration file"""
-        with open(self.config, "w", newline="") as f:
-            writer = csv.writer(f)
-            writer.writerow(["date", "ledger"])
-            writer.writerow([self.date, self.ledger])
-
     def date_cmd(self, args):
         if args.date is not None:
             self.date = args.date
+            self.config.set("date", self.date)
         elif args.days is not None:
             self.date += args.days
+            self.config.set("date", self.date)
         else:
             print(self.date)
 
     def ledger_cmd(self, args):
         if args.ledger is not None:
             self.ledger = args.ledger
+            self.config.set("ledger", self.ledger)
         else:
             print(self.ledger)
 
