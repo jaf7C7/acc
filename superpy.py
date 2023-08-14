@@ -256,3 +256,4 @@ class Application:
             return 1
 
         args.func(args)
+        # XXX: Handle exceptions here
