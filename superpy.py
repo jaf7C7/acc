@@ -18,6 +18,37 @@ class DayDelta(datetime.timedelta):
         return super().__new__(cls, days=int(days))
 
 
+class Config:
+    """An abstraction of the configuration file"""
+
+    def __init__(self, path=".superpy.conf", defaults=None):
+        self.path = path
+        self.defaults = (
+            dict(date="1970-01-01", ledger="superpy_ledger.csv")
+            if defaults is None
+            else defaults
+        )
+
+    def read(self):
+        with open(self.path, "r", newline="") as f:
+            return next(csv.DictReader(f))
+
+    def get(self, attr, default):
+        config = self.read()
+        attr = config.get(attr, default)
+        return attr if attr != "" else default
+
+    def write(self, config):
+        with open(self.path, "w", newline="") as f:
+            writer = csv.DictWriter(f, fieldnames=self.defaults.keys())
+            writer.writeheader()
+            writer.writerow(config)
+
+    def set(self, attr, val):
+        config = self.defaults | {attr: val}
+        self.write(config)
+
+
 class Ledger:
     """A wrapper for reading, writing and processing transaction data in csv format"""
 

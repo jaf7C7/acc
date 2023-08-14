@@ -201,7 +201,6 @@ class TestLedger:
         assert out == "5755\n"
 
 
-@pytest.mark.active
 class TestConfig:
     @pytest.fixture
     def configuration(self):
