@@ -41,6 +41,7 @@
 - [x] Refactor 'run': Let parse_args choose the function to be called
   * See <https://docs.python.org/3/library/argparse.html#other-utilities>
 - [x] Add Config object
+- [ ] Refactor Ledger object
 - [ ] Look at [the factory pattern](https://realpython.com/factory-method-python/)
 - [ ] Refactor to reduce [cohesion and coupling](https://youtu.be/eiDyK_ofPPM)
 - [ ] Change app design to implement double-entry accounting
