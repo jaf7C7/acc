@@ -40,7 +40,7 @@
 - [x] Add doc strings
 - [x] Refactor 'run': Let parse_args choose the function to be called
   * See <https://docs.python.org/3/library/argparse.html#other-utilities>
-- [ ] Add type hints
+- [ ] Look at [the factory pattern](https://realpython.com/factory-method-python/)
 - [ ] Refactor to reduce [cohesion and coupling](https://youtu.be/eiDyK_ofPPM)
 - [ ] Change app design to implement double-entry accounting
   * e.g. <https://www.youtube.com/watch?v=AoVxJ4JwMtM>
@@ -49,6 +49,7 @@
 - [ ] Report expenses
 - [ ] Report over a range of dates
 - [ ] JSON file formats
+- [ ] Add type hints
 
 
 ledger format: <https://www.wikihow.com/Write-an-Accounting-Ledger>
