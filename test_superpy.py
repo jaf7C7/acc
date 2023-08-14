@@ -96,53 +96,52 @@ class TestCli:
             ]
 
 
-@pytest.mark.skip
 class TestParseArgs:
     @pytest.mark.parametrize(
-        "args, expected",
+        "args, date, days",
         [
-            (
-                ["date"],
-                argparse.Namespace(command="date", date=None, days=None),
-            ),
-            (
-                ["date", "2020-02-02"],
-                argparse.Namespace(
-                    command="date",
-                    date=datetime.date(2020, 2, 2),
-                    days=None,
-                ),
-            ),
-            (
-                ["date", "--advance", "1"],
-                argparse.Namespace(command="date", date=None, days=superpy.DayDelta(1)),
-            ),
-            (
-                ["date", "--advance"],
-                argparse.Namespace(command="date", date=None, days=superpy.DayDelta(1)),
-            ),
-            (["ledger"], argparse.Namespace(command="ledger", ledger=None)),
-            (
-                ["ledger", "/tmp/foo"],
-                argparse.Namespace(command="ledger", ledger=superpy.Ledger("/tmp/foo")),
-            ),
-            (
-                ["buy", "orange", "15"],
-                argparse.Namespace(command="buy", product="orange", price=15, units=1),
-            ),
-            (
-                ["buy", "apple", "75", "--units", "42"],
-                argparse.Namespace(command="buy", product="apple", price=75, units=42),
-            ),
-            (["report"], argparse.Namespace(command="report", balance=False)),
-            (
-                ["report", "--balance"],
-                argparse.Namespace(command="report", balance=True),
-            ),
+            (["date"], None, None),
+            (["date", "2020-02-02"], datetime.date(2020, 2, 2), None),
+            (["date", "--advance", "1"], None, superpy.DayDelta(1)),
+            (["date", "--advance"], None, superpy.DayDelta(1)),
         ],
     )
-    def test_returns_correct_namespace(self, args, expected, application):
-        assert application.parse_args(args) == expected
+    def test_date(self, application, args, date, days):
+        assert application.parse_args(args) == argparse.Namespace(
+            date=date, days=days, func=application.date_cmd
+        )
+
+    @pytest.mark.parametrize(
+        "args, ledger",
+        [
+            (["ledger"], None),
+            (["ledger", "/tmp/foo"], superpy.Ledger("/tmp/foo")),
+        ],
+    )
+    def test_ledger(self, application, args, ledger):
+        assert application.parse_args(args) == argparse.Namespace(
+            ledger=ledger, func=application.ledger_cmd
+        )
+
+    @pytest.mark.parametrize(
+        "args, product, price, units",
+        [
+            (["buy", "orange", "15"], "orange", 15, 1),
+            (["buy", "apple", "75", "--units", "42"], "apple", 75, 42),
+        ],
+    )
+    def test_buy(self, application, args, product, price, units):
+        assert application.parse_args(args) == argparse.Namespace(
+            product=product, price=price, units=units, func=application.buy_cmd
+        )
+
+    @pytest.mark.parametrize(
+        "args, balance", [(["report"], False), (["report", "--balance"], True)]
+    )
+    def test_report(self, application, args, balance):
+        assert application.parse_args(args) == argparse.Namespace(
+            balance=balance, func=application.report_cmd
+        )
 
     @pytest.mark.parametrize(
         "args", [["date", "01/01/1970"], ["date", "--advance", "0.5"]]

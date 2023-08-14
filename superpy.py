@@ -145,7 +145,7 @@ class Application:
     def parse_args(self, argv):
         """Handles parsing, type-checking and casting of command line arguments"""
         parser = argparse.ArgumentParser(exit_on_error=False)
-        subparsers = parser.add_subparsers(dest="command")
+        subparsers = parser.add_subparsers()
 
         date_parser = subparsers.add_parser(
             "date", exit_on_error=False, help="set a new application date"
