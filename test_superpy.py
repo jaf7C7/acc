@@ -199,3 +199,33 @@ class TestLedger:
         superpy.cli(["report", "--balance"])
         out, err = capsys.readouterr()
         assert out == "5755\n"
+
+
+@pytest.mark.active
+class TestConfig:
+    @pytest.fixture
+    def configuration(self):
+        return superpy.Config()
+
+    def test_get(self, configuration, monkeypatch):
+        monkeypatch.setattr(configuration, "read", lambda: dict(date="", ledger=""))
+        assert configuration.read() == dict(date="", ledger="")
+        assert configuration.get("date", "foo") == "foo"
+        assert configuration.get("ledger", "bar") == "bar"
+
+    @pytest.mark.parametrize(
+        "args, date, ledger",
+        [
+            ("date 2020-02-02".split(), "2020-02-02", "superpy_ledger.csv"),
+            ("ledger foo".split(), "1970-01-01", "foo"),
+        ],
+    )
+    def test_set(self, configuration, monkeypatch, capsys, args, date, ledger):
+        monkeypatch.setattr(
+            configuration,
+            "write",
+            lambda x: print("Passed" if x == dict(date=date, ledger=ledger) else x),
+        )
+        configuration.set(*args)
+        out, err = capsys.readouterr()
+        assert out.rstrip() == "Passed"
