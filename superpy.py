@@ -23,7 +23,7 @@ class Repr:
 
     def __repr__(self):
         return "%s(%s)" % (
-            self.__class.__name__,
+            self.__class__.__name__,
             ", ".join(f"{k}={repr(v)}" for k, v in self.__dict__.items()),
         )
 

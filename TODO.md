@@ -42,19 +42,15 @@
   * See <https://docs.python.org/3/library/argparse.html#other-utilities>
 - [x] Add Config object
 - [x] Refactor Ledger object
-- [ ] Look at [the factory pattern](https://realpython.com/factory-method-python/)
-- [ ] Refactor to reduce [cohesion and coupling](https://youtu.be/eiDyK_ofPPM)
-- [ ] Refactor tests (unit vs integration vs acceptance)
-- [ ] 100% unit test coverage
-- [ ] >90% integration/acceptance test coverage
-- [ ] Dependency injection (see <https://www.youtube.com/watch?v=lX9UQp2NwTk&t=858s>)
-- [ ] Change app design to implement double-entry accounting
+- [ ] Add doc strings
+- [ ] Add type hints
+- [ ] Refactor tests
+- [ ] Rethink application use-case (implement double-entry accounting for a small business?)
   * e.g. <https://www.youtube.com/watch?v=AoVxJ4JwMtM>
-- [ ] Different kinds of reports
+- [ ] Add two more types of reporting
 - [ ] Report over a range of dates
 - [ ] Add README.md
-- [ ] JSON file formats
-- [ ] Add type hints
+- [ ] Next project!
 
 
 ledger format: <https://www.wikihow.com/Write-an-Accounting-Ledger>
