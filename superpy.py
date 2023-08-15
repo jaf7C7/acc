@@ -21,13 +21,10 @@ class DayDelta(TimeDelta):
 class Config:
     """An abstraction of the configuration file"""
 
-    def __init__(self, path=".superpy.conf", defaults=None):
+    defaults = dict(date="1970-01-01", ledger="superpy_ledger.csv")
+
+    def __init__(self, path=".superpy.conf"):
         self.path = path
-        self.defaults = (
-            dict(date="1970-01-01", ledger="superpy_ledger.csv")
-            if defaults is None
-            else defaults
-        )
 
     def read(self):
         try:
