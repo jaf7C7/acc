@@ -42,8 +42,8 @@
   * See <https://docs.python.org/3/library/argparse.html#other-utilities>
 - [x] Add Config object
 - [x] Refactor Ledger object
-- [ ] Add doc strings
-- [ ] Add type hints
+- [x] Add doc strings
+- [x] Add type hints
 - [ ] Refactor tests (watch https://youtu.be/W40mpZP9xQQ)
 - [ ] Rethink application use-case (implement double-entry accounting for a small business?)
   * e.g. <https://www.youtube.com/watch?v=AoVxJ4JwMtM>
