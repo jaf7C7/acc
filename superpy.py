@@ -18,7 +18,15 @@ class DayDelta(TimeDelta):
         return super().__new__(cls, days=int(days))
 
 
-class Config:
+class Repr:
+    """Base class to define __repr__ for all subclasses"""
+
+    def __repr__(self):
+        attrs = ", ".join(f"{k}={repr(v)}" for k, v in self.__dict__.items())
+        return f"{self.__class__.__name__}({attrs})"
+
+
+class Config(Repr):
     """An abstraction of the configuration file"""
 
     defaults = dict(date="1970-01-01", ledger="superpy_ledger.csv")
@@ -47,7 +55,7 @@ class Config:
         self.write(config)
 
 
-class Ledger:
+class Ledger(Repr):
     """A wrapper for reading, writing and processing transaction data in csv format"""
 
     fieldnames = ["date", "product", "units", "debit", "credit", "balance"]
@@ -67,10 +75,6 @@ class Ledger:
     def __iter__(self):
         with open(self.path, "r", newline="") as f:
             yield from csv.DictReader(f)
-
-    def __repr__(self):
-        attrs = ", ".join(f"{k}={repr(v)}" for k, v in self.__dict__.items())
-        return f"{self.__class__.__name__}({attrs})"
 
     @property
     def balance(self):
@@ -94,17 +98,13 @@ class Ledger:
             writer.writerow(transaction)
 
 
-class Application:
+class Application(Repr):
     """Handles the top-level running of the application"""
 
     def __init__(self, config_path=".superpy.conf"):
         self.config = Config(config_path)
         self.date = Date.fromisoformat(self.config.get("date"))
         self.ledger = Ledger(self.config.get("ledger"))
-
-    def __repr__(self):
-        attrs = ", ".join(f"{k}={repr(v)}" for k, v in self.__dict__.items())
-        return f"{self.__class__.__name__}({attrs})"
 
     def parse_args(self, argv):
         """Handles parsing, type-checking and casting of command line arguments"""
