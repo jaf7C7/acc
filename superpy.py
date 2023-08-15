@@ -66,9 +66,6 @@ class Ledger(Repr):
     def __len__(self):
         return len(list(iter(self)))
 
-    def __str__(self):
-        return self.path
-
     def __eq__(self, other):
         return self.path == other.path
 
@@ -200,19 +197,19 @@ class Application(Repr):
         if args.command == "date":
             if args.date is not None:
                 self.date = args.date
-                self.config.set("date", self.date)
+                self.config.set("date", self.date.isoformat())
             elif args.days is not None:
                 self.date += args.days
-                self.config.set("date", self.date)
+                self.config.set("date", self.date.isoformat())
             else:
-                print(self.date)
+                print(self.date.isoformat())
 
         elif args.command == "ledger":
             if args.ledger is not None:
                 self.ledger = args.ledger
-                self.config.set("ledger", self.ledger)
+                self.config.set("ledger", self.ledger.path)
             else:
-                print(self.ledger)
+                print(self.ledger.path)
 
         elif args.command in {"buy", "sell"}:
             debit = args.price * args.units if args.command == "sell" else 0
