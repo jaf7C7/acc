@@ -80,7 +80,7 @@ class Ledger:
 
     def print(self):
         """Print the contents of the ledger in table form"""
-        print(self._format(f.upper() for f in self.fieldnames))
+        print(self._format(self.fieldnames).upper())
         for transaction in self:
             print(self._format(transaction.values()))
 
