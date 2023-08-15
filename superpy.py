@@ -50,13 +50,10 @@ class Config:
 class Ledger:
     """A wrapper for reading, writing and processing transaction data in csv format"""
 
-    def __init__(self, path, fieldnames=None):
+    fieldnames = ["date", "product", "units", "debit", "credit", "balance"]
+
+    def __init__(self, path):
         self.path = path
-        self.fieldnames = (
-            ["date", "product", "units", "debit", "credit", "balance"]
-            if fieldnames is None
-            else fieldnames
-        )
 
     def __len__(self):
         return len(list(iter(self)))
