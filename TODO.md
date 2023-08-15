@@ -44,7 +44,7 @@
 - [x] Refactor Ledger object
 - [ ] Add doc strings
 - [ ] Add type hints
-- [ ] Refactor tests
+- [ ] Refactor tests (watch https://youtu.be/W40mpZP9xQQ)
 - [ ] Rethink application use-case (implement double-entry accounting for a small business?)
   * e.g. <https://www.youtube.com/watch?v=AoVxJ4JwMtM>
 - [ ] Add two more types of reporting

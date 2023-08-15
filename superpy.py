@@ -3,9 +3,10 @@ from datetime import date as Date
 from datetime import timedelta as TimeDelta
 import argparse
 import csv
+from typing import Iterable, Union
 
 
-def cli(argv):
+def cli(argv) -> None:
     """Handles creating and running an Application instance"""
     app = Application()
     return app.run(argv)
@@ -14,14 +15,14 @@ def cli(argv):
 class DayDelta(TimeDelta):
     """A TimeDelta object with a resolution of 1 day"""
 
-    def __new__(cls, days):
+    def __new__(cls, days) -> TimeDelta:
         return super().__new__(cls, days=int(days))
 
 
 class Repr:
     """Base class to define __repr__ for all subclasses"""
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "%s(%s)" % (
             self.__class__.__name__,
             ", ".join(f"{k}={repr(v)}" for k, v in self.__dict__.items()),
@@ -33,26 +34,30 @@ class Config(Repr):
 
     defaults = dict(date="1970-01-01", ledger="superpy_ledger.csv")
 
-    def __init__(self, path=".superpy.conf"):
+    def __init__(self, path=".superpy.conf") -> None:
         self.path = path
 
-    def read(self):
+    def read(self) -> dict:
+        """Read key/value pairs from the config file"""
         try:
             with open(self.path, "r", newline="") as f:
                 return next(csv.DictReader(f))
         except FileNotFoundError:
             return self.defaults
 
-    def write(self, config):
+    def write(self, config: dict) -> None:
+        """Write key/value pairs to the config file"""
         with open(self.path, "w", newline="") as f:
             writer = csv.DictWriter(f, fieldnames=self.defaults.keys())
             writer.writeheader()
             writer.writerow(config)
 
-    def get(self, attr):
+    def get(self, attr: str) -> str:
+        """Set the value for the given key"""
         return self.read()[attr]
 
-    def set(self, attr, val):
+    def set(self, attr: str, val: str) -> None:
+        """Set the value for the given key"""
         config = self.read() | {attr: val}
         self.write(config)
 
@@ -69,33 +74,35 @@ class Ledger(Repr):
         "balance": "{:>8}",
     }
 
-    def __init__(self, path):
+    def __init__(self, path) -> None:
         self.path = path
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(list(iter(self)))
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         return self.path == other.path
 
-    def __iter__(self):
+    def __iter__(self) -> Iterable[dict]:
         with open(self.path, "r", newline="") as f:
             yield from csv.DictReader(f)
 
     @property
-    def balance(self):
+    def balance(self) -> int:
         """Calculates the total balance from all transactions in the ledger"""
         return sum(int(transaction["balance"]) for transaction in self)
 
-    def collimate(self, transaction):
+    def collimate(self, transaction: Iterable[str]) -> str:
+        """Format a line in the file into a readable form"""
         return "".join(self.fields.values()).format(*transaction)
 
-    def tabulate(self):
+    def tabulate(self) -> Iterable[str]:
+        """A generator yielding formatted rows of the ledger contents"""
         yield self.collimate(self.fields.keys()).upper()
         for transaction in self:
             yield self.collimate(transaction.values())
 
-    def append(self, **transaction):
+    def append(self, **transaction: dict[str, Union[str, int]]) -> None:
         """Writes a transaction to the ledger file"""
         with open(self.path, "a", newline="") as f:
             writer = csv.DictWriter(f, fieldnames=self.fields.keys())
@@ -107,12 +114,12 @@ class Ledger(Repr):
 class Application(Repr):
     """Handles the top-level running of the application"""
 
-    def __init__(self, config_path=".superpy.conf"):
+    def __init__(self, config_path=".superpy.conf") -> None:
         self.config = Config(config_path)
         self.date = Date.fromisoformat(self.config.get("date"))
         self.ledger = Ledger(self.config.get("ledger"))
 
-    def parse_args(self, argv):
+    def parse_args(self, argv: Iterable[str]) -> argparse.Namespace:
         """Handles parsing, type-checking and casting of command line arguments"""
         parser = argparse.ArgumentParser(exit_on_error=False)
         subparsers = parser.add_subparsers(dest="command")
@@ -195,7 +202,7 @@ class Application(Repr):
 
         return parser.parse_args(argv)
 
-    def run(self, argv=None):
+    def run(self, argv: Iterable[str] = None) -> int:
         """Run the program with the given arguments"""
         try:
             args = self.parse_args(argv)
