@@ -22,8 +22,10 @@ class Repr:
     """Base class to define __repr__ for all subclasses"""
 
     def __repr__(self):
-        attrs = ", ".join(f"{k}={repr(v)}" for k, v in self.__dict__.items())
-        return f"{self.__class__.__name__}({attrs})"
+        return "%s(%s)" % (
+            self.__class.__name__,
+            ", ".join(f"{k}={repr(v)}" for k, v in self.__dict__.items()),
+        )
 
 
 class Config(Repr):
