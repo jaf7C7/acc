@@ -78,13 +78,14 @@ class Ledger(Repr):
         """Calculates the total balance from all transactions in the ledger"""
         return sum(int(transaction["balance"]) for transaction in self)
 
-    def tabulate(self):
-        def collimate(line):
-            return "{:12}{:12}{:>8}{:>8}{:>8}{:>8}".format(*line)
+    @staticmethod
+    def collimate(line):
+        return "{:12}{:12}{:>8}{:>8}{:>8}{:>8}".format(*line)
 
-        yield collimate(self.fieldnames).upper()
+    def tabulate(self):
+        yield self.collimate(self.fieldnames).upper()
         for transaction in self:
-            yield collimate(transaction.values())
+            yield self.collimate(transaction.values())
 
     def append(self, **transaction):
         """Writes a transaction to the ledger file"""
