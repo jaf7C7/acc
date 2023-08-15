@@ -15,7 +15,7 @@ def cli(argv) -> None:
 class DayDelta(TimeDelta):
     """A TimeDelta object with a resolution of 1 day"""
 
-    def __new__(cls, days) -> TimeDelta:
+    def __new__(cls, days: int) -> TimeDelta:
         return super().__new__(cls, days=int(days))
 
 
@@ -34,7 +34,7 @@ class Config(Repr):
 
     defaults = dict(date="1970-01-01", ledger="superpy_ledger.csv")
 
-    def __init__(self, path=".superpy.conf") -> None:
+    def __init__(self, path: str = ".superpy.conf") -> None:
         self.path = path
 
     def read(self) -> dict:
@@ -74,14 +74,14 @@ class Ledger(Repr):
         "balance": "{:>8}",
     }
 
-    def __init__(self, path) -> None:
+    def __init__(self, path: str) -> None:
         self.path = path
 
     def __len__(self) -> int:
         return len(list(iter(self)))
 
-    def __eq__(self, other) -> bool:
-        return self.path == other.path
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, Ledger) and self.path == other.path
 
     def __iter__(self) -> Iterable[dict]:
         with open(self.path, "r", newline="") as f:
@@ -114,7 +114,7 @@ class Ledger(Repr):
 class Application(Repr):
     """Handles the top-level running of the application"""
 
-    def __init__(self, config_path=".superpy.conf") -> None:
+    def __init__(self, config_path: str = ".superpy.conf") -> None:
         self.config = Config(config_path)
         self.date = Date.fromisoformat(self.config.get("date"))
         self.ledger = Ledger(self.config.get("ledger"))
