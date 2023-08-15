@@ -72,6 +72,11 @@ class Ledger:
         attrs = ", ".join(f"{k}={repr(v)}" for k, v in self.__dict__.items())
         return f"{self.__class__.__name__}({attrs})"
 
+    @property
+    def balance(self):
+        """Calculates the total balance from all transactions in the ledger"""
+        return sum(int(transaction["balance"]) for transaction in self)
+
     @staticmethod
     def _format(line):
         """Formats a line in the ledger into a readable form"""
@@ -91,10 +96,6 @@ class Ledger:
             if len(self) == 0:
                 writer.writeheader()
             writer.writerow(transaction)
-
-    def balance(self):
-        """Calculates the total balance from all transactions in the ledger"""
-        return sum(int(transaction["balance"]) for transaction in self)
 
 
 class Application:
@@ -231,7 +232,7 @@ class Application:
 
         elif args.command == "report":
             if args.balance is True:
-                print(self.ledger.balance())
+                print(self.ledger.balance)
             else:
                 for row in self.ledger.tabulate():
                     print(row)
