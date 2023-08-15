@@ -77,17 +77,13 @@ class Ledger:
         """Calculates the total balance from all transactions in the ledger"""
         return sum(int(transaction["balance"]) for transaction in self)
 
-    @staticmethod
-    def _format(line):
-        """Formats a line in the ledger into a readable form"""
-        date, product, units, debit, credit, balance = line
-        return f"{date:12}{product:12}{units:>8}{debit:>8}{credit:>8}{balance:>8}"
-
     def tabulate(self):
-        """Print the contents of the ledger in table form"""
-        yield self._format(self.fieldnames).upper()
+        def collimate(line):
+            return "{:12}{:12}{:>8}{:>8}{:>8}{:>8}".format(*line)
+
+        yield collimate(self.fieldnames).upper()
         for transaction in self:
-            yield self._format(transaction.values())
+            yield collimate(transaction.values())
 
     def append(self, **transaction):
         """Writes a transaction to the ledger file"""
