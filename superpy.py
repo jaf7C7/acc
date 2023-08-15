@@ -115,53 +115,10 @@ class Application:
         attrs = ", ".join(f"{k}={repr(v)}" for k, v in self.__dict__.items())
         return f"{self.__class__.__name__}({attrs})"
 
-    def date_cmd(self, args):
-        if args.date is not None:
-            self.date = args.date
-            self.config.set("date", self.date)
-        elif args.days is not None:
-            self.date += args.days
-            self.config.set("date", self.date)
-        else:
-            print(self.date)
-
-    def ledger_cmd(self, args):
-        if args.ledger is not None:
-            self.ledger = args.ledger
-            self.config.set("ledger", self.ledger)
-        else:
-            print(self.ledger)
-
-    def sell_cmd(self, args):
-        self.ledger.append(
-            date=self.date,
-            product=args.product,
-            units=args.units,
-            debit=(args.price * args.units),
-            credit=0,
-            balance=(args.price * args.units),
-        )
-
-    def buy_cmd(self, args):
-        self.ledger.append(
-            date=self.date,
-            product=args.product,
-            units=args.units,
-            debit=0,
-            credit=(args.price * args.units),
-            balance=-(args.price * args.units),
-        )
-
-    def report_cmd(self, args):
-        if args.balance is True:
-            print(self.ledger.balance())
-        else:
-            self.ledger.print()
-
     def parse_args(self, argv):
         """Handles parsing, type-checking and casting of command line arguments"""
         parser = argparse.ArgumentParser(exit_on_error=False)
-        subparsers = parser.add_subparsers()
+        subparsers = parser.add_subparsers(dest="command")
 
         date_parser = subparsers.add_parser(
             "date", exit_on_error=False, help="set a new application date"
@@ -182,7 +139,6 @@ class Application:
             metavar="<days>",
             help="the number of days to advance (default %(const)s day)",
         )
-        date_parser.set_defaults(func=self.date_cmd)
 
         ledger_parser = subparsers.add_parser(
             "ledger", exit_on_error=False, help="select a new ledger file"
@@ -194,7 +150,6 @@ class Application:
             metavar="<ledger>",
             help="the path to the new ledger file",
         )
-        ledger_parser.set_defaults(func=self.ledger_cmd)
 
         buy_parser = subparsers.add_parser(
             "buy", exit_on_error=False, help="record a purchase in the ledger"
@@ -212,7 +167,6 @@ class Application:
             metavar="<units>",
             help="how many units to buy (default %(default)s)",
         )
-        buy_parser.set_defaults(func=self.buy_cmd)
 
         sell_parser = subparsers.add_parser(
             "sell", exit_on_error=False, help="record a sale in the ledger"
@@ -230,7 +184,6 @@ class Application:
             metavar="<units>",
             help="how many units to sell (default %(default)s)",
         )
-        sell_parser.set_defaults(func=self.sell_cmd)
 
         report_parser = subparsers.add_parser(
             "report",
@@ -242,7 +195,6 @@ class Application:
             action="store_true",
             help="the net value of ledger transactions",
         )
-        report_parser.set_defaults(func=self.report_cmd)
 
         return parser.parse_args(argv)
 
@@ -254,5 +206,37 @@ class Application:
             print(err, file=sys.stderr)
             return 1
 
-        args.func(args)
-        # XXX: Handle exceptions here
+        if args.command == "date":
+            if args.date is not None:
+                self.date = args.date
+                self.config.set("date", self.date)
+            elif args.days is not None:
+                self.date += args.days
+                self.config.set("date", self.date)
+            else:
+                print(self.date)
+
+        elif args.command == "ledger":
+            if args.ledger is not None:
+                self.ledger = args.ledger
+                self.config.set("ledger", self.ledger)
+            else:
+                print(self.ledger)
+
+        elif args.command in {"buy", "sell"}:
+            debit = args.price * args.units if args.command == "sell" else 0
+            credit = args.price * args.units if args.command == "buy" else 0
+            self.ledger.append(
+                date=self.date,
+                product=args.product,
+                units=args.units,
+                debit=debit,
+                credit=credit,
+                balance=(debit - credit),
+            )
+
+        elif args.command == "report":
+            if args.balance is True:
+                print(self.ledger.balance())
+            else:
+                self.ledger.print()

@@ -108,7 +108,7 @@ class TestParseArgs:
     )
     def test_date(self, application, args, date, days):
         assert application.parse_args(args) == argparse.Namespace(
-            date=date, days=days, func=application.date_cmd
+            command="date", date=date, days=days
         )
 
     @pytest.mark.parametrize(
@@ -120,7 +120,7 @@ class TestParseArgs:
     )
     def test_ledger(self, application, args, ledger):
         assert application.parse_args(args) == argparse.Namespace(
-            ledger=ledger, func=application.ledger_cmd
+            command="ledger", ledger=ledger
         )
 
     @pytest.mark.parametrize(
@@ -132,7 +132,7 @@ class TestParseArgs:
     )
     def test_buy(self, application, args, product, price, units):
         assert application.parse_args(args) == argparse.Namespace(
-            product=product, price=price, units=units, func=application.buy_cmd
+            command="buy", product=product, price=price, units=units
         )
 
     @pytest.mark.parametrize(
@@ -140,7 +140,7 @@ class TestParseArgs:
     )
     def test_report(self, application, args, balance):
         assert application.parse_args(args) == argparse.Namespace(
-            balance=balance, func=application.report_cmd
+            command="report", balance=balance
         )
 
     @pytest.mark.parametrize(
