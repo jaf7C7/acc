@@ -58,7 +58,14 @@ class Config(Repr):
 class Ledger(Repr):
     """A wrapper for reading, writing and processing transaction data in csv format"""
 
-    fieldnames = ["date", "product", "units", "debit", "credit", "balance"]
+    fields = {  # field: field-format
+        "date": "{:12}",
+        "product": "{:12}",
+        "units": "{:>8}",
+        "debit": "{:>8}",
+        "credit": "{:>8}",
+        "balance": "{:>8}",
+    }
 
     def __init__(self, path):
         self.path = path
@@ -78,19 +85,18 @@ class Ledger(Repr):
         """Calculates the total balance from all transactions in the ledger"""
         return sum(int(transaction["balance"]) for transaction in self)
 
-    @staticmethod
-    def collimate(line):
-        return "{:12}{:12}{:>8}{:>8}{:>8}{:>8}".format(*line)
+    def collimate(self, transaction):
+        return "".join(self.fields.values()).format(*transaction)
 
     def tabulate(self):
-        yield self.collimate(self.fieldnames).upper()
+        yield self.collimate(self.fields.keys()).upper()
         for transaction in self:
             yield self.collimate(transaction.values())
 
     def append(self, **transaction):
         """Writes a transaction to the ledger file"""
         with open(self.path, "a", newline="") as f:
-            writer = csv.DictWriter(f, fieldnames=self.fieldnames)
+            writer = csv.DictWriter(f, fieldnames=self.fields.keys())
             if len(self) == 0:
                 writer.writeheader()
             writer.writerow(transaction)
