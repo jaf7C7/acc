@@ -106,8 +106,8 @@ class TestParseArgs:
             (["date", "--advance"], None, superpy.DayDelta(1)),
         ],
     )
-    def test_date(self, application, args, date, days):
-        assert application.parse_args(args) == argparse.Namespace(
+    def test_date(self, args, date, days):
+        assert superpy.parse_args(args) == argparse.Namespace(
             command="date", date=date, days=days
         )
 
@@ -118,8 +118,8 @@ class TestParseArgs:
             (["ledger", "/tmp/foo"], superpy.Ledger("/tmp/foo")),
         ],
     )
-    def test_ledger(self, application, args, ledger):
-        assert application.parse_args(args) == argparse.Namespace(
+    def test_ledger(self, args, ledger):
+        assert superpy.parse_args(args) == argparse.Namespace(
             command="ledger", ledger=ledger
         )
 
@@ -130,25 +130,25 @@ class TestParseArgs:
             (["buy", "apple", "75", "--units", "42"], "apple", 75, 42),
         ],
     )
-    def test_buy(self, application, args, product, price, units):
-        assert application.parse_args(args) == argparse.Namespace(
+    def test_buy(self, args, product, price, units):
+        assert superpy.parse_args(args) == argparse.Namespace(
             command="buy", product=product, price=price, units=units
         )
 
     @pytest.mark.parametrize(
         "args, balance", [(["report"], False), (["report", "--balance"], True)]
     )
-    def test_report(self, application, args, balance):
-        assert application.parse_args(args) == argparse.Namespace(
+    def test_report(self, args, balance):
+        assert superpy.parse_args(args) == argparse.Namespace(
             command="report", balance=balance
         )
 
     @pytest.mark.parametrize(
         "args", [["date", "01/01/1970"], ["date", "--advance", "0.5"]]
     )
-    def test_bad_arguments(self, args, application):
+    def test_bad_arguments(self, args):
         with pytest.raises(argparse.ArgumentError):
-            application.parse_args(args)
+            superpy.parse_args(args)
 
 
 class TestLedger:

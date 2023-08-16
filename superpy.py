@@ -12,6 +12,90 @@ def cli(argv) -> None:
     return app.run(argv)
 
 
+def parse_args(argv: Iterable[str]) -> argparse.Namespace:
+    """Handles parsing, type-checking and casting of command line arguments"""
+    parser = argparse.ArgumentParser(exit_on_error=False)
+    subparsers = parser.add_subparsers(dest="command")
+
+    date_parser = subparsers.add_parser(
+        "date", exit_on_error=False, help="set a new application date"
+    )
+    date_parser.add_argument(
+        "date",
+        nargs="?",
+        type=Date.fromisoformat,
+        metavar="<date>",
+        help="a date in yyyy-mm-dd iso format",
+    )
+    date_parser.add_argument(
+        "--advance",
+        dest="days",
+        type=DayDelta,
+        nargs="?",
+        const="1",
+        metavar="<days>",
+        help="the number of days to advance (default %(const)s day)",
+    )
+
+    ledger_parser = subparsers.add_parser(
+        "ledger", exit_on_error=False, help="select a new ledger file"
+    )
+    ledger_parser.add_argument(
+        "ledger",
+        type=Ledger,
+        nargs="?",
+        metavar="<ledger>",
+        help="the path to the new ledger file",
+    )
+
+    buy_parser = subparsers.add_parser(
+        "buy", exit_on_error=False, help="record a purchase in the ledger"
+    )
+    buy_parser.add_argument(
+        "product", metavar="<product>", help="the name of the product to be bought"
+    )
+    buy_parser.add_argument(
+        "price", type=int, metavar="<price>", help="the product price in cents"
+    )
+    buy_parser.add_argument(
+        "--units",
+        default="1",
+        type=int,
+        metavar="<units>",
+        help="how many units to buy (default %(default)s)",
+    )
+
+    sell_parser = subparsers.add_parser(
+        "sell", exit_on_error=False, help="record a sale in the ledger"
+    )
+    sell_parser.add_argument(
+        "product", metavar="<product>", help="the name of the product to be sold"
+    )
+    sell_parser.add_argument(
+        "price", type=int, metavar="<price>", help="the product price in cents"
+    )
+    sell_parser.add_argument(
+        "--units",
+        default="1",
+        type=int,
+        metavar="<units>",
+        help="how many units to sell (default %(default)s)",
+    )
+
+    report_parser = subparsers.add_parser(
+        "report",
+        exit_on_error=False,
+        help="display information about past transactions",
+    )
+    report_parser.add_argument(
+        "--balance",
+        action="store_true",
+        help="the net value of ledger transactions",
+    )
+
+    return parser.parse_args(argv)
+
+
 class DayDelta(TimeDelta):
     """A TimeDelta object with a resolution of 1 day"""
 
@@ -135,93 +219,10 @@ class Application(_AttributeHolder):
         self.date = Date.fromisoformat(self.config.date)
         self.ledger = Ledger(self.config.ledger)
 
-    def parse_args(self, argv: Iterable[str]) -> argparse.Namespace:
-        """Handles parsing, type-checking and casting of command line arguments"""
-        parser = argparse.ArgumentParser(exit_on_error=False)
-        subparsers = parser.add_subparsers(dest="command")
-
-        date_parser = subparsers.add_parser(
-            "date", exit_on_error=False, help="set a new application date"
-        )
-        date_parser.add_argument(
-            "date",
-            nargs="?",
-            type=Date.fromisoformat,
-            metavar="<date>",
-            help="a date in yyyy-mm-dd iso format",
-        )
-        date_parser.add_argument(
-            "--advance",
-            dest="days",
-            type=DayDelta,
-            nargs="?",
-            const="1",
-            metavar="<days>",
-            help="the number of days to advance (default %(const)s day)",
-        )
-
-        ledger_parser = subparsers.add_parser(
-            "ledger", exit_on_error=False, help="select a new ledger file"
-        )
-        ledger_parser.add_argument(
-            "ledger",
-            type=Ledger,
-            nargs="?",
-            metavar="<ledger>",
-            help="the path to the new ledger file",
-        )
-
-        buy_parser = subparsers.add_parser(
-            "buy", exit_on_error=False, help="record a purchase in the ledger"
-        )
-        buy_parser.add_argument(
-            "product", metavar="<product>", help="the name of the product to be bought"
-        )
-        buy_parser.add_argument(
-            "price", type=int, metavar="<price>", help="the product price in cents"
-        )
-        buy_parser.add_argument(
-            "--units",
-            default="1",
-            type=int,
-            metavar="<units>",
-            help="how many units to buy (default %(default)s)",
-        )
-
-        sell_parser = subparsers.add_parser(
-            "sell", exit_on_error=False, help="record a sale in the ledger"
-        )
-        sell_parser.add_argument(
-            "product", metavar="<product>", help="the name of the product to be sold"
-        )
-        sell_parser.add_argument(
-            "price", type=int, metavar="<price>", help="the product price in cents"
-        )
-        sell_parser.add_argument(
-            "--units",
-            default="1",
-            type=int,
-            metavar="<units>",
-            help="how many units to sell (default %(default)s)",
-        )
-
-        report_parser = subparsers.add_parser(
-            "report",
-            exit_on_error=False,
-            help="display information about past transactions",
-        )
-        report_parser.add_argument(
-            "--balance",
-            action="store_true",
-            help="the net value of ledger transactions",
-        )
-
-        return parser.parse_args(argv)
-
     def run(self, argv: Iterable[str] = None) -> int:
         """Run the program with the given arguments"""
         try:
-            args = self.parse_args(argv)
+            args = parse_args(argv)
         except argparse.ArgumentError as err:
             print(err, file=sys.stderr)
             return 1
