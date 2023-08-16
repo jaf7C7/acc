@@ -99,6 +99,8 @@ def parse_args(argv: Iterable[str]) -> argparse.Namespace:
 class DayDelta(TimeDelta):
     """A TimeDelta object with a resolution of 1 day"""
 
+    resolution = TimeDelta(days=1)
+
     def __new__(cls, days: int) -> TimeDelta:
         return super().__new__(cls, days=int(days))
 
