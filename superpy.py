@@ -37,6 +37,22 @@ class Config(Repr):
     def __init__(self, path: str = ".superpy.conf") -> None:
         self.path = path
 
+    @property
+    def date(self):
+        return self._get("date")
+
+    @date.setter
+    def date(self, new_date):
+        self._set("date", new_date)
+
+    @property
+    def ledger(self):
+        return self._get("ledger")
+
+    @ledger.setter
+    def ledger(self, new_ledger):
+        self._set("ledger", new_ledger)
+
     def read(self) -> dict:
         """Read key/value pairs from the config file"""
         try:
@@ -52,11 +68,11 @@ class Config(Repr):
             writer.writeheader()
             writer.writerow(config)
 
-    def get(self, attr: str) -> str:
-        """Set the value for the given key"""
+    def _get(self, attr: str) -> str:
+        """Get the value for the given key"""
         return self.read()[attr]
 
-    def set(self, attr: str, val: str) -> None:
+    def _set(self, attr: str, val: str) -> None:
         """Set the value for the given key"""
         config = self.read() | {attr: val}
         self.write(config)
@@ -116,8 +132,8 @@ class Application(Repr):
 
     def __init__(self, config_path: str = ".superpy.conf") -> None:
         self.config = Config(config_path)
-        self.date = Date.fromisoformat(self.config.get("date"))
-        self.ledger = Ledger(self.config.get("ledger"))
+        self.date = Date.fromisoformat(self.config.date)
+        self.ledger = Ledger(self.config.ledger)
 
     def parse_args(self, argv: Iterable[str]) -> argparse.Namespace:
         """Handles parsing, type-checking and casting of command line arguments"""
@@ -213,17 +229,17 @@ class Application(Repr):
         if args.command == "date":
             if args.date is not None:
                 self.date = args.date
-                self.config.set("date", self.date.isoformat())
+                self.config.date = self.date.isoformat()
             elif args.days is not None:
                 self.date += args.days
-                self.config.set("date", self.date.isoformat())
+                self.config.date = self.date.isoformat()
             else:
                 print(self.date.isoformat())
 
         elif args.command == "ledger":
             if args.ledger is not None:
                 self.ledger = args.ledger
-                self.config.set("ledger", self.ledger.path)
+                self.config.ledger = self.ledger.path
             else:
                 print(self.ledger.path)
 

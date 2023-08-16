@@ -211,11 +211,11 @@ class TestConfig:
     )
     def test_file_not_found(self, configuration, attr, val):
         assert not os.path.exists(configuration.path)
-        assert configuration.get(attr) == val
+        assert getattr(configuration, attr) == val
 
     @pytest.mark.parametrize(
         "attr, val", [("date", "2020-02-02"), ("ledger", "/tmp/foo")]
     )
     def test_get_set(self, configuration, attr, val):
-        configuration.set(attr, val)
-        assert configuration.get(attr) == val
+        setattr(configuration, attr, val)
+        assert getattr(configuration, attr) == val
