@@ -19,7 +19,7 @@ class DayDelta(TimeDelta):
         return super().__new__(cls, days=int(days))
 
 
-class Repr:
+class _AttributeHolder:
     """Base class to define __repr__ for all subclasses"""
 
     def __repr__(self) -> str:
@@ -29,7 +29,7 @@ class Repr:
         )
 
 
-class Config(Repr):
+class Config(_AttributeHolder):
     """An abstraction of the configuration file"""
 
     defaults = dict(date="1970-01-01", ledger="superpy_ledger.csv")
@@ -78,7 +78,7 @@ class Config(Repr):
         self.write(config)
 
 
-class Ledger(Repr):
+class Ledger(_AttributeHolder):
     """A wrapper for reading, writing and processing transaction data in csv format"""
 
     fields = {  # field: field-format
@@ -127,7 +127,7 @@ class Ledger(Repr):
             writer.writerow(transaction)
 
 
-class Application(Repr):
+class Application(_AttributeHolder):
     """Handles the top-level running of the application"""
 
     def __init__(self, config_path: str = ".superpy.conf") -> None:
