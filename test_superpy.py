@@ -199,23 +199,3 @@ class TestLedger:
         superpy.cli(["report", "--balance"])
         out, err = capsys.readouterr()
         assert out == "5755\n"
-
-
-class TestConfig:
-    @pytest.fixture
-    def configuration(self):
-        return superpy.Config()
-
-    @pytest.mark.parametrize(
-        "attr, val", [("date", "1970-01-01"), ("ledger", "superpy_ledger.csv")]
-    )
-    def test_file_not_found(self, configuration, attr, val):
-        assert not os.path.exists(configuration.path)
-        assert getattr(configuration, attr) == val
-
-    @pytest.mark.parametrize(
-        "attr, val", [("date", "2020-02-02"), ("ledger", "/tmp/foo")]
-    )
-    def test_get_set(self, configuration, attr, val):
-        setattr(configuration, attr, val)
-        assert getattr(configuration, attr) == val

@@ -113,55 +113,6 @@ class _AttributeHolder:
         )
 
 
-class Config(_AttributeHolder):
-    """An abstraction of the configuration file"""
-
-    defaults = dict(date="1970-01-01", ledger="superpy_ledger.csv")
-
-    def __init__(self, path: str = ".superpy.conf") -> None:
-        self.path = path
-
-    @property
-    def date(self):
-        return self._get("date")
-
-    @date.setter
-    def date(self, new_date):
-        self._set("date", new_date)
-
-    @property
-    def ledger(self):
-        return self._get("ledger")
-
-    @ledger.setter
-    def ledger(self, new_ledger):
-        self._set("ledger", new_ledger)
-
-    def read(self) -> dict:
-        """Read key/value pairs from the config file"""
-        try:
-            with open(self.path, "r", newline="") as f:
-                return next(csv.DictReader(f))
-        except FileNotFoundError:
-            return self.defaults
-
-    def write(self, config: dict) -> None:
-        """Write key/value pairs to the config file"""
-        with open(self.path, "w", newline="") as f:
-            writer = csv.DictWriter(f, fieldnames=self.defaults.keys())
-            writer.writeheader()
-            writer.writerow(config)
-
-    def _get(self, attr: str) -> str:
-        """Get the value for the given key"""
-        return self.read()[attr]
-
-    def _set(self, attr: str, val: str) -> None:
-        """Set the value for the given key"""
-        config = self.read() | {attr: val}
-        self.write(config)
-
-
 class Ledger(_AttributeHolder):
     """A wrapper for reading, writing and processing transaction data in csv format"""
 
@@ -176,6 +127,9 @@ class Ledger(_AttributeHolder):
 
     def __init__(self, path: str) -> None:
         self.path = path
+
+    def __str__(self):
+        return self.path
 
     def __len__(self) -> int:
         return len(list(iter(self)))
@@ -214,13 +168,32 @@ class Ledger(_AttributeHolder):
 class Application(_AttributeHolder):
     """Handles the top-level running of the application"""
 
-    def __init__(self, config_path: str = ".superpy.conf") -> None:
-        self.config = Config(config_path)
-        self.date = Date.fromisoformat(self.config.date)
-        self.ledger = Ledger(self.config.ledger)
+    def __init__(self, config: str = ".superpy.conf") -> None:
+        self.config = config
+        self.date = Date(1970, 1, 1)
+        self.ledger = Ledger("superpy_ledger.csv")
+
+    def read_config(self) -> None:
+        """Update application properties with values from the config file"""
+        try:
+            with open(self.config, "r", newline="") as f:
+                config = next(csv.DictReader(f))
+        except FileNotFoundError:
+            pass
+        else:
+            self.date = Date.fromisoformat(config["date"])
+            self.ledger = Ledger(config["ledger"])
+
+    def write_config(self) -> None:
+        """Write key/value pairs to the config file"""
+        with open(self.config, "w", newline="") as f:
+            writer = csv.DictWriter(f, fieldnames=["date", "ledger"])
+            writer.writeheader()
+            writer.writerow(dict(date=self.date, ledger=self.ledger))
 
     def run(self, argv: Iterable[str] = None) -> int:
         """Run the program with the given arguments"""
+        self.read_config()
         try:
             args = parse_args(argv)
         except argparse.ArgumentError as err:
@@ -230,17 +203,17 @@ class Application(_AttributeHolder):
         if args.command == "date":
             if args.date is not None:
                 self.date = args.date
-                self.config.date = self.date.isoformat()
+                self.write_config()
             elif args.days is not None:
                 self.date += args.days
-                self.config.date = self.date.isoformat()
+                self.write_config()
             else:
                 print(self.date.isoformat())
 
         elif args.command == "ledger":
             if args.ledger is not None:
                 self.ledger = args.ledger
-                self.config.ledger = self.ledger.path
+                self.write_config()
             else:
                 print(self.ledger.path)
 
