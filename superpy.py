@@ -1,6 +1,5 @@
 import sys
-from datetime import date as Date
-from datetime import timedelta as TimeDelta
+from datetime import date as Date, timedelta as TimeDelta
 import argparse
 import csv
 from typing import Iterable, Union
