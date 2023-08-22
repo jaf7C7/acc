@@ -43,7 +43,7 @@
 - [x] Add Config object
 - [x] Refactor Ledger object
 - [x] Add doc strings
-- [ ] Add type hints (see https://docs.python.org/3/library/typing.html)
+- [x] Add type hints (see https://docs.python.org/3/library/typing.html)
 - [ ] Refactor tests (watch https://youtu.be/W40mpZP9xQQ)
 - [ ] Change ledger format to match <./transactions.csv>
 - [ ] Rethink application use-case (implement double-entry accounting for a small business?)
