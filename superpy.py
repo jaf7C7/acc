@@ -2,16 +2,16 @@ import sys
 from datetime import date as Date, timedelta as TimeDelta
 import argparse
 import csv
-from typing import Iterable, Union
+from typing import Union, Sequence, Generator, Iterable
 
 
-def cli(argv) -> None:
+def cli(argv) -> int:
     """Handles creating and running an Application instance"""
     app = Application()
     return app.run(argv)
 
 
-def parse_args(argv: Iterable[str]) -> argparse.Namespace:
+def parse_args(argv: Union[Sequence[str], None] = None) -> argparse.Namespace:
     """Handles parsing, type-checking and casting of command line arguments"""
     parser = argparse.ArgumentParser(exit_on_error=False)
     subparsers = parser.add_subparsers(dest="command")
@@ -29,7 +29,7 @@ def parse_args(argv: Iterable[str]) -> argparse.Namespace:
     date_parser.add_argument(
         "--advance",
         dest="days",
-        type=DayDelta,
+        type=DayDelta,  # type: ignore [arg-type]
         nargs="?",
         const="1",
         metavar="<days>",
@@ -100,7 +100,7 @@ class DayDelta(TimeDelta):
 
     resolution = TimeDelta(days=1)
 
-    def __new__(cls, days: int) -> TimeDelta:
+    def __new__(cls, days: int) -> TimeDelta:  # type: ignore [misc]
         return super().__new__(cls, days=int(days))
 
 
@@ -138,7 +138,7 @@ class Ledger(_AttributeHolder):
     def __eq__(self, other: object) -> bool:
         return isinstance(other, Ledger) and self.path == other.path
 
-    def __iter__(self) -> Iterable[dict]:
+    def __iter__(self) -> Generator[dict[str, str], None, None]:
         with open(self.path, "r", newline="") as f:
             yield from csv.DictReader(f)
 
@@ -151,13 +151,13 @@ class Ledger(_AttributeHolder):
         """Format a line in the file into a readable form"""
         return "".join(self.fields.values()).format(*transaction)
 
-    def tabulate(self) -> Iterable[str]:
+    def tabulate(self) -> Generator[Sequence[str], None, None]:
         """A generator yielding formatted rows of the ledger contents"""
         yield self.collimate(self.fields.keys()).upper()
         for transaction in self:
             yield self.collimate(transaction.values())
 
-    def append(self, **transaction: dict[str, Union[str, int]]) -> None:
+    def append(self, **transaction: str) -> None:
         """Writes a transaction to the ledger file"""
         with open(self.path, "a", newline="") as f:
             writer = csv.DictWriter(f, fieldnames=self.fields.keys())
@@ -192,7 +192,7 @@ class Application(_AttributeHolder):
             writer.writeheader()
             writer.writerow(dict(date=self.date, ledger=self.ledger))
 
-    def run(self, argv: Iterable[str] = None) -> int:
+    def run(self, argv: Union[Sequence[str], None] = None) -> int:
         """Run the program with the given arguments"""
         self.read_config()
         try:
@@ -222,7 +222,7 @@ class Application(_AttributeHolder):
             debit = args.price * args.units if args.command == "sell" else 0
             credit = args.price * args.units if args.command == "buy" else 0
             self.ledger.append(
-                date=self.date,
+                date=self.date.isoformat(),
                 product=args.product,
                 units=args.units,
                 debit=debit,
@@ -236,3 +236,5 @@ class Application(_AttributeHolder):
             else:
                 for row in self.ledger.tabulate():
                     print(row)
+
+        return 0
