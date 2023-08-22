@@ -43,8 +43,9 @@
 - [x] Add Config object
 - [x] Refactor Ledger object
 - [x] Add doc strings
-- [ ] Add type hints (see https://docs.python.org/3/library/typing.html)
+- [ ] Change ledger format to match <./transactions.csv>
 - [ ] Refactor tests (watch https://youtu.be/W40mpZP9xQQ)
+- [ ] Add type hints (see https://docs.python.org/3/library/typing.html)
 - [ ] Rethink application use-case (implement double-entry accounting for a small business?)
   * e.g. <https://www.youtube.com/watch?v=AoVxJ4JwMtM>
 - [ ] Add two more types of reporting
@@ -52,18 +53,3 @@
 - [ ] Add README.md
 - [ ] Next project!
 
-
-ledger format: <https://www.wikihow.com/Write-an-Accounting-Ledger>
-
-> NOTE: *credit* => money going out, *debit* => money going in
-
-superpy_ledger.csv
-```
-date,product,units,debit,credit,balance
-```
-
-
-superpy TODO
-
-12 August 2023
-04:31
