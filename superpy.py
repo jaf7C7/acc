@@ -148,15 +148,11 @@ class Ledger(_AttributeHolder):
     @property
     def balance(self) -> int:
         """Calculates the total balance from all transactions in the ledger"""
-        # TODO: Refactor
         return sum(
             int(transaction["amount"])
-            for transaction in self
             if transaction["type"] == "debit"
-        ) - sum(
-            int(transaction["amount"])
+            else -int(transaction["amount"])
             for transaction in self
-            if transaction["type"] == "credit"
         )
 
     def collimate(self, transaction: Iterable[str]) -> str:
