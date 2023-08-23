@@ -45,6 +45,7 @@
 - [x] Add doc strings
 - [x] Add type hints (see https://docs.python.org/3/library/typing.html)
 - [x] Change ledger format to match <./transactions.csv>
+- [ ] Refactor balance method
 - [ ] Refactor tests (watch https://youtu.be/W40mpZP9xQQ)
 - [ ] Use a namedtuple for transaction
 - [ ] Rethink application use-case (implement double-entry accounting for a small business?)
