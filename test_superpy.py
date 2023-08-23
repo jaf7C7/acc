@@ -80,19 +80,12 @@ class TestCli:
             superpy.cli(command)
         with open("superpy_ledger.csv", "r", newline="") as ledger:
             assert list(csv.reader(ledger)) == [
-                ["date", "product", "units", "debit", "credit", "balance"],
-                ["1970-01-01", "orange", "1", "0", "150", "-150"],
-                ["1970-01-01", "apple", "10", "0", "850", "-850"],
-                [
-                    "1970-01-01",
-                    "a very large eastern halibut",
-                    "5",
-                    "0",
-                    "2495",
-                    "-2495",
-                ],
-                ["1970-01-01", "apple", "5", "500", "0", "500"],
-                ["1970-01-01", "a very large eastern halibut", "1", "250", "0", "250"],
+                ["id", "date", "amount", "type", "description"],
+                ["0", "1970-01-01", "150", "credit", "orange"],
+                ["1", "1970-01-01", "850", "credit", "apple"],
+                ["2", "1970-01-01", "2495", "credit", "a very large eastern halibut"],
+                ["3", "1970-01-01", "500", "debit", "apple"],
+                ["4", "1970-01-01", "250", "debit", "a very large eastern halibut"],
             ]
 
 
@@ -155,12 +148,12 @@ class TestLedger:
     @pytest.fixture
     def mock_ledger(self):
         ledger = [
-            ["date", "product", "units", "debit", "credit", "balance"],
-            ["1970-01-01", "frobule", "1", "0", "150", "-150"],
-            ["1970-01-01", "wobjock", "10", "0", "850", "-850"],
-            ["1970-01-01", "frobulator", "5", "0", "2495", "-2495"],
-            ["1970-01-01", "wobjock", "10", "4000", "0", "4000"],
-            ["1970-01-01", "frobulator", "5", "5250", "0", "5250"],
+            ["id", "date", "amount", "type", "description"],
+            ["0", "1970-01-01", "150", "credit", "frobule"],
+            ["1", "1970-01-01", "850", "credit", "wobjock"],
+            ["2", "1970-01-01", "2495", "credit", "frobulator"],
+            ["3", "1970-01-01", "4000", "debit", "wobjock"],
+            ["4", "1970-01-01", "5250", "debit", "frobulator"],
         ]
         with open("superpy_ledger.csv", "w", newline="") as f:
             writer = csv.writer(f)
@@ -170,29 +163,28 @@ class TestLedger:
     def test_write(self, application):
         ledger = superpy.Ledger("superpy_ledger.csv")
         ledger.append(
+            id=len(ledger),
             date=datetime.date(1970, 1, 1),
-            product="Transonic Fremules",
-            units=1,
-            debit=0,
-            credit=597,
-            balance=-597,
+            amount=597,
+            type="credit",
+            description="Transonic Fremules",
         )
         with open("superpy_ledger.csv", "r", newline="") as ledger:
             assert list(csv.reader(ledger)) == [
-                ["date", "product", "units", "debit", "credit", "balance"],
-                ["1970-01-01", "Transonic Fremules", "1", "0", "597", "-597"],
+                ["id", "date", "amount", "type", "description"],
+                ["0", "1970-01-01", "597", "credit", "Transonic Fremules"],
             ]
 
     def test_print(self, capsys, mock_ledger):
         superpy.cli(["report"])
         out, err = capsys.readouterr()
         assert out == (
-            "DATE        PRODUCT        UNITS   DEBIT  CREDIT BALANCE\n"
-            "1970-01-01  frobule            1       0     150    -150\n"
-            "1970-01-01  wobjock           10       0     850    -850\n"
-            "1970-01-01  frobulator         5       0    2495   -2495\n"
-            "1970-01-01  wobjock           10    4000       0    4000\n"
-            "1970-01-01  frobulator         5    5250       0    5250\n"
+            "ID    DATE        AMOUNT    TYPE    DESCRIPTION\n"
+            "0     1970-01-01  150       credit  frobule\n"
+            "1     1970-01-01  850       credit  wobjock\n"
+            "2     1970-01-01  2495      credit  frobulator\n"
+            "3     1970-01-01  4000      debit   wobjock\n"
+            "4     1970-01-01  5250      debit   frobulator\n"
         )
 
     def test_balance(self, capsys, mock_ledger):

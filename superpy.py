@@ -117,13 +117,13 @@ class _AttributeHolder:
 class Ledger(_AttributeHolder):
     """A wrapper for reading, writing and processing transaction data in csv format"""
 
-    fields = {  # field: field-format
+    # field: format-spec
+    fields = {
+        "id": "{:6}",
         "date": "{:12}",
-        "product": "{:12}",
-        "units": "{:>8}",
-        "debit": "{:>8}",
-        "credit": "{:>8}",
-        "balance": "{:>8}",
+        "amount": "{:10}",
+        "type": "{:8}",
+        "description": "{}",
     }
 
     def __init__(self, path: str) -> None:
@@ -133,7 +133,10 @@ class Ledger(_AttributeHolder):
         return self.path
 
     def __len__(self) -> int:
-        return len(list(iter(self)))
+        try:
+            return len(list(iter(self)))
+        except FileNotFoundError:
+            return 0
 
     def __eq__(self, other: object) -> bool:
         return isinstance(other, Ledger) and self.path == other.path
@@ -145,7 +148,16 @@ class Ledger(_AttributeHolder):
     @property
     def balance(self) -> int:
         """Calculates the total balance from all transactions in the ledger"""
-        return sum(int(transaction["balance"]) for transaction in self)
+        # TODO: Refactor
+        return sum(
+            int(transaction["amount"])
+            for transaction in self
+            if transaction["type"] == "debit"
+        ) - sum(
+            int(transaction["amount"])
+            for transaction in self
+            if transaction["type"] == "credit"
+        )
 
     def collimate(self, transaction: Iterable[str]) -> str:
         """Format a line in the file into a readable form"""
@@ -157,7 +169,7 @@ class Ledger(_AttributeHolder):
         for transaction in self:
             yield self.collimate(transaction.values())
 
-    def append(self, **transaction: str) -> None:
+    def append(self, **transaction: Union[str, int]) -> None:
         """Writes a transaction to the ledger file"""
         with open(self.path, "a", newline="") as f:
             writer = csv.DictWriter(f, fieldnames=self.fields.keys())
@@ -219,15 +231,12 @@ class Application(_AttributeHolder):
                 print(self.ledger.path)
 
         elif args.command in {"buy", "sell"}:
-            debit = args.price * args.units if args.command == "sell" else 0
-            credit = args.price * args.units if args.command == "buy" else 0
             self.ledger.append(
+                id=len(self.ledger),
                 date=self.date.isoformat(),
-                product=args.product,
-                units=args.units,
-                debit=debit,
-                credit=credit,
-                balance=(debit - credit),
+                type=("credit" if args.command == "buy" else "debit"),
+                amount=(args.price * args.units),
+                description=args.product,
             )
 
         elif args.command == "report":
