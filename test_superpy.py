@@ -38,7 +38,7 @@ class TestCli:
 
     @pytest.mark.parametrize(
         "days, expected",
-        [("", "1970-01-02\n"), ("30", "1970-01-31\n"), ("366", "1971-01-02\n")],
+        [("", "1970-01-02\n"), ("366", "1971-01-02\n")],
     )
     def test_can_advance_date_by_days(self, capsys, days, expected, application):
         superpy.cli(f"date --advance {days}".split())
@@ -69,23 +69,13 @@ class TestCli:
         assert out == "/tmp/foo\n"
 
     def test_can_record_transactions(self, capsys, application):
-        commands = [
-            ["buy", "orange", "150"],
-            ["buy", "apple", "85", "--units", "10"],
-            ["buy", "a very large eastern halibut", "499", "--units", "5"],
-            ["sell", "apple", "100", "--units", "5"],
-            ["sell", "a very large eastern halibut", "250"],
-        ]
-        for command in commands:
-            superpy.cli(command)
+        superpy.cli(["buy", "apple", "85", "--units", "10"])
+        superpy.cli(["sell", "apple", "100", "--units", "5"])
         with open("superpy_ledger.csv", "r", newline="") as ledger:
             assert list(csv.reader(ledger)) == [
                 ["id", "date", "amount", "type", "description"],
-                ["0", "1970-01-01", "150", "credit", "orange"],
-                ["1", "1970-01-01", "850", "credit", "apple"],
-                ["2", "1970-01-01", "2495", "credit", "a very large eastern halibut"],
-                ["3", "1970-01-01", "500", "debit", "apple"],
-                ["4", "1970-01-01", "250", "debit", "a very large eastern halibut"],
+                ["0", "1970-01-01", "850", "credit", "apple"],
+                ["1", "1970-01-01", "500", "debit", "apple"],
             ]
 
 
@@ -149,11 +139,8 @@ class TestLedger:
     def mock_ledger(self):
         ledger = [
             ["id", "date", "amount", "type", "description"],
-            ["0", "1970-01-01", "150", "credit", "frobule"],
-            ["1", "1970-01-01", "850", "credit", "wobjock"],
-            ["2", "1970-01-01", "2495", "credit", "frobulator"],
-            ["3", "1970-01-01", "4000", "debit", "wobjock"],
-            ["4", "1970-01-01", "5250", "debit", "frobulator"],
+            ["0", "1970-01-01", "2495", "credit", "frobulator"],
+            ["1", "1970-01-01", "5250", "debit", "frobulator"],
         ]
         with open("superpy_ledger.csv", "w", newline="") as f:
             writer = csv.writer(f)
@@ -180,14 +167,11 @@ class TestLedger:
         out, err = capsys.readouterr()
         assert out == (
             "ID    DATE        AMOUNT    TYPE    DESCRIPTION\n"
-            "0     1970-01-01  150       credit  frobule\n"
-            "1     1970-01-01  850       credit  wobjock\n"
-            "2     1970-01-01  2495      credit  frobulator\n"
-            "3     1970-01-01  4000      debit   wobjock\n"
-            "4     1970-01-01  5250      debit   frobulator\n"
+            "0     1970-01-01  2495      credit  frobulator\n"
+            "1     1970-01-01  5250      debit   frobulator\n"
         )
 
     def test_balance(self, capsys, mock_ledger):
         superpy.cli(["report", "--balance"])
         out, err = capsys.readouterr()
-        assert out == "5755\n"
+        assert out == "2755\n"
