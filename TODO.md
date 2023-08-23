@@ -46,7 +46,7 @@
 - [x] Add type hints (see https://docs.python.org/3/library/typing.html)
 - [x] Change ledger format to match <./transactions.csv>
 - [x] Refactor balance method
-- [ ] Refactor tests (watch https://youtu.be/W40mpZP9xQQ)
+- [x] Refactor tests (watch https://youtu.be/W40mpZP9xQQ)
 - [ ] Make command-line options and arguments consistent with ledger format
 - [ ] Remove duplication of config and ledger paths in application and tests
 - [ ] Use a namedtuple for transaction
