@@ -47,38 +47,36 @@ def parse_args(argv: Union[Sequence[str], None] = None) -> argparse.Namespace:
         help="the path to the new ledger file",
     )
 
-    buy_parser = subparsers.add_parser(
-        "buy", exit_on_error=False, help="record a purchase in the ledger"
+    credit_parser = subparsers.add_parser(
+        "credit", exit_on_error=False, help="record a credit transaction in the ledger"
     )
-    buy_parser.add_argument(
-        "product", metavar="<product>", help="the name of the product to be bought"
-    )
-    buy_parser.add_argument(
-        "price", type=int, metavar="<price>", help="the product price in cents"
-    )
-    buy_parser.add_argument(
-        "--units",
-        default="1",
+    credit_parser.add_argument(
+        "amount",
+        metavar="<amount>",
         type=int,
-        metavar="<units>",
-        help="how many units to buy (default %(default)s)",
+        help="the amount to be credited",
+    )
+    credit_parser.add_argument(
+        "--description",
+        "-d",
+        metavar="<description>",
+        help="a short description of the transation",
     )
 
-    sell_parser = subparsers.add_parser(
-        "sell", exit_on_error=False, help="record a sale in the ledger"
+    debit_parser = subparsers.add_parser(
+        "debit", exit_on_error=False, help="record a debit transaction in the ledger"
     )
-    sell_parser.add_argument(
-        "product", metavar="<product>", help="the name of the product to be sold"
-    )
-    sell_parser.add_argument(
-        "price", type=int, metavar="<price>", help="the product price in cents"
-    )
-    sell_parser.add_argument(
-        "--units",
-        default="1",
+    debit_parser.add_argument(
+        "amount",
+        metavar="<amount>",
         type=int,
-        metavar="<units>",
-        help="how many units to sell (default %(default)s)",
+        help="the amount to be debited",
+    )
+    debit_parser.add_argument(
+        "--description",
+        "-d",
+        metavar="<description>",
+        help="a short description of the transation",
     )
 
     report_parser = subparsers.add_parser(
@@ -226,13 +224,13 @@ class Application(_AttributeHolder):
             else:
                 print(self.ledger.path)
 
-        elif args.command in {"buy", "sell"}:
+        elif args.command in {"debit", "credit"}:
             self.ledger.append(
                 id=len(self.ledger),
                 date=self.date.isoformat(),
-                type=("credit" if args.command == "buy" else "debit"),
-                amount=(args.price * args.units),
-                description=args.product,
+                type=args.command,
+                amount=args.amount,
+                description=args.description,
             )
 
         elif args.command == "report":

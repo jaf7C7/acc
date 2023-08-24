@@ -69,8 +69,8 @@ class TestCli:
         assert out == "/tmp/foo\n"
 
     def test_can_record_transactions(self, capsys, application):
-        superpy.cli(["buy", "apple", "85", "--units", "10"])
-        superpy.cli(["sell", "apple", "100", "--units", "5"])
+        superpy.cli(["credit", "850", "-d", "apple"])
+        superpy.cli(["debit", "500", "--description", "apple"])
         with open("superpy_ledger.csv", "r", newline="") as ledger:
             assert list(csv.reader(ledger)) == [
                 ["id", "date", "amount", "type", "description"],
@@ -107,15 +107,15 @@ class TestParseArgs:
         )
 
     @pytest.mark.parametrize(
-        "args, product, price, units",
+        "args, command, amount, description",
         [
-            (["buy", "orange", "15"], "orange", 15, 1),
-            (["buy", "apple", "75", "--units", "42"], "apple", 75, 42),
+            (["credit", "15", "--description", "orange"], "credit", 15, "orange"),
+            (["debit", "3150", "-d", "apple"], "debit", 3150, "apple"),
         ],
     )
-    def test_buy(self, args, product, price, units):
+    def test_buy(self, args, command, amount, description):
         assert superpy.parse_args(args) == argparse.Namespace(
-            command="buy", product=product, price=price, units=units
+            command=command, amount=amount, description=description
         )
 
     @pytest.mark.parametrize(
