@@ -47,7 +47,7 @@
 - [x] Change ledger format to match <./transactions.csv>
 - [x] Refactor balance method
 - [x] Refactor tests (watch https://youtu.be/W40mpZP9xQQ)
-- [ ] Make command-line options and arguments consistent with ledger format
+- [x] Make command-line options and arguments consistent with ledger format
 - [ ] Remove duplication of config and ledger paths in application and tests
 - [ ] Use a namedtuple for transaction
 - [ ] Rethink application use-case (implement double-entry accounting for a small business?)
