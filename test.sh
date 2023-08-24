@@ -1,5 +1,5 @@
 # Format, lint and test the entire project
-find . -name \*.py | entr -cs '
+find . -name \*superpy.py | entr -cs '
 	print_header () {
 		: "${COLUMNS:=79}"
 		set -- " $* "
