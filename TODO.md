@@ -48,7 +48,7 @@
 - [x] Refactor balance method
 - [x] Refactor tests (watch https://youtu.be/W40mpZP9xQQ)
 - [x] Make command-line options and arguments consistent with ledger format
-- [ ] Remove duplication of config and ledger paths in application and tests
+- [x] Remove duplication of config and ledger paths in application and tests
 - [ ] Use a namedtuple for transaction
 - [ ] Rethink application use-case (implement double-entry accounting for a small business?)
   * e.g. <https://www.youtube.com/watch?v=AoVxJ4JwMtM>
