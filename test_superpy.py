@@ -155,7 +155,7 @@ class TestLedger:
         ledger = superpy.Ledger(LEDGER_PATH)
         ledger.append(
             id=len(ledger),
-            date=datetime.date(1970, 1, 1),
+            date=datetime.date(1970, 1, 1).isoformat(),
             amount=597,
             type="credit",
             description="Transonic Fremules",
