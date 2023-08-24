@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "superpy"
+name = "acc"
 version = "0.0.1"
 authors = [
   { name="Joss Appleton-Fox", email="jossappletonfox@protonmail.com" },
@@ -12,8 +12,8 @@ description = "Track and manage retail transactions"
 requires-python = ">=3.9"
 
 [project.urls]
-"Homepage" = "https://github.com/jaf7C7/superpy"
-"Bug Tracker" = "https://github.com/jaf7C7/superpy/issues"
+"Homepage" = "https://github.com/jaf7C7/acc"
+"Bug Tracker" = "https://github.com/jaf7C7/acc/issues"
 
 # https://docs.pytest.org/en/7.1.x/explanation/goodpractices.html#choosing-an-import-mode
 [tool.pytest.ini_options]

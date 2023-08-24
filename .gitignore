@@ -1,6 +1,6 @@
 .*.sw?
 __pycache__/
-venv/
+.venv/
 .coverage
 \#*
 .emacs.desktop

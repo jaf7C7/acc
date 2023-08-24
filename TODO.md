@@ -1,6 +1,6 @@
 # TODO
 
-- [ ] Rename `superpy` -> `acc`
+- [ ] Rename `acc` -> `acc`
 - [ ] Make executable
 - [ ] Make a package
 - [ ] Add two more types of reporting

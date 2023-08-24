@@ -1,5 +1,5 @@
 # Format, lint and test the entire project
-find . -name \*superpy.py | entr -cs '
+find . -name acc.py -o -name test_acc.py | entr -cs '
 	print_header () {
 		: "${COLUMNS:=79}"
 		set -- " $* "
@@ -12,7 +12,7 @@ find . -name \*superpy.py | entr -cs '
 	}
 
 	set -e
-	. venv/bin/activate
+	. .venv/bin/activate
 
 	test -n "$TMUX_PANE" && tmux clear -t "$TMUX_PANE"
 

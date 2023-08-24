@@ -5,8 +5,8 @@ import csv
 from typing import Union, Sequence, Generator, Iterable
 
 
-CONFIG_PATH = ".superpy.conf"
-LEDGER_PATH = "superpy_ledger.csv"
+CONFIG_PATH = ".acc.conf"
+LEDGER_PATH = "acc_ledger.csv"
 
 
 def cli(argv) -> int:
