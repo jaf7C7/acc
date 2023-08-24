@@ -6,6 +6,10 @@ import pytest
 import superpy
 
 
+CONFIG_PATH = ".superpy.conf"
+LEDGER_PATH = "superpy_ledger.csv"
+
+
 @pytest.fixture
 def application():
     return superpy.Application()
@@ -14,7 +18,7 @@ def application():
 @pytest.fixture(autouse=True)
 def clean_up_test_files():
     yield
-    for file in ".superpy.conf", "superpy_ledger.csv":
+    for file in CONFIG_PATH, LEDGER_PATH:
         try:
             os.unlink(file)
         except FileNotFoundError:
@@ -71,7 +75,7 @@ class TestCli:
     def test_can_record_transactions(self, capsys, application):
         superpy.cli(["credit", "850", "-d", "apple"])
         superpy.cli(["debit", "500", "--description", "apple"])
-        with open("superpy_ledger.csv", "r", newline="") as ledger:
+        with open(LEDGER_PATH, "r", newline="") as ledger:
             assert list(csv.reader(ledger)) == [
                 ["id", "date", "amount", "type", "description"],
                 ["0", "1970-01-01", "850", "credit", "apple"],
@@ -142,13 +146,13 @@ class TestLedger:
             ["0", "1970-01-01", "2495", "credit", "frobulator"],
             ["1", "1970-01-01", "5250", "debit", "frobulator"],
         ]
-        with open("superpy_ledger.csv", "w", newline="") as f:
+        with open(LEDGER_PATH, "w", newline="") as f:
             writer = csv.writer(f)
             for transaction in ledger:
                 writer.writerow(transaction)
 
     def test_write(self, application):
-        ledger = superpy.Ledger("superpy_ledger.csv")
+        ledger = superpy.Ledger(LEDGER_PATH)
         ledger.append(
             id=len(ledger),
             date=datetime.date(1970, 1, 1),
@@ -156,7 +160,7 @@ class TestLedger:
             type="credit",
             description="Transonic Fremules",
         )
-        with open("superpy_ledger.csv", "r", newline="") as ledger:
+        with open(LEDGER_PATH, "r", newline="") as ledger:
             assert list(csv.reader(ledger)) == [
                 ["id", "date", "amount", "type", "description"],
                 ["0", "1970-01-01", "597", "credit", "Transonic Fremules"],

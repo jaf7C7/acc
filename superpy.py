@@ -5,6 +5,10 @@ import csv
 from typing import Union, Sequence, Generator, Iterable
 
 
+CONFIG_PATH = ".superpy.conf"
+LEDGER_PATH = "superpy_ledger.csv"
+
+
 def cli(argv) -> int:
     """Handles creating and running an Application instance"""
     app = Application()
@@ -175,10 +179,10 @@ class Ledger(_AttributeHolder):
 class Application(_AttributeHolder):
     """Handles the top-level running of the application"""
 
-    def __init__(self, config: str = ".superpy.conf") -> None:
+    def __init__(self, config: str = CONFIG_PATH) -> None:
         self.config = config
         self.date = Date(1970, 1, 1)
-        self.ledger = Ledger("superpy_ledger.csv")
+        self.ledger = Ledger(LEDGER_PATH)
 
     def read_config(self) -> None:
         """Update application properties with values from the config file"""
