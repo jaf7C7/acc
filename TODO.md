@@ -1,9 +1,11 @@
 # TODO
 
-- [ ] Rethink application use-case (implement double-entry accounting for a small business?)
-  * e.g. <https://www.youtube.com/watch?v=AoVxJ4JwMtM>
+- [ ] Rename `superpy` -> `acc`
+- [ ] Make executable
+- [ ] Make a package
 - [ ] Add two more types of reporting
 - [ ] Report over a range of dates
+- [ ] Streamline cli a bit (e.g. `acc balance` vs. `acc report --balance`)
 - [ ] Add documentation
 - [ ] Add README.md
 - [ ] Next project!
