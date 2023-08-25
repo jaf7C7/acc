@@ -95,6 +95,8 @@ def parse_args(argv: Union[Sequence[str], None] = None) -> argparse.Namespace:
         help="the net value of ledger transactions",
     )
 
+    if not argv:
+        argv = ["--help"]
     return parser.parse_args(argv)
 
 
