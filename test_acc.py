@@ -174,9 +174,9 @@ class TestLedger:
         acc.cli(["report"])
         out, err = capsys.readouterr()
         assert out == (
-            "ID    DATE        AMOUNT    TYPE    DESCRIPTION\n"
-            "0     1970-01-01  2495.00   credit  frobulator\n"
-            "1     1970-01-01  5250.00   debit   frobulator\n"
+            "ID      DATE        AMOUNT    TYPE    DESCRIPTION\n"
+            "0       1970-01-01  2495.00   credit  frobulator\n"
+            "1       1970-01-01  5250.00   debit   frobulator\n"
         )
 
     def test_balance(self, capsys, mock_ledger):

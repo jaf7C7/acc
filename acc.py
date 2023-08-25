@@ -124,7 +124,7 @@ class Ledger(_AttributeHolder):
 
     # field: format-spec
     fields = {
-        "id": "{:6}",
+        "id": "{:8}",
         "date": "{:12}",
         "amount": "{:10}",
         "type": "{:8}",
