@@ -16,8 +16,8 @@ find src/ tests/ -name \*.py | entr -cs '
 
 	test -n "$TMUX_PANE" && tmux clear -t "$TMUX_PANE"
 
-    print_header "File(s) changed"
-    echo "$0"
+    print_header "File(s) changed since last commit"
+    git diff --name-only
 
 	print_header "Black"
 	black --line-length 90 src/ tests/
