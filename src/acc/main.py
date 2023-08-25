@@ -10,12 +10,6 @@ CONFIG_PATH = ".acc.conf"
 LEDGER_PATH = "acc_ledger.csv"
 
 
-def cli(argv) -> int:
-    """Handles creating and running an Application instance"""
-    app = Application()
-    return app.run(argv)
-
-
 def parse_args(argv: Union[Sequence[str], None] = None) -> argparse.Namespace:
     """Handles parsing, type-checking and casting of command line arguments"""
     parser = argparse.ArgumentParser(exit_on_error=False)

@@ -1,5 +1,6 @@
 # Format, lint and test the entire project
-find . -name \*acc.py -prune | entr -cs '
+find src/ tests/ -name \*main.py
+find src/ tests/ -name \*main.py | entr -cs '
 	print_header () {
 		: "${COLUMNS:=79}"
 		set -- " $* "
