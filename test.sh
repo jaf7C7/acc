@@ -1,5 +1,5 @@
 # Format, lint and test the entire project
-find . -name acc.py -o -name test_acc.py | entr -cs '
+find . -name \*acc.py -prune | entr -cs '
 	print_header () {
 		: "${COLUMNS:=79}"
 		set -- " $* "
