@@ -1,6 +1,5 @@
 # TODO
 
-- [ ] Decimal instead of int?
 - [ ] Add two more types of reporting
 - [ ] Report over a range of dates
 - [ ] Streamline cli a bit (e.g. `acc balance` vs. `acc report --balance`)
