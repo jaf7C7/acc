@@ -1,7 +1,7 @@
 import sys
 import argparse
 import csv
-from datetime import date as Date, timedelta as TimeDelta
+import datetime
 from decimal import Decimal
 from typing import Union, Sequence, Generator, Iterable
 
@@ -27,14 +27,14 @@ def parse_args(argv: Union[Sequence[str], None] = None) -> argparse.Namespace:
     date_parser.add_argument(
         "date",
         nargs="?",
-        type=Date.fromisoformat,
+        type=datetime.date.fromisoformat,
         metavar="<date>",
         help="a date in yyyy-mm-dd iso format",
     )
     date_parser.add_argument(
         "--advance",
         dest="days",
-        type=DayDelta,  # type: ignore [arg-type]
+        type=daydelta,  # type: ignore [arg-type]
         nargs="?",
         const="1",
         metavar="<days>",
@@ -98,12 +98,12 @@ def parse_args(argv: Union[Sequence[str], None] = None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
-class DayDelta(TimeDelta):
-    """A TimeDelta object with a resolution of 1 day"""
+class daydelta(datetime.timedelta):
+    """A datetime.timedelta object with a resolution of 1 day"""
 
-    resolution = TimeDelta(days=1)
+    resolution = datetime.timedelta(days=1)
 
-    def __new__(cls, days: int) -> TimeDelta:  # type: ignore [misc]
+    def __new__(cls, days: int) -> datetime.timedelta:  # type: ignore [misc]
         return super().__new__(cls, days=int(days))
 
 
@@ -182,7 +182,7 @@ class Application(_AttributeHolder):
 
     def __init__(self, config: str = CONFIG_PATH) -> None:
         self.config = config
-        self.date = Date(1970, 1, 1)
+        self.date = datetime.date(1970, 1, 1)
         self.ledger = Ledger(LEDGER_PATH)
 
     def read_config(self) -> None:
@@ -193,7 +193,7 @@ class Application(_AttributeHolder):
         except FileNotFoundError:
             pass
         else:
-            self.date = Date.fromisoformat(config["date"])
+            self.date = datetime.date.fromisoformat(config["date"])
             self.ledger = Ledger(config["ledger"])
 
     def write_config(self) -> None:

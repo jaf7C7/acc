@@ -90,8 +90,8 @@ class TestParseArgs:
         [
             (["date"], None, None),
             (["date", "2020-02-02"], datetime.date(2020, 2, 2), None),
-            (["date", "--advance", "1"], None, acc.DayDelta(1)),
-            (["date", "--advance"], None, acc.DayDelta(1)),
+            (["date", "--advance", "1"], None, acc.daydelta(1)),
+            (["date", "--advance"], None, acc.daydelta(1)),
         ],
     )
     def test_date(self, args, date, days):
