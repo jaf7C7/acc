@@ -4,6 +4,7 @@ import datetime
 import csv
 import pytest
 import acc
+from decimal import Decimal
 
 
 CONFIG_PATH = ".acc.conf"
@@ -78,8 +79,8 @@ class TestCli:
         with open(LEDGER_PATH, "r", newline="") as ledger:
             assert list(csv.reader(ledger)) == [
                 ["id", "date", "amount", "type", "description"],
-                ["0", "1970-01-01", "850", "credit", "apple"],
-                ["1", "1970-01-01", "500", "debit", "apple"],
+                ["0", "1970-01-01", "850.00", "credit", "apple"],
+                ["1", "1970-01-01", "500.00", "debit", "apple"],
             ]
 
 
@@ -106,15 +107,18 @@ class TestParseArgs:
         ],
     )
     def test_ledger(self, args, ledger):
-        assert acc.parse_args(args) == argparse.Namespace(
-            command="ledger", ledger=ledger
-        )
+        assert acc.parse_args(args) == argparse.Namespace(command="ledger", ledger=ledger)
 
     @pytest.mark.parametrize(
         "args, command, amount, description",
         [
-            (["credit", "15", "--description", "orange"], "credit", 15, "orange"),
-            (["debit", "3150", "-d", "apple"], "debit", 3150, "apple"),
+            (
+                ["credit", "15", "--description", "orange"],
+                "credit",
+                Decimal("15.00"),
+                "orange",
+            ),
+            (["debit", "3150", "-d", "apple"], "debit", Decimal("3150.00"), "apple"),
         ],
     )
     def test_buy(self, args, command, amount, description):
@@ -143,8 +147,8 @@ class TestLedger:
     def mock_ledger(self):
         ledger = [
             ["id", "date", "amount", "type", "description"],
-            ["0", "1970-01-01", "2495", "credit", "frobulator"],
-            ["1", "1970-01-01", "5250", "debit", "frobulator"],
+            ["0", "1970-01-01", "2495.00", "credit", "frobulator"],
+            ["1", "1970-01-01", "5250.00", "debit", "frobulator"],
         ]
         with open(LEDGER_PATH, "w", newline="") as f:
             writer = csv.writer(f)
@@ -156,14 +160,14 @@ class TestLedger:
         ledger.append(
             id=len(ledger),
             date=datetime.date(1970, 1, 1).isoformat(),
-            amount=597,
+            amount="{:.2f}".format(Decimal("597")),
             type="credit",
             description="Transonic Fremules",
         )
         with open(LEDGER_PATH, "r", newline="") as ledger:
             assert list(csv.reader(ledger)) == [
                 ["id", "date", "amount", "type", "description"],
-                ["0", "1970-01-01", "597", "credit", "Transonic Fremules"],
+                ["0", "1970-01-01", "597.00", "credit", "Transonic Fremules"],
             ]
 
     def test_print(self, capsys, mock_ledger):
@@ -171,11 +175,11 @@ class TestLedger:
         out, err = capsys.readouterr()
         assert out == (
             "ID    DATE        AMOUNT    TYPE    DESCRIPTION\n"
-            "0     1970-01-01  2495      credit  frobulator\n"
-            "1     1970-01-01  5250      debit   frobulator\n"
+            "0     1970-01-01  2495.00   credit  frobulator\n"
+            "1     1970-01-01  5250.00   debit   frobulator\n"
         )
 
     def test_balance(self, capsys, mock_ledger):
         acc.cli(["report", "--balance"])
         out, err = capsys.readouterr()
-        assert out == "2755\n"
+        assert out == "2755.00\n"

@@ -1,7 +1,8 @@
 import sys
-from datetime import date as Date, timedelta as TimeDelta
 import argparse
 import csv
+from datetime import date as Date, timedelta as TimeDelta
+from decimal import Decimal
 from typing import Union, Sequence, Generator, Iterable
 
 
@@ -57,7 +58,7 @@ def parse_args(argv: Union[Sequence[str], None] = None) -> argparse.Namespace:
     credit_parser.add_argument(
         "amount",
         metavar="<amount>",
-        type=int,
+        type=Decimal,
         help="the amount to be credited",
     )
     credit_parser.add_argument(
@@ -73,7 +74,7 @@ def parse_args(argv: Union[Sequence[str], None] = None) -> argparse.Namespace:
     debit_parser.add_argument(
         "amount",
         metavar="<amount>",
-        type=int,
+        type=Decimal,
         help="the amount to be debited",
     )
     debit_parser.add_argument(
@@ -151,9 +152,9 @@ class Ledger(_AttributeHolder):
     def balance(self) -> int:
         """Calculates the total balance from all transactions in the ledger"""
         return sum(
-            int(transaction["amount"])
+            Decimal(transaction["amount"])  # type: ignore[misc]
             if transaction["type"] == "debit"
-            else -int(transaction["amount"])
+            else -Decimal(transaction["amount"])
             for transaction in self
         )
 
@@ -233,13 +234,13 @@ class Application(_AttributeHolder):
                 id=len(self.ledger),
                 date=self.date.isoformat(),
                 type=args.command,
-                amount=args.amount,
+                amount="{:.2f}".format(args.amount),
                 description=args.description,
             )
 
         elif args.command == "report":
             if args.balance is True:
-                print(self.ledger.balance)
+                print("{:.2f}".format(self.ledger.balance))
             else:
                 for row in self.ledger.tabulate():
                     print(row)
