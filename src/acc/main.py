@@ -115,7 +115,7 @@ class Application(_AttributeHolder):
             writer.writeheader()
             writer.writerow(dict(date=self.date, ledger=self.ledger))
 
-    def date_command(self, args: argparse.Namespace) -> None:
+    def _date_command(self, args: argparse.Namespace) -> None:
         if args.date is not None:
             self.date = args.date
             self.write_config()
@@ -125,14 +125,14 @@ class Application(_AttributeHolder):
         else:
             print(self.date.isoformat())
 
-    def ledger_command(self, args: argparse.Namespace) -> None:
+    def _ledger_command(self, args: argparse.Namespace) -> None:
         if args.ledger is not None:
             self.ledger = args.ledger
             self.write_config()
         else:
             print(self.ledger.path)
 
-    def transaction_command(self, args: argparse.Namespace) -> None:
+    def _transaction_command(self, args: argparse.Namespace) -> None:
         self.ledger.append(
             id=len(self.ledger),
             date=self.date.isoformat(),
@@ -141,7 +141,7 @@ class Application(_AttributeHolder):
             description=args.description,
         )
 
-    def report_command(self, args: argparse.Namespace) -> None:
+    def _report_command(self, args: argparse.Namespace) -> None:
         if args.balance is True:
             print("{:.2f}".format(self.ledger.balance))
         else:
@@ -172,7 +172,7 @@ class Application(_AttributeHolder):
             metavar="<days>",
             help="the number of days to advance (default %(const)s day)",
         )
-        date_parser.set_defaults(func=self.date_command)
+        date_parser.set_defaults(func=self._date_command)
 
         ledger_parser = subparsers.add_parser(
             "ledger", exit_on_error=False, help="select a new ledger file"
@@ -184,12 +184,12 @@ class Application(_AttributeHolder):
             metavar="<ledger>",
             help="the path to the new ledger file",
         )
-        ledger_parser.set_defaults(func=self.ledger_command)
+        ledger_parser.set_defaults(func=self._ledger_command)
 
         credit_parser = subparsers.add_parser(
             "credit",
             exit_on_error=False,
-            help="record a credit transaction in the ledger",
+            help="credit the current ledger",
         )
         credit_parser.add_argument(
             "amount",
@@ -203,10 +203,10 @@ class Application(_AttributeHolder):
             metavar="<description>",
             help="a short description of the transation",
         )
-        credit_parser.set_defaults(func=self.transaction_command)
+        credit_parser.set_defaults(func=self._transaction_command)
 
         debit_parser = subparsers.add_parser(
-            "debit", exit_on_error=False, help="record a debit transaction in the ledger"
+            "debit", exit_on_error=False, help="debit the current ledger"
         )
         debit_parser.add_argument(
             "amount",
@@ -220,7 +220,7 @@ class Application(_AttributeHolder):
             metavar="<description>",
             help="a short description of the transation",
         )
-        debit_parser.set_defaults(func=self.transaction_command)
+        debit_parser.set_defaults(func=self._transaction_command)
 
         report_parser = subparsers.add_parser(
             "report",
@@ -232,7 +232,7 @@ class Application(_AttributeHolder):
             action="store_true",
             help="the net value of ledger transactions",
         )
-        report_parser.set_defaults(func=self.report_command)
+        report_parser.set_defaults(func=self._report_command)
 
         if not argv:
             argv = ["--help"]

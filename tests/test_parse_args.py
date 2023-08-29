@@ -21,7 +21,7 @@ def app():
 )
 def test_date(args, date, days, app):
     assert app.parse_args(args) == argparse.Namespace(
-        command="date", date=date, days=days, func=app.date_command
+        command="date", date=date, days=days, func=app._date_command
     )
 
 
@@ -34,7 +34,7 @@ def test_date(args, date, days, app):
 )
 def test_ledger(args, ledger, app):
     assert app.parse_args(args) == argparse.Namespace(
-        command="ledger", ledger=ledger, func=app.ledger_command
+        command="ledger", ledger=ledger, func=app._ledger_command
     )
 
 
@@ -55,7 +55,7 @@ def test_debit_credit(args, command, amount, description, app):
         command=command,
         amount=amount,
         description=description,
-        func=app.transaction_command,
+        func=app._transaction_command,
     )
 
 
@@ -64,7 +64,7 @@ def test_debit_credit(args, command, amount, description, app):
 )
 def test_report(args, balance, app):
     assert app.parse_args(args) == argparse.Namespace(
-        command="report", balance=balance, func=app.report_command
+        command="report", balance=balance, func=app._report_command
     )
 
 
