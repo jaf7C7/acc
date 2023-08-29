@@ -128,7 +128,7 @@ class Ledger(_AttributeHolder):
     def __init__(self, path: str) -> None:
         self.path = path
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.path
 
     def __len__(self) -> int:
