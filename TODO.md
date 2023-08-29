@@ -1,6 +1,5 @@
 # TODO
 
-- [ ] Remove dunder str, eq from Ledger
 - [ ] Ledger.append type hint remove int
 - [ ] Split Application run into smaller methods. (and alias debit to credit as they do exact same thing)
 - [ ] Type hint parse_args -> Union[namespace, None] as it can print help (same for cli.main)
