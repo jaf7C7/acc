@@ -1,5 +1,5 @@
 # Format, lint and test the entire project
-find src/ tests/ -name \*.py | entr -cs '
+find src/ tests/ -name \*.py | entr -s '
 	print_header () {
 		: "${COLUMNS:=79}"
 		set -- " $* "
@@ -14,6 +14,7 @@ find src/ tests/ -name \*.py | entr -cs '
 	set -e
 	. .venv/bin/activate
 
+    clear
 	test -n "$TMUX_PANE" && tmux clear -t "$TMUX_PANE"
 
     print_header "File(s) changed since last commit"
