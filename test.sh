@@ -3,8 +3,7 @@ find src/ tests/ -name \*.py | entr -s '
 	print_header () {
 		: "${COLUMNS:=79}"
 		set -- " $* "
-		while test ${#1} -lt $((COLUMNS - 1))
-		do
+		while test ${#1} -lt $((COLUMNS - 1)); do
 			set -- "=${1}="
 		done
 		test ${#1} -lt $COLUMNS && set -- "${1}="
@@ -17,8 +16,7 @@ find src/ tests/ -name \*.py | entr -s '
     clear
 	test -n "$TMUX_PANE" && tmux clear -t "$TMUX_PANE"
 
-    print_header "File(s) changed since last commit"
-    git diff --name-only
+    find src/ tests/ -name \*.py -exec ctags {} +
 
 	print_header "Black"
 	black --line-length 90 src/ tests/
