@@ -1,6 +1,5 @@
 # TODO
 
-- [ ] Refactor `test_parse_args` to make it less fragile (test each attribute not the whole namespace)
 - [ ] Refactor `parse_args` to avoid duplicating `debit` and `credit` arguments
 - [ ] Refactor `X_command` methods
 - [ ] Report should report up until current date
