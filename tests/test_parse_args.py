@@ -60,11 +60,16 @@ def test_debit_credit(args, command, amount, description, app):
 
 
 @pytest.mark.parametrize(
-    "args, balance", [(["report"], False), (["report", "--balance"], True)]
+    "args, balance, datespec",
+    [
+        (["report"], False, None),
+        (["report", "--balance"], True, None),
+        (["report", "1970-01-01~1970-03-01"], False, "1970-01-01~1970-03-01"),
+    ],
 )
-def test_report(args, balance, app):
+def test_report(args, balance, app, datespec):
     assert app.parse_args(args) == argparse.Namespace(
-        command="report", balance=balance, func=app._report_command
+        command="report", balance=balance, func=app._report_command, datespec=datespec
     )
 
 
