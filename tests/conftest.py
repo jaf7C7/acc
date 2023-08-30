@@ -22,7 +22,7 @@ def mock_ledger():
     ledger = [
         ["id", "date", "amount", "type", "description"],
         ["0", "1970-01-01", "2495.00", "credit", "frobulator"],
-        ["1", "1970-01-01", "5250.00", "debit", "frobulator"],
+        ["1", "1970-02-01", "5250.00", "debit", "frobulator"],
     ]
     with open(LEDGER_PATH, "w", newline="") as f:
         writer = csv.writer(f)

@@ -77,7 +77,6 @@ def test_report(capsys, mock_ledger):
     assert out == (
         "ID      DATE        AMOUNT    TYPE    DESCRIPTION\n"
         "0       1970-01-01  2495.00   credit  frobulator\n"
-        "1       1970-01-01  5250.00   debit   frobulator\n"
     )
 
 

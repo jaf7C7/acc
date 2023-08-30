@@ -74,11 +74,12 @@ class Ledger(_AttributeHolder):
         """Format a line in the file into a readable form"""
         return "".join(self.fields.values()).format(*transaction)
 
-    def tabulate(self) -> Generator[Sequence[str], None, None]:
+    def tabulate(self, date: datetime.date) -> Generator[Sequence[str], None, None]:
         """A generator yielding formatted rows of the ledger contents"""
         yield self.collimate(self.fields.keys()).upper()
         for transaction in self:
-            yield self.collimate(transaction.values())
+            if datetime.date.fromisoformat(transaction["date"]) <= date:
+                yield self.collimate(transaction.values())
 
     def append(self, **transaction: Union[str, int]) -> None:
         """Writes a transaction to the ledger file"""
@@ -145,7 +146,7 @@ class Application(_AttributeHolder):
         if args.balance is True:
             print("{:.2f}".format(self.ledger.balance))
         else:
-            for row in self.ledger.tabulate():
+            for row in self.ledger.tabulate(self.date):
                 print(row)
 
     def parse_args(self, argv: Union[Sequence[str], None] = None) -> argparse.Namespace:
