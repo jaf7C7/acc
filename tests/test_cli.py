@@ -68,16 +68,16 @@ def test_can_record_transactions(capsys):
         ]
 
 
-def test_report(capsys, mock_ledger):
+def test_report_prints_transactions_up_to_current_date(capsys, mock_ledger):
     cli.main(["report"])
     out, err = capsys.readouterr()
     assert out == (
         "ID      DATE        AMOUNT    TYPE    DESCRIPTION\n"
-        "0       1970-01-01  2495.00   credit  frobulator\n"
+        "0       1970-01-01  2495.00   credit  foo\n"
     )
 
 
 def test_balance(capsys, mock_ledger):
     cli.main(["report", "--balance"])
     out, err = capsys.readouterr()
-    assert out == "2755.00\n"
+    assert out == "3355.00\n"

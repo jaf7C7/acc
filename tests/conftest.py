@@ -19,8 +19,9 @@ def temp_dir(tmp_path):
 def mock_ledger():
     ledger = [
         ["id", "date", "amount", "type", "description"],
-        ["0", "1970-01-01", "2495.00", "credit", "frobulator"],
-        ["1", "1970-02-01", "5250.00", "debit", "frobulator"],
+        ["0", "1970-01-01", "2495.00", "credit", "foo"],
+        ["1", "1970-02-02", "5250.00", "debit", "qux"],
+        ["2", "1970-03-03", "600.00", "debit", "frobulant"],
     ]
     with open(main.LEDGER_PATH, "w", newline="") as f:
         writer = csv.writer(f)
