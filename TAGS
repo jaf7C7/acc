@@ -1,68 +1,0 @@
-
-src/acc/__init__.py,0
-
-src/acc/cli.py,33
-def main(argv) -> int:main4,35
-
-src/acc/main.py,1870
-CONFIG_PATH = ".acc.conf"CONFIG_PATH9,140
-LEDGER_PATH = "acc_ledger.csv"LEDGER_PATH10,166
-class daydelta(datetime.timedelta):daydelta13,199
-    resolution = datetime.timedelta(days=1)resolution16,301
-    def __new__(cls, days: int) -> datetime.timedelta:  # type: ignore [misc]__new__18,346
-class _AttributeHolder:_AttributeHolder22,478
-    def __repr__(self) -> str:__repr__25,562
-class Ledger(_AttributeHolder):Ledger32,745
-    fields = {fields36,890
-    def __init__(self, path: str) -> None:__init__44,1039
-    def __str__(self) -> str:__str__47,1108
-    def __len__(self) -> int:__len__50,1164
-    def __eq__(self, other: object) -> bool:__eq__56,1304
-    def __iter__(self) -> Generator[dict[str, str], None, None]:__iter__59,1419
-    def balance(self) -> int:balance64,1592
-    def collimate(self, transaction: Iterable[str]) -> str:collimate73,1928
-    def tabulate(self, date: datetime.date) -> Generator[Sequence[str], None, None]:tabulate77,2116
-    def append(self, **transaction: Union[str, int]) -> None:append84,2497
-class Application(_AttributeHolder):Application93,2846
-    def __init__(self, config: str = CONFIG_PATH) -> None:__init__96,2943
-    def read_config(self) -> None:read_config101,3120
-    def write_config(self) -> None:write_config112,3537
-    def _date_command(self, args: argparse.Namespace) -> None:_date_command119,3856
-    def _ledger_command(self, args: argparse.Namespace) -> None:_ledger_command129,4178
-    def _transaction_command(self, args: argparse.Namespace) -> None:_transaction_command136,4400
-    def _report_command(self, args: argparse.Namespace) -> None:_report_command145,4704
-    def parse_args(self, argv: Union[Sequence[str], None] = None) -> argparse.Namespace:parse_args152,4956
-    def run(self, argv: Union[Sequence[str], None] = None) -> int:run242,7978
-
-tests/test_ledger.py,118
-LEDGER_PATH = "acc_ledger.csv"LEDGER_PATH8,92
-def ledger():ledger12,141
-def test_write(ledger):test_write16,193
-
-tests/test_parse_args.py,340
-def app():app9,113
-def test_date(args, date, days, app):test_date22,439
-def test_ledger(args, ledger, app):test_ledger35,757
-def test_debit_credit(args, command, amount, description, app):test_debit_credit53,1239
-def test_report(args, balance, app):test_report65,1590
-def test_bad_arguments(args, app):test_bad_arguments72,1847
-
-tests/conftest.py,169
-CONFIG_PATH = ".acc.conf"CONFIG_PATH5,36
-LEDGER_PATH = "acc_ledger.csv"LEDGER_PATH6,62
-def temp_dir(tmp_path):temp_dir10,125
-def mock_ledger():mock_ledger21,334
-
-tests/test_cli.py,1011
-LEDGER_PATH = "acc_ledger.csv"LEDGER_PATH6,47
-def test_date_without_args_prints_the_default_date(capsys):test_date_without_args_prints_the_default_date9,80
-def test_can_set_and_get_the_date(capsys):test_can_set_and_get_the_date15,233
-def test_fails_if_non_iso_format_date():test_fails_if_non_iso_format_date22,406
-def test_can_advance_date_by_days(capsys, days, expected):test_can_advance_date_by_days30,601
-def test_fails_if_non_integer_days():test_fails_if_non_integer_days37,794
-def test_ledger_without_args_prints_the_default_ledger(capsys):test_ledger_without_args_prints_the_default_ledger41,889
-def test_date_and_ledger_can_be_set_independently(capsys):test_date_and_ledger_can_be_set_independently47,1052
-def test_can_set_and_get_the_ledger(capsys):test_can_set_and_get_the_ledger56,1323
-def test_can_record_transactions(capsys):test_can_record_transactions63,1498
-def test_report(capsys, mock_ledger):test_report74,1940
-def test_balance(capsys, mock_ledger):test_balance83,2189
