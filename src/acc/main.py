@@ -8,6 +8,8 @@ from typing import Union, Sequence, Generator, Iterable
 
 CONFIG_PATH = ".acc.conf"
 LEDGER_PATH = "acc_ledger.csv"
+MIN_DATE = datetime.date(datetime.MINYEAR, 1, 1)
+MAX_DATE = datetime.date(datetime.MAXYEAR, 12, 31)
 
 
 class daydelta(datetime.timedelta):
@@ -60,25 +62,29 @@ class Ledger(_AttributeHolder):
         with open(self.path, "r", newline="") as f:
             yield from csv.DictReader(f)
 
-    @property
-    def balance(self) -> int:
+    def balance(
+        self, from_: datetime.date = MIN_DATE, to: datetime.date = MAX_DATE
+    ) -> int:
         """Calculates the total balance from all transactions in the ledger"""
         return sum(
             Decimal(transaction["amount"])  # type: ignore[misc]
             if transaction["type"] == "debit"
             else -Decimal(transaction["amount"])
             for transaction in self
+            if from_ <= datetime.date.fromisoformat(transaction["date"]) <= to
         )
 
     def collimate(self, transaction: Iterable[str]) -> str:
         """Format a line in the file into a readable form"""
         return "".join(self.fields.values()).format(*transaction)
 
-    def tabulate(self, date: datetime.date) -> Generator[Sequence[str], None, None]:
+    def tabulate(
+        self, from_: datetime.date = MIN_DATE, to: datetime.date = MAX_DATE
+    ) -> Generator[Sequence[str], None, None]:
         """A generator yielding formatted rows of the ledger contents"""
         yield self.collimate(self.fields.keys()).upper()
         for transaction in self:
-            if datetime.date.fromisoformat(transaction["date"]) <= date:
+            if from_ <= datetime.date.fromisoformat(transaction["date"]) <= to:
                 yield self.collimate(transaction.values())
 
     def append(self, **transaction: Union[str, int]) -> None:
@@ -143,10 +149,16 @@ class Application(_AttributeHolder):
         )
 
     def _report_command(self, args: argparse.Namespace) -> None:
-        if args.balance is True:
-            print("{:.2f}".format(self.ledger.balance))
+        if args.datespec is None:
+            args.datespec = [MIN_DATE, self.date]
         else:
-            for row in self.ledger.tabulate(self.date):
+            args.datespec = list(
+                map(datetime.date.fromisoformat, args.datespec.split("~"))
+            )
+        if args.balance is True:
+            print("{:.2f}".format(self.ledger.balance(*args.datespec)))
+        else:
+            for row in self.ledger.tabulate(*args.datespec):
                 print(row)
 
     def parse_args(self, argv: Union[Sequence[str], None] = None) -> argparse.Namespace:
@@ -232,6 +244,12 @@ class Application(_AttributeHolder):
             "--balance",
             action="store_true",
             help="the net value of ledger transactions",
+        )
+        report_parser.add_argument(
+            "datespec",
+            nargs="?",
+            metavar="<datespec>",
+            help="A date or range of dates over which to report",
         )
         report_parser.set_defaults(func=self._report_command)
 
