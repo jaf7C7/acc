@@ -1,6 +1,5 @@
 # TODO
 
-- [ ] Report should report up until current date
 - [ ] Ledger should have a print method, _collimate, _tabulate
 - [ ] Reduce duplication of `CONFIG_PATH`/`LEDGER_PATH` in tests
 - [ ] Add two more types of reporting
