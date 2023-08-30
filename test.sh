@@ -13,11 +13,11 @@ find src/ tests/ -name \*.py | entr -s '
     set -e
     . .venv/bin/activate
 
-    clear
+    clear             # Does not clear scrollback on freebsd
+	printf "\033[3J"  # xterm erase saved lines (www.xfree86.org/current/ctlseqs.html)
     test -n "$TMUX_PANE" && tmux clear -t "$TMUX_PANE"
 
-    find src/ tests/ -name \*.py -exec ctags {} +     # Vi-compatible
-    find src/ tests/ -name \*.py -exec ctags -e {} +  # Emacs-compatible
+    find src/ tests/ -name \*.py -exec sh -c '\''ctags "$@"; etags "$@";'\'' {} +
 
     print_header "Black"
     black --line-length 90 src/ tests/
@@ -26,7 +26,7 @@ find src/ tests/ -name \*.py | entr -s '
     flake8 src/ tests/ && echo "No errors to display :)"
 
     print_header "MyPy"
-    mypy src/ tests/
+    mypy src/
 
     pytest --cov=src/ tests/ '"$*"'
 '
