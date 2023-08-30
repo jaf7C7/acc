@@ -1,9 +1,6 @@
 import csv
 import pytest
-from acc import cli
-
-
-LEDGER_PATH = "acc_ledger.csv"
+from acc import cli, main
 
 
 def test_date_without_args_prints_the_default_date(capsys):
@@ -63,7 +60,7 @@ def test_can_set_and_get_the_ledger(capsys):
 def test_can_record_transactions(capsys):
     cli.main(["credit", "850", "-d", "apple"])
     cli.main(["debit", "500", "--description", "apple"])
-    with open(LEDGER_PATH, "r", newline="") as ledger:
+    with open(main.LEDGER_PATH, "r", newline="") as ledger:
         assert list(csv.reader(ledger)) == [
             ["id", "date", "amount", "type", "description"],
             ["0", "1970-01-01", "850.00", "credit", "apple"],
