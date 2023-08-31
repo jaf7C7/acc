@@ -14,10 +14,20 @@ find src/ tests/ -name \*.py | entr -s '
     . .venv/bin/activate
 
     clear             # Does not clear scrollback on freebsd
-	printf "\033[3J"  # xterm erase saved lines (www.xfree86.org/current/ctlseqs.html)
+    printf "\033[3J"  # xterm erase saved lines (www.xfree86.org/current/ctlseqs.html)
     test -n "$TMUX_PANE" && tmux clear -t "$TMUX_PANE"
 
-    find src/ tests/ -name \*.py -exec sh -c '\''ctags "$@"; etags "$@";'\'' {} +
+    find src/ tests/ -name \*.py -exec sh -c '\''
+        for f; do
+            # Expand tabs on 4 spaces before black complains
+            tmp=$(mktemp)
+            expand -t4 "$f" >"$tmp"
+            mv "$tmp" "$f"
+            test -f "$tmp" && rm "$tmp"
+        done
+        ctags "$@"
+        etags "$@"
+    '\'' {} +
 
     print_header "Black"
     black --line-length 90 src/ tests/
@@ -28,5 +38,6 @@ find src/ tests/ -name \*.py | entr -s '
     print_header "MyPy"
     mypy src/
 
+    # Any command-line options will be passed to pytest
     pytest --cov=src/ tests/ '"$*"'
 '
