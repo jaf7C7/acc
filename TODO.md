@@ -1,9 +1,8 @@
 # TODO
 
 * Refactor `report` `balance` `tabulate` and `parse_args` to handle `datespec` better
-    + Add custom action to parse `datespec` arguments
-    + Default value for `datespec` should be `self.date` and should be set by
-     `parse_args`
+* Make consistent use of the DEFAULT_DATE variable
+* Rename CONFIG_PATH -> DEFAULT_CONFIG and LEDGER_PATH -> DEFAULT_LEDGER
 * Streamline cli a bit (e.g. `acc balance` vs. `acc report --balance`)
 * Add documentation
 * Add README.md
