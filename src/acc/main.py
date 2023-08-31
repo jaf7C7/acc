@@ -112,7 +112,7 @@ class Application(_AttributeHolder):
 
     def __init__(self, config: str = CONFIG_PATH) -> None:
         self.config = config
-        self.date = datetime.date(1970, 1, 1)
+        self.date = DEFAULT_DATE
         self.ledger = Ledger(LEDGER_PATH)
 
     def read_config(self) -> None:

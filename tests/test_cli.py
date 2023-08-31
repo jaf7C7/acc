@@ -6,7 +6,7 @@ from acc import cli, main
 def test_date_without_args_prints_the_default_date(capsys):
     cli.main(["date"])
     out, err = capsys.readouterr()
-    assert out == "1970-01-01\n"
+    assert out.strip() == main.DEFAULT_DATE.isoformat()
 
 
 def test_can_set_and_get_the_date(capsys):
@@ -25,6 +25,7 @@ def test_fails_if_non_iso_format_date():
     [("", "1970-01-02\n"), ("366", "1971-01-02\n")],
 )
 def test_can_advance_date_by_days(capsys, days, expected):
+    cli.main(["date", "1970-01-01"])
     cli.main(f"date --advance {days}".split())
     cli.main(["date"])
     out, err = capsys.readouterr()
@@ -63,8 +64,8 @@ def test_can_record_transactions(capsys):
     with open(main.LEDGER_PATH, "r", newline="") as ledger:
         assert list(csv.reader(ledger)) == [
             ["id", "date", "amount", "type", "description"],
-            ["0", "1970-01-01", "850.00", "credit", "apple"],
-            ["1", "1970-01-01", "500.00", "debit", "apple"],
+            ["0", main.DEFAULT_DATE.isoformat(), "850.00", "credit", "apple"],
+            ["1", main.DEFAULT_DATE.isoformat(), "500.00", "debit", "apple"],
         ]
 
 
