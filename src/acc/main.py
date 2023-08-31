@@ -63,7 +63,7 @@ class Ledger(_AttributeHolder):
             yield from csv.DictReader(f)
 
     def balance(
-        self, from_: datetime.date = MIN_DATE, to: datetime.date = MAX_DATE
+        self, start_date: datetime.date = MIN_DATE, end_date: datetime.date = MAX_DATE
     ) -> int:
         """Calculates the total balance from all transactions in the ledger"""
         return sum(
@@ -71,7 +71,7 @@ class Ledger(_AttributeHolder):
             if transaction["type"] == "debit"
             else -Decimal(transaction["amount"])
             for transaction in self
-            if from_ <= datetime.date.fromisoformat(transaction["date"]) <= to
+            if start_date <= datetime.date.fromisoformat(transaction["date"]) <= end_date
         )
 
     def collimate(self, transaction: Iterable[str]) -> str:
@@ -79,12 +79,12 @@ class Ledger(_AttributeHolder):
         return "".join(self.fields.values()).format(*transaction)
 
     def tabulate(
-        self, from_: datetime.date = MIN_DATE, to: datetime.date = MAX_DATE
+        self, start_date: datetime.date = MIN_DATE, end_date: datetime.date = MAX_DATE
     ) -> Generator[Sequence[str], None, None]:
         """A generator yielding formatted rows of the ledger contents"""
         yield self.collimate(self.fields.keys()).upper()
         for transaction in self:
-            if from_ <= datetime.date.fromisoformat(transaction["date"]) <= to:
+            if start_date <= datetime.date.fromisoformat(transaction["date"]) <= end_date:
                 yield self.collimate(transaction.values())
 
     def append(self, **transaction: Union[str, int]) -> None:
