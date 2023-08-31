@@ -61,7 +61,7 @@ def test_can_set_and_get_the_ledger(capsys):
 def test_can_record_transactions(capsys):
     cli.main(["credit", "850", "-d", "apple"])
     cli.main(["debit", "500", "--description", "apple"])
-    with open(main.LEDGER_PATH, "r", newline="") as ledger:
+    with open(main.DEFAULT_LEDGER, "r", newline="") as ledger:
         assert list(csv.reader(ledger)) == [
             ["id", "date", "amount", "type", "description"],
             ["0", main.DEFAULT_DATE.isoformat(), "850.00", "credit", "apple"],

@@ -8,7 +8,7 @@ from acc import main
 def temp_dir(tmp_path):
     os.chdir(tmp_path)
     yield
-    for file in main.CONFIG_PATH, main.LEDGER_PATH:
+    for file in main.DEFAULT_CONFIG, main.DEFAULT_LEDGER:
         try:
             os.unlink(file)
         except FileNotFoundError:
@@ -23,7 +23,7 @@ def mock_ledger():
         ["1", "1970-02-02", "5250.00", "debit", "qux"],
         ["2", "1970-03-03", "600.00", "debit", "frobulant"],
     ]
-    with open(main.LEDGER_PATH, "w", newline="") as f:
+    with open(main.DEFAULT_LEDGER, "w", newline="") as f:
         writer = csv.writer(f)
         for transaction in ledger:
             writer.writerow(transaction)

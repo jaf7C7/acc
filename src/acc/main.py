@@ -6,8 +6,8 @@ from decimal import Decimal
 from typing import Union, Sequence, Generator, Iterable
 
 
-CONFIG_PATH = ".acc.conf"
-LEDGER_PATH = "acc_ledger.csv"
+DEFAULT_CONFIG = ".acc.conf"
+DEFAULT_LEDGER = "acc_ledger.csv"
 DEFAULT_DATE = datetime.date(1970, 1, 1)
 MIN_DATE = datetime.date(datetime.MINYEAR, 1, 1)
 MAX_DATE = datetime.date(datetime.MAXYEAR, 12, 31)
@@ -110,10 +110,10 @@ class Ledger(_AttributeHolder):
 class Application(_AttributeHolder):
     """Handles the top-level running of the application"""
 
-    def __init__(self, config: str = CONFIG_PATH) -> None:
+    def __init__(self, config: str = DEFAULT_CONFIG) -> None:
         self.config = config
         self.date = DEFAULT_DATE
-        self.ledger = Ledger(LEDGER_PATH)
+        self.ledger = Ledger(DEFAULT_LEDGER)
 
     def read_config(self) -> None:
         """Update application properties with values from the config file"""

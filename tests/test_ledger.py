@@ -7,7 +7,7 @@ from acc import main
 
 @pytest.fixture
 def ledger():
-    return main.Ledger(main.LEDGER_PATH)
+    return main.Ledger(main.DEFAULT_LEDGER)
 
 
 def test_write(ledger):
@@ -18,7 +18,7 @@ def test_write(ledger):
         type="credit",
         description="Transonic Fremules",
     )
-    with open(main.LEDGER_PATH, "r", newline="") as ledger:
+    with open(main.DEFAULT_LEDGER, "r", newline="") as ledger:
         assert list(csv.reader(ledger)) == [
             ["id", "date", "amount", "type", "description"],
             ["0", "1970-01-01", "597.00", "credit", "Transonic Fremules"],
