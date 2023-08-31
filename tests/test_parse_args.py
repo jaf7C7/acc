@@ -62,9 +62,13 @@ def test_debit_credit(args, command, amount, description, app):
 @pytest.mark.parametrize(
     "args, balance, datespec",
     [
-        (["report"], False, None),
-        (["report", "--balance"], True, None),
-        (["report", "1970-01-01~1970-03-01"], False, "1970-01-01~1970-03-01"),
+        (["report"], False, [main.MIN_DATE, main.DEFAULT_DATE]),
+        (["report", "--balance"], True, [main.MIN_DATE, main.DEFAULT_DATE]),
+        (
+            ["report", "1970-01-01~1970-03-01"],
+            False,
+            [datetime.date(1970, 1, 1), datetime.date(1970, 3, 1)],
+        ),
     ],
 )
 def test_report(args, balance, app, datespec):

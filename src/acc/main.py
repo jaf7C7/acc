@@ -8,6 +8,7 @@ from typing import Union, Sequence, Generator, Iterable
 
 CONFIG_PATH = ".acc.conf"
 LEDGER_PATH = "acc_ledger.csv"
+DEFAULT_DATE = datetime.date(1970, 1, 1)
 MIN_DATE = datetime.date(datetime.MINYEAR, 1, 1)
 MAX_DATE = datetime.date(datetime.MAXYEAR, 12, 31)
 
@@ -19,6 +20,16 @@ class daydelta(datetime.timedelta):
 
     def __new__(cls, days: int) -> datetime.timedelta:  # type: ignore [misc]
         return super().__new__(cls, days=int(days))
+
+
+class DateSpecAction(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        values = list(map(datetime.date.fromisoformat, values.split("~")))
+        try:
+            start_date, end_date = values
+        except ValueError:
+            start_date = end_date = values.pop()
+        setattr(namespace, self.dest, [start_date, end_date])
 
 
 class _AttributeHolder:
@@ -149,12 +160,6 @@ class Application(_AttributeHolder):
         )
 
     def _report_command(self, args: argparse.Namespace) -> None:
-        if args.datespec is None:
-            args.datespec = [MIN_DATE, self.date]
-        else:
-            args.datespec = list(
-                map(datetime.date.fromisoformat, args.datespec.split("~"))
-            )
         if args.balance is True:
             print("{:.2f}".format(self.ledger.balance(*args.datespec)))
         else:
@@ -248,6 +253,8 @@ class Application(_AttributeHolder):
         report_parser.add_argument(
             "datespec",
             nargs="?",
+            action=DateSpecAction,
+            default="~".join([MIN_DATE.isoformat(), self.date.isoformat()]),
             metavar="<datespec>",
             help="A date or range of dates over which to report",
         )
