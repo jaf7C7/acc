@@ -23,6 +23,8 @@ class daydelta(datetime.timedelta):
 
 
 class DateSpecAction(argparse.Action):
+    """Parses the datespec string into starting and ending dates"""
+
     def __call__(self, parser, namespace, values, option_string=None):
         date_range = list(map(datetime.date.fromisoformat, values.split("~")))
         try:
