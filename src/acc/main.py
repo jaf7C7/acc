@@ -24,11 +24,11 @@ class daydelta(datetime.timedelta):
 
 class DateSpecAction(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
-        values = list(map(datetime.date.fromisoformat, values.split("~")))
+        date_range = list(map(datetime.date.fromisoformat, values.split("~")))
         try:
-            start_date, end_date = values
+            start_date, end_date = date_range
         except ValueError:
-            start_date = end_date = values.pop()
+            start_date = end_date = date_range.pop()
         setattr(namespace, self.dest, [start_date, end_date])
 
 
