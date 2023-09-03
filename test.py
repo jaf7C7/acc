@@ -1,6 +1,7 @@
 '''Format, lint and test the entire project'''
 
 import os
+import sys
 import subprocess
 
 
@@ -31,10 +32,8 @@ def type_check():
     print_header('MyPy')
     subprocess.run('mypy src/'.split()).check_returncode()
 
-
-# TODO: Allow passing extra args to pytest
-def test():
-    subprocess.run('pytest --cov=src/ tests/'.split())
+def test(argv):
+    subprocess.run(['pytest', '--cov=src/', 'tests/', *argv])
 
 def find_files(path):
     return [
@@ -58,7 +57,7 @@ def main():
     lint()
     type_check()
     generate_tags()
-    test()
+    test(sys.argv[1:])
 
 
 if __name__ == '__main__':
