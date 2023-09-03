@@ -18,18 +18,18 @@ def print_header(text=None):
 
 
 def format():
-    print_header('Black')
+    print_header('black')
     subprocess.run('black --line-length 90 src/ tests/'.split())
 
 
 def lint():
-    print_header('Flake8')
+    print_header('flake8')
     subprocess.run('flake8 src/ tests/'.split()).check_returncode()
     print('No errors to display :)')  # Only executes on success
 
 
 def type_check():
-    print_header('MyPy')
+    print_header('mypy')
     subprocess.run('mypy src/'.split()).check_returncode()
 
 def test(argv):
@@ -44,7 +44,7 @@ def find_files(path):
     ]
 
 def generate_tags():
-    print_header('Ctags')
+    print_header('ctags')
     files = find_files('src/') + find_files('tests/')
     subprocess.run(['ctags', *files]).check_returncode()
     subprocess.run(['etags', *files]).check_returncode()
