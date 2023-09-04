@@ -162,11 +162,11 @@ class Application(_AttributeHolder):
         )
 
     def _report_command(self, args: argparse.Namespace) -> None:
-        if args.balance is True:
-            print('{:.2f}'.format(self.ledger.balance(*args.datespec)))
-        else:
-            for row in self.ledger.tabulate(*args.datespec):
-                print(row)
+        for row in self.ledger.tabulate(*args.datespec):
+            print(row)
+
+    def _balance_command(self, args: argparse.Namespace) -> None:
+        print('{:.2f}'.format(self.ledger.balance(*args.datespec)))
 
     def parse_args(self, argv: Union[Sequence[str], None] = None) -> argparse.Namespace:
         """Handles parsing, type-checking and casting of command line arguments"""
@@ -248,11 +248,6 @@ class Application(_AttributeHolder):
             help='display information about past transactions',
         )
         report_parser.add_argument(
-            '--balance',
-            action='store_true',
-            help='the net value of ledger transactions',
-        )
-        report_parser.add_argument(
             'datespec',
             nargs='?',
             action=DateSpecAction,
@@ -261,6 +256,21 @@ class Application(_AttributeHolder):
             help='A date or range of dates over which to report',
         )
         report_parser.set_defaults(func=self._report_command)
+
+        balance_parser = subparsers.add_parser(
+            'balance',
+            exit_on_error=False,
+            help='the net value of ledger transactions',
+        )
+        balance_parser.add_argument(
+            'datespec',
+            nargs='?',
+            action=DateSpecAction,
+            default='~'.join([MIN_DATE.isoformat(), self.date.isoformat()]),
+            metavar='<datespec>',
+            help='A date or range of dates over which to report',
+        )
+        balance_parser.set_defaults(func=self._balance_command)
 
         if not argv:
             argv = ['--help']

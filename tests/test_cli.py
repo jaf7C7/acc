@@ -90,6 +90,6 @@ def test_report_over_a_range_of_dates(capsys, mock_ledger):
 
 def test_balance(capsys, mock_ledger):
     cli.main(['date', '1970-04-01'])
-    cli.main(['report', '--balance'])
+    cli.main(['balance'])
     out, err = capsys.readouterr()
     assert out == '3355.00\n'
