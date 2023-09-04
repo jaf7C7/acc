@@ -19,7 +19,7 @@ def print_header(text=None):
 
 def format():
     print_header('black')
-    subprocess.run('black --line-length 90 src/ tests/'.split())
+    subprocess.run('black src/ tests/'.split()).check_returncode()
 
 
 def lint():
@@ -30,22 +30,26 @@ def lint():
 
 def type_check():
     print_header('mypy')
-    subprocess.run('mypy src/'.split()).check_returncode()
+    subprocess.run('mypy src/ tests/'.split()).check_returncode()
+
 
 def test(argv):
     subprocess.run(['pytest', '--cov=src/', 'tests/', *argv])
 
-def find_files(path):
+
+def find_files(*paths):
     return [
         os.path.join(dirpath, file)
+        for path in paths
         for dirpath, _, filenames, in os.walk(path)
         for file in filenames
         if file.endswith('.py')
     ]
 
+
 def generate_tags():
     print_header('ctags')
-    files = find_files('src/') + find_files('tests/')
+    files = find_files('src/', 'tests/')
     subprocess.run(['ctags', *files]).check_returncode()
     subprocess.run(['etags', *files]).check_returncode()
     print('tags updated')
