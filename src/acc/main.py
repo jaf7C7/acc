@@ -6,8 +6,8 @@ from decimal import Decimal
 from typing import Union, Sequence, Generator, Iterable
 
 
-DEFAULT_CONFIG = ".acc.conf"
-DEFAULT_LEDGER = "acc_ledger.csv"
+DEFAULT_CONFIG = '.acc.conf'
+DEFAULT_LEDGER = 'acc_ledger.csv'
 DEFAULT_DATE = datetime.date(1970, 1, 1)
 MIN_DATE = datetime.date(datetime.MINYEAR, 1, 1)
 MAX_DATE = datetime.date(datetime.MAXYEAR, 12, 31)
@@ -26,7 +26,7 @@ class DateSpecAction(argparse.Action):
     """Parses the datespec string into starting and ending dates"""
 
     def __call__(self, parser, namespace, values, option_string=None):
-        date_range = list(map(datetime.date.fromisoformat, values.split("~")))
+        date_range = list(map(datetime.date.fromisoformat, values.split('~')))
         try:
             start_date, end_date = date_range
         except ValueError:
@@ -38,9 +38,9 @@ class _AttributeHolder:
     """Base class to define __repr__ for all subclasses"""
 
     def __repr__(self) -> str:
-        return "%s(%s)" % (
+        return '%s(%s)' % (
             self.__class__.__name__,
-            ", ".join(f"{k}={repr(v)}" for k, v in self.__dict__.items()),
+            ', '.join(f'{k}={repr(v)}' for k, v in self.__dict__.items()),
         )
 
 
@@ -49,11 +49,11 @@ class Ledger(_AttributeHolder):
 
     # field: format-spec
     fields = {
-        "id": "{:8}",
-        "date": "{:12}",
-        "amount": "{:10}",
-        "type": "{:8}",
-        "description": "{}",
+        'id': '{:8}',
+        'date': '{:12}',
+        'amount': '{:10}',
+        'type': '{:8}',
+        'description': '{}',
     }
 
     def __init__(self, path: str) -> None:
@@ -72,7 +72,7 @@ class Ledger(_AttributeHolder):
         return isinstance(other, Ledger) and self.path == other.path
 
     def __iter__(self) -> Generator[dict[str, str], None, None]:
-        with open(self.path, "r", newline="") as f:
+        with open(self.path, 'r', newline='') as f:
             yield from csv.DictReader(f)
 
     def balance(
@@ -80,16 +80,16 @@ class Ledger(_AttributeHolder):
     ) -> int:
         """Calculates the total balance from all transactions in the ledger"""
         return sum(
-            Decimal(transaction["amount"])  # type: ignore[misc]
-            if transaction["type"] == "debit"
-            else -Decimal(transaction["amount"])
+            Decimal(transaction['amount'])  # type: ignore[misc]
+            if transaction['type'] == 'debit'
+            else -Decimal(transaction['amount'])
             for transaction in self
-            if start_date <= datetime.date.fromisoformat(transaction["date"]) <= end_date
+            if start_date <= datetime.date.fromisoformat(transaction['date']) <= end_date
         )
 
     def collimate(self, transaction: Iterable[str]) -> str:
         """Format a line in the file into a readable form"""
-        return "".join(self.fields.values()).format(*transaction)
+        return ''.join(self.fields.values()).format(*transaction)
 
     def tabulate(
         self, start_date: datetime.date = MIN_DATE, end_date: datetime.date = MAX_DATE
@@ -97,12 +97,12 @@ class Ledger(_AttributeHolder):
         """A generator yielding formatted rows of the ledger contents"""
         yield self.collimate(self.fields.keys()).upper()
         for transaction in self:
-            if start_date <= datetime.date.fromisoformat(transaction["date"]) <= end_date:
+            if start_date <= datetime.date.fromisoformat(transaction['date']) <= end_date:
                 yield self.collimate(transaction.values())
 
     def append(self, **transaction: Union[str, int]) -> None:
         """Writes a transaction to the ledger file"""
-        with open(self.path, "a", newline="") as f:
+        with open(self.path, 'a', newline='') as f:
             writer = csv.DictWriter(f, fieldnames=self.fields.keys())
             if len(self) == 0:
                 writer.writeheader()
@@ -120,18 +120,18 @@ class Application(_AttributeHolder):
     def read_config(self) -> None:
         """Update application properties with values from the config file"""
         try:
-            with open(self.config, "r", newline="") as f:
+            with open(self.config, 'r', newline='') as f:
                 config = next(csv.DictReader(f))
         except FileNotFoundError:
             pass
         else:
-            self.date = datetime.date.fromisoformat(config["date"])
-            self.ledger = Ledger(config["ledger"])
+            self.date = datetime.date.fromisoformat(config['date'])
+            self.ledger = Ledger(config['ledger'])
 
     def write_config(self) -> None:
         """Write key/value pairs to the config file"""
-        with open(self.config, "w", newline="") as f:
-            writer = csv.DictWriter(f, fieldnames=["date", "ledger"])
+        with open(self.config, 'w', newline='') as f:
+            writer = csv.DictWriter(f, fieldnames=['date', 'ledger'])
             writer.writeheader()
             writer.writerow(dict(date=self.date, ledger=self.ledger))
 
@@ -157,13 +157,13 @@ class Application(_AttributeHolder):
             id=len(self.ledger),
             date=self.date.isoformat(),
             type=args.command,
-            amount="{:.2f}".format(args.amount),
+            amount='{:.2f}'.format(args.amount),
             description=args.description,
         )
 
     def _report_command(self, args: argparse.Namespace) -> None:
         if args.balance is True:
-            print("{:.2f}".format(self.ledger.balance(*args.datespec)))
+            print('{:.2f}'.format(self.ledger.balance(*args.datespec)))
         else:
             for row in self.ledger.tabulate(*args.datespec):
                 print(row)
@@ -171,99 +171,99 @@ class Application(_AttributeHolder):
     def parse_args(self, argv: Union[Sequence[str], None] = None) -> argparse.Namespace:
         """Handles parsing, type-checking and casting of command line arguments"""
         parser = argparse.ArgumentParser(exit_on_error=False)
-        subparsers = parser.add_subparsers(dest="command")
+        subparsers = parser.add_subparsers(dest='command')
 
         date_parser = subparsers.add_parser(
-            "date", exit_on_error=False, help="set a new application date"
+            'date', exit_on_error=False, help='set a new application date'
         )
         date_parser.add_argument(
-            "date",
-            nargs="?",
+            'date',
+            nargs='?',
             type=datetime.date.fromisoformat,
-            metavar="<date>",
-            help="a date in yyyy-mm-dd iso format",
+            metavar='<date>',
+            help='a date in yyyy-mm-dd iso format',
         )
         date_parser.add_argument(
-            "--advance",
-            dest="days",
+            '--advance',
+            dest='days',
             type=daydelta,  # type: ignore [arg-type]
-            nargs="?",
-            const="1",
-            metavar="<days>",
-            help="the number of days to advance (default %(const)s day)",
+            nargs='?',
+            const='1',
+            metavar='<days>',
+            help='the number of days to advance (default %(const)s day)',
         )
         date_parser.set_defaults(func=self._date_command)
 
         ledger_parser = subparsers.add_parser(
-            "ledger", exit_on_error=False, help="select a new ledger file"
+            'ledger', exit_on_error=False, help='select a new ledger file'
         )
         ledger_parser.add_argument(
-            "ledger",
+            'ledger',
             type=Ledger,
-            nargs="?",
-            metavar="<ledger>",
-            help="the path to the new ledger file",
+            nargs='?',
+            metavar='<ledger>',
+            help='the path to the new ledger file',
         )
         ledger_parser.set_defaults(func=self._ledger_command)
 
         credit_parser = subparsers.add_parser(
-            "credit",
+            'credit',
             exit_on_error=False,
-            help="credit the current ledger",
+            help='credit the current ledger',
         )
         credit_parser.add_argument(
-            "amount",
-            metavar="<amount>",
+            'amount',
+            metavar='<amount>',
             type=Decimal,
-            help="the amount to be credited",
+            help='the amount to be credited',
         )
         credit_parser.add_argument(
-            "--description",
-            "-d",
-            metavar="<description>",
-            help="a short description of the transation",
+            '--description',
+            '-d',
+            metavar='<description>',
+            help='a short description of the transation',
         )
         credit_parser.set_defaults(func=self._transaction_command)
 
         debit_parser = subparsers.add_parser(
-            "debit", exit_on_error=False, help="debit the current ledger"
+            'debit', exit_on_error=False, help='debit the current ledger'
         )
         debit_parser.add_argument(
-            "amount",
-            metavar="<amount>",
+            'amount',
+            metavar='<amount>',
             type=Decimal,
-            help="the amount to be debited",
+            help='the amount to be debited',
         )
         debit_parser.add_argument(
-            "--description",
-            "-d",
-            metavar="<description>",
-            help="a short description of the transation",
+            '--description',
+            '-d',
+            metavar='<description>',
+            help='a short description of the transation',
         )
         debit_parser.set_defaults(func=self._transaction_command)
 
         report_parser = subparsers.add_parser(
-            "report",
+            'report',
             exit_on_error=False,
-            help="display information about past transactions",
+            help='display information about past transactions',
         )
         report_parser.add_argument(
-            "--balance",
-            action="store_true",
-            help="the net value of ledger transactions",
+            '--balance',
+            action='store_true',
+            help='the net value of ledger transactions',
         )
         report_parser.add_argument(
-            "datespec",
-            nargs="?",
+            'datespec',
+            nargs='?',
             action=DateSpecAction,
-            default="~".join([MIN_DATE.isoformat(), self.date.isoformat()]),
-            metavar="<datespec>",
-            help="A date or range of dates over which to report",
+            default='~'.join([MIN_DATE.isoformat(), self.date.isoformat()]),
+            metavar='<datespec>',
+            help='A date or range of dates over which to report',
         )
         report_parser.set_defaults(func=self._report_command)
 
         if not argv:
-            argv = ["--help"]
+            argv = ['--help']
         return parser.parse_args(argv)
 
     def run(self, argv: Union[Sequence[str], None] = None) -> int:
