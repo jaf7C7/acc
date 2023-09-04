@@ -1,7 +1,8 @@
 # TODO
 
-* Streamline cli a bit (e.g. `acc balance` vs. `acc report --balance`)
-* Any missing features?
+* Reduce duplication in tests
+* Reduce duplication in parse_args
+* Add another report type (what?)
 * Add documentation
 * Add README.md
 * Next project!
