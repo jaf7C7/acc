@@ -1,9 +1,16 @@
 # TODO
 
-* Reduce duplication in tests
-* Reduce duplication in parse_args
-* Add another report type (what?)
-* Add documentation
-* Add README.md
+* Add help messages: e.g. `acc`, and `acc --help` both crash
+* Update README.md
+  * Description
+  * Usage
+  * Installation
+    * Unix, Windows
+    * Resurrect old python test script: `git checkout 2c5512d -- test.py`
+      and put both test scripts in `devutils` dir, avoiding `entr` and `ctags`
+      dependencies
+  * Extension possibilities
+  * Similar projects (ledger-cli.org)
+* Sweeten syntax for specifying ranges of dates
 * Next project!
 
