@@ -36,7 +36,8 @@ find src/ tests/ -name \*.py | entr -ccs '
 
     # Lint
     print_header "flake8"
-    flake8 src/ tests/ && echo "No errors to display :)"
+    flake8 src/ tests/
+    echo "No errors to display :)"
 
     # Type-check
     print_header "mypy"
