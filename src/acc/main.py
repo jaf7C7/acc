@@ -225,6 +225,7 @@ class Application(_AttributeHolder):
         )
         credit_parser.set_defaults(func=self._transaction_command)
 
+        # TODO: Remove duplication of 'credit' and 'debit' parser code.
         debit_parser = subparsers.add_parser(
             'debit', exit_on_error=False, help='debit the current ledger'
         )
