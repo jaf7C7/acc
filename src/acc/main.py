@@ -254,7 +254,7 @@ class Application(_AttributeHolder):
             action=DateSpecAction,
             default='~'.join([MIN_DATE.isoformat(), self.date.isoformat()]),
             metavar='<datespec>',
-            help='A date or range of dates over which to report',
+            help='A date or range of dates over which to report, of the form [YYYY-MM-DD~]YYYY-MM-DD',  # noqa: B950
         )
         report_parser.set_defaults(func=self._report_command)
 
@@ -269,7 +269,7 @@ class Application(_AttributeHolder):
             action=DateSpecAction,
             default='~'.join([MIN_DATE.isoformat(), self.date.isoformat()]),
             metavar='<datespec>',
-            help='A date or range of dates over which to report',
+            help='A date or range of dates over which to report, of the form [YYYY-MM-DD~]YYYY-MM-DD',  # noqa: B950
         )
         balance_parser.set_defaults(func=self._balance_command)
 
