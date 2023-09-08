@@ -2,6 +2,9 @@
 #
 # Watch all python files in `src/` and `tests/` directories, and run
 # the script if files change
+
+CTAGS=$(command -v uctags || command -v ctags); export CTAGS
+
 find src/ tests/ -name \*.py | entr -ccs '
 
     # `==== <text> ====`
@@ -25,7 +28,7 @@ find src/ tests/ -name \*.py | entr -ccs '
     . .venv/bin/activate
 
     # Generate tags for all files
-    find src/ tests/ -name \*.py -exec sh -c '\''ctags "$@"; etags "$@"'\'' {} +
+    find src/ tests/ -name \*.py -exec "$CTAGS" "$@" {} +
 
     # Format
     print_header "black"
