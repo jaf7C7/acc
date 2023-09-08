@@ -1,6 +1,5 @@
 # TODO
 
-* Add help messages: e.g. `acc`, and `acc --help` both crash
 * Update README.md
   * Description
   * Usage
