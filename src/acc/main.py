@@ -209,42 +209,25 @@ class Application(_AttributeHolder):
         )
         ledger_parser.set_defaults(func=self._ledger_command)
 
-        credit_parser = subparsers.add_parser(
+        transaction_parser = subparsers.add_parser(
             'credit',
+            aliases=['debit'],
             exit_on_error=False,
             help='credit the current ledger',
         )
-        credit_parser.add_argument(
+        transaction_parser.add_argument(
             'amount',
             metavar='<amount>',
             type=Decimal,
             help='the amount to be credited',
         )
-        credit_parser.add_argument(
+        transaction_parser.add_argument(
             '--description',
             '-d',
             metavar='<description>',
             help='a short description of the transation',
         )
-        credit_parser.set_defaults(func=self._transaction_command)
-
-        # TODO: Remove duplication of 'credit' and 'debit' parser code.
-        debit_parser = subparsers.add_parser(
-            'debit', exit_on_error=False, help='debit the current ledger'
-        )
-        debit_parser.add_argument(
-            'amount',
-            metavar='<amount>',
-            type=Decimal,
-            help='the amount to be debited',
-        )
-        debit_parser.add_argument(
-            '--description',
-            '-d',
-            metavar='<description>',
-            help='a short description of the transation',
-        )
-        debit_parser.set_defaults(func=self._transaction_command)
+        transaction_parser.set_defaults(func=self._transaction_command)
 
         report_parser = subparsers.add_parser(
             'report',
