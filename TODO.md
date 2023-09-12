@@ -1,5 +1,7 @@
 # TODO
 
+* `acc report ~<date>` throws an error for the omitted date
+* `acc report | head` fails with `BrokenPipeError`
 * Update README.md
   * Description
   * Usage
