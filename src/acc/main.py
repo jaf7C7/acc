@@ -30,7 +30,7 @@ class DateSpecAction(argparse.Action):
         start_date = (
             datetime.date.fromisoformat(start_date) if start_date != '' else MIN_DATE
         )
-        end_date = datetime.date.fromisoformat(end_date)
+        end_date = datetime.date.fromisoformat(end_date) if end_date != '' else MAX_DATE
         setattr(namespace, self.dest, [start_date, end_date])
 
 
