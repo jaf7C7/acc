@@ -1,6 +1,5 @@
 # TODO
 
-* Remove 'TYPE' column and replace with signed 'AMOUNT'
 * Update README.md
   * Description
   * Usage
