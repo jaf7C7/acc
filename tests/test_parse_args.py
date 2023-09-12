@@ -19,7 +19,7 @@ def app():
         (['date', '--advance'], None, main.daydelta(1)),
     ],
 )
-def test_date(args, date, days, app):
+def test_date_parser_returns_correct_namespace(args, date, days, app):
     assert app.parse_args(args) == argparse.Namespace(
         command='date', date=date, days=days, func=app._date_command
     )
@@ -32,7 +32,7 @@ def test_date(args, date, days, app):
         (['ledger', '/tmp/foo'], main.Ledger('/tmp/foo')),
     ],
 )
-def test_ledger(args, ledger, app):
+def test_ledger_parser_returns_correct_namespace(args, ledger, app):
     assert app.parse_args(args) == argparse.Namespace(
         command='ledger', ledger=ledger, func=app._ledger_command
     )
@@ -50,7 +50,9 @@ def test_ledger(args, ledger, app):
         (['debit', '3150', '-d', 'apple'], 'debit', Decimal('3150.00'), 'apple'),
     ],
 )
-def test_debit_credit(args, command, amount, description, app):
+def test_debit_credit_parser_returns_correct_namespace(
+    args, command, amount, description, app
+):
     assert app.parse_args(args) == argparse.Namespace(
         command=command,
         amount=amount,
@@ -70,13 +72,13 @@ def test_debit_credit(args, command, amount, description, app):
         ),
     ],
 )
-def test_report(args, command, datespec, app):
+def test_report_parser_returns_correct_namespace(args, command, datespec, app):
     assert app.parse_args(args) == argparse.Namespace(
         command=command, func=app._report_command, datespec=datespec
     )
 
 
 @pytest.mark.parametrize('args', [['date', '01/01/1970'], ['date', '--advance', '0.5']])
-def test_bad_arguments(args, app):
+def test_bad_arguments_raise_argument_error(args, app):
     with pytest.raises(argparse.ArgumentError):
         app.parse_args(args)

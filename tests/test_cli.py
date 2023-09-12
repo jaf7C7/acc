@@ -78,7 +78,7 @@ def test_report_prints_transactions_up_to_current_date(capsys, mock_ledger):
     )
 
 
-def test_report_single_date(capsys, mock_ledger):
+def test_can_report_on_a_single_date(capsys, mock_ledger):
     cli.main(['report', '1970-02-02'])
     out, err = capsys.readouterr()
     assert out == (
@@ -87,7 +87,7 @@ def test_report_single_date(capsys, mock_ledger):
     )
 
 
-def test_report_over_a_range_of_dates(capsys, mock_ledger):
+def test_can_report_over_a_range_of_dates(capsys, mock_ledger):
     cli.main(['report', '1970-01-01~1970-03-01'])
     out, err = capsys.readouterr()
     assert out == (
@@ -97,7 +97,7 @@ def test_report_over_a_range_of_dates(capsys, mock_ledger):
     )
 
 
-def test_report_over_a_range_of_dates_with_first_date_omitted(capsys, mock_ledger):
+def test_can_report_over_a_range_of_dates_with_first_date_omitted(capsys, mock_ledger):
     cli.main(['report', '~1970-03-03'])
     out, err = capsys.readouterr()
     assert out == (
@@ -118,7 +118,7 @@ def test_report_over_a_range_of_dates_with_last_date_omitted(capsys, mock_ledger
     )
 
 
-def test_balance(capsys, mock_ledger):
+def test_balance_calculates_correct_balance(capsys, mock_ledger):
     cli.main(['date', '1970-04-01'])
     cli.main(['balance'])
     out, err = capsys.readouterr()
