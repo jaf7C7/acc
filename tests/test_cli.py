@@ -78,6 +78,15 @@ def test_report_prints_transactions_up_to_current_date(capsys, mock_ledger):
     )
 
 
+def test_report_single_date(capsys, mock_ledger):
+    cli.main(['report', '1970-02-02'])
+    out, err = capsys.readouterr()
+    assert out == (
+        'ID      DATE        AMOUNT    TYPE    DESCRIPTION\n'
+        '1       1970-02-02  5250.00   debit   qux\n'
+    )
+
+
 def test_report_over_a_range_of_dates(capsys, mock_ledger):
     cli.main(['report', '1970-01-01~1970-03-01'])
     out, err = capsys.readouterr()
