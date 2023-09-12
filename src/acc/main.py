@@ -288,5 +288,8 @@ class Application(_AttributeHolder):
         except argparse.ArgumentError as err:
             print(err, file=sys.stderr)
             return 1
-        args.func(args)
+        try:
+            args.func(args)
+        except (BrokenPipeError, KeyboardInterrupt):
+            pass
         return 0

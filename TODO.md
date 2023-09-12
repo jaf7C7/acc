@@ -1,7 +1,5 @@
 # TODO
 
-* `acc report | head` fails with `BrokenPipeError`
-* Keyboard interrupt during report not handled
 * Update README.md
   * Description
   * Usage
