@@ -1,7 +1,7 @@
 # TODO
 
-* `acc report ~<date>` throws an error for the omitted date
 * `acc report | head` fails with `BrokenPipeError`
+* Keyboard interrupt during report not handled
 * Update README.md
   * Description
   * Usage
