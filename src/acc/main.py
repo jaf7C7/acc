@@ -26,11 +26,11 @@ class DateSpecAction(argparse.Action):
     """Parses the datespec string into starting and ending dates"""
 
     def __call__(self, parser, namespace, values, option_string=None):
-        date_range = list(map(datetime.date.fromisoformat, values.split('~')))
-        try:
-            start_date, end_date = date_range
-        except ValueError:
-            start_date = end_date = date_range.pop()
+        start_date, end_date = values.split('~')
+        start_date = (
+            datetime.date.fromisoformat(start_date) if start_date != '' else MIN_DATE
+        )
+        end_date = datetime.date.fromisoformat(end_date)
         setattr(namespace, self.dest, [start_date, end_date])
 
 
