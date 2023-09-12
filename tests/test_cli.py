@@ -88,6 +88,17 @@ def test_report_over_a_range_of_dates(capsys, mock_ledger):
     )
 
 
+def test_report_over_a_range_of_dates_with_first_date_omitted(capsys, mock_ledger):
+    cli.main(['report', '~1970-03-03'])
+    out, err = capsys.readouterr()
+    assert out == (
+        'ID      DATE        AMOUNT    TYPE    DESCRIPTION\n'
+        '0       1970-01-01  2495.00   credit  foo\n'
+        '1       1970-02-02  5250.00   debit   qux\n'
+        '2       1970-03-03  600.00    debit   frobulant\n'
+    )
+
+
 def test_balance(capsys, mock_ledger):
     cli.main(['date', '1970-04-01'])
     cli.main(['balance'])
