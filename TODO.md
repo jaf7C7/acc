@@ -1,6 +1,5 @@
 # TODO
 
-* `acc report <date>` throws `ValueError` at `start_date, end_date = values.split('~')`
 * `acc report | head` fails with `BrokenPipeError`
 * Keyboard interrupt during report not handled
 * Update README.md
