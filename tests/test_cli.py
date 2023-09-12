@@ -63,9 +63,9 @@ def test_can_record_transactions(capsys):
     cli.main(['debit', '500', '--description', 'apple'])
     with open(main.DEFAULT_LEDGER, 'r', newline='') as ledger:
         assert list(csv.reader(ledger)) == [
-            ['id', 'date', 'amount', 'type', 'description'],
-            ['0', main.DEFAULT_DATE.isoformat(), '850.00', 'credit', 'apple'],
-            ['1', main.DEFAULT_DATE.isoformat(), '500.00', 'debit', 'apple'],
+            ['id', 'date', 'amount', 'description'],
+            ['0', main.DEFAULT_DATE.isoformat(), '-850.00', 'apple'],
+            ['1', main.DEFAULT_DATE.isoformat(), '+500.00', 'apple'],
         ]
 
 
@@ -73,8 +73,8 @@ def test_report_prints_transactions_up_to_current_date(capsys, mock_ledger):
     cli.main(['report'])
     out, err = capsys.readouterr()
     assert out == (
-        'ID      DATE          AMOUNT  TYPE    DESCRIPTION\n'
-        '0       1970-01-01   2495.00  credit  foo\n'
+        'ID      DATE          AMOUNT  DESCRIPTION\n'
+        '0       1970-01-01  -2495.00  foo\n'
     )
 
 
@@ -82,8 +82,8 @@ def test_can_report_on_a_single_date(capsys, mock_ledger):
     cli.main(['report', '1970-02-02'])
     out, err = capsys.readouterr()
     assert out == (
-        'ID      DATE          AMOUNT  TYPE    DESCRIPTION\n'
-        '1       1970-02-02   5250.00  debit   qux\n'
+        'ID      DATE          AMOUNT  DESCRIPTION\n'
+        '1       1970-02-02  +5250.00  qux\n'
     )
 
 
@@ -91,9 +91,9 @@ def test_can_report_over_a_range_of_dates(capsys, mock_ledger):
     cli.main(['report', '1970-01-01~1970-03-01'])
     out, err = capsys.readouterr()
     assert out == (
-        'ID      DATE          AMOUNT  TYPE    DESCRIPTION\n'
-        '0       1970-01-01   2495.00  credit  foo\n'
-        '1       1970-02-02   5250.00  debit   qux\n'
+        'ID      DATE          AMOUNT  DESCRIPTION\n'
+        '0       1970-01-01  -2495.00  foo\n'
+        '1       1970-02-02  +5250.00  qux\n'
     )
 
 
@@ -101,10 +101,10 @@ def test_can_report_over_a_range_of_dates_with_first_date_omitted(capsys, mock_l
     cli.main(['report', '~1970-03-03'])
     out, err = capsys.readouterr()
     assert out == (
-        'ID      DATE          AMOUNT  TYPE    DESCRIPTION\n'
-        '0       1970-01-01   2495.00  credit  foo\n'
-        '1       1970-02-02   5250.00  debit   qux\n'
-        '2       1970-03-03    600.00  debit   frobulant\n'
+        'ID      DATE          AMOUNT  DESCRIPTION\n'
+        '0       1970-01-01  -2495.00  foo\n'
+        '1       1970-02-02  +5250.00  qux\n'
+        '2       1970-03-03   +600.00  frobulant\n'
     )
 
 
@@ -112,9 +112,9 @@ def test_report_over_a_range_of_dates_with_last_date_omitted(capsys, mock_ledger
     cli.main(['report', '1970-02-01~'])
     out, err = capsys.readouterr()
     assert out == (
-        'ID      DATE          AMOUNT  TYPE    DESCRIPTION\n'
-        '1       1970-02-02   5250.00  debit   qux\n'
-        '2       1970-03-03    600.00  debit   frobulant\n'
+        'ID      DATE          AMOUNT  DESCRIPTION\n'
+        '1       1970-02-02  +5250.00  qux\n'
+        '2       1970-03-03   +600.00  frobulant\n'
     )
 
 
@@ -122,4 +122,4 @@ def test_balance_calculates_correct_balance(capsys, mock_ledger):
     cli.main(['date', '1970-04-01'])
     cli.main(['balance'])
     out, err = capsys.readouterr()
-    assert out == '3355.00\n'
+    assert out == '+3355.00\n'

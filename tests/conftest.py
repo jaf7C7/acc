@@ -18,10 +18,10 @@ def temp_dir(tmp_path):
 @pytest.fixture
 def mock_ledger():
     ledger = [
-        ['id', 'date', 'amount', 'type', 'description'],
-        ['0', '1970-01-01', '2495.00', 'credit', 'foo'],
-        ['1', '1970-02-02', '5250.00', 'debit', 'qux'],
-        ['2', '1970-03-03', '600.00', 'debit', 'frobulant'],
+        ['id', 'date', 'amount', 'description'],
+        ['0', '1970-01-01', '-2495.00', 'foo'],
+        ['1', '1970-02-02', '+5250.00', 'qux'],
+        ['2', '1970-03-03', '+600.00', 'frobulant'],
     ]
     with open(main.DEFAULT_LEDGER, 'w', newline='') as f:
         writer = csv.writer(f)

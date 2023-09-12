@@ -55,7 +55,6 @@ class Ledger(_AttributeHolder):
         'id': '{:6}',
         'date': '{:10}',
         'amount': '{:>8}',
-        'type': '{:6}',
         'description': '{}',
     }
 
@@ -84,8 +83,6 @@ class Ledger(_AttributeHolder):
         """Calculates the total balance from all transactions in the ledger"""
         return sum(
             Decimal(transaction['amount'])  # type: ignore[misc]
-            if transaction['type'] == 'debit'
-            else -Decimal(transaction['amount'])
             for transaction in self
             if start_date <= datetime.date.fromisoformat(transaction['date']) <= end_date
         )
@@ -156,17 +153,18 @@ class Application(_AttributeHolder):
             print(self.ledger.path)
 
     def _transaction_command(self, args: argparse.Namespace) -> None:
+        if args.command == 'credit':
+            args.amount *= -1
         self.ledger.append(
             id=len(self.ledger),
             date=self.date.isoformat(),
-            type=args.command,
-            amount='{:.2f}'.format(args.amount),
+            amount='{:+.2f}'.format(args.amount),
             description=args.description,
         )
 
     def _report_command(self, args: argparse.Namespace) -> None:
         if args.command == 'balance':
-            print('{:.2f}'.format(self.ledger.balance(*args.datespec)))
+            print('{:+.2f}'.format(self.ledger.balance(*args.datespec)))
         else:
             for row in self.ledger.tabulate(*args.datespec):
                 print(row)
