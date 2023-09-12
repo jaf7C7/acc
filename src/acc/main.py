@@ -52,10 +52,10 @@ class Ledger(_AttributeHolder):
 
     # field: format-spec
     fields = {
-        'id': '{:8}',
-        'date': '{:12}',
-        'amount': '{:10}',
-        'type': '{:8}',
+        'id': '{:6}',
+        'date': '{:10}',
+        'amount': '{:>8}',
+        'type': '{:6}',
         'description': '{}',
     }
 
@@ -92,7 +92,7 @@ class Ledger(_AttributeHolder):
 
     def collimate(self, transaction: Iterable[str]) -> str:
         """Format a line in the file into a readable form"""
-        return ''.join(self.fields.values()).format(*transaction)
+        return '  '.join(self.fields.values()).format(*transaction)
 
     def tabulate(
         self, start_date: datetime.date = MIN_DATE, end_date: datetime.date = MAX_DATE
