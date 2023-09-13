@@ -120,3 +120,38 @@ $ acc balance 2022-02-02~
 $ acc balance \~
 -447127.92
 ```
+
+Installation
+------------
+
+On Linux/FreeBSD:
+
+Clone and enter the repo:
+```
+$ git clone https://github.com/jaf7C7/acc && cd acc
+```
+
+Initialise a virtual environment:
+```
+$ python -m venv .venv && . .venv/bin/activate
+```
+
+Install the dev-dependencies (optional, required for testing)
+```
+$ pip install -r dev_requirements.txt
+
+# FreeBSD
+$ pkg install entr universal-ctags
+
+# Linux (Debian-based)
+$ apt install entr universal-ctags
+```
+
+Install the package locally:
+```
+$ pip install -e . && ln -s $PWD/bin/acc .venv/bin
+```
+
+On Windows:
+
+**TODO**
