@@ -1,13 +1,7 @@
 # TODO
 
 * Update README.md
-  * Description
-  * Usage
-  * Installation
-    * Unix, Windows
-    * Resurrect old python test script: `git checkout 2c5512d -- test.py`
-      and put both test scripts in `devutils` dir, avoiding `entr` and `ctags`
-      dependencies
+  * ~~Installation~~
   * Extension possibilities
   * Similar projects (ledger-cli.org)
 * Sweeten syntax for specifying ranges of dates
