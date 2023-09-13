@@ -27,14 +27,12 @@ class DateSpecAction(argparse.Action):
 
     def __call__(self, parser, namespace, values, option_string=None):
         try:
-            start_date, end_date = values.split('~')
+            start, end = values.split('~')
         except ValueError:
-            start_date = end_date = values
-        start_date = (
-            datetime.date.fromisoformat(start_date) if start_date != '' else MIN_DATE
-        )
-        end_date = datetime.date.fromisoformat(end_date) if end_date != '' else MAX_DATE
-        setattr(namespace, self.dest, [start_date, end_date])
+            start = end = values
+        start = datetime.date.fromisoformat(start) if start != '' else MIN_DATE
+        end = datetime.date.fromisoformat(end) if end != '' else MAX_DATE
+        setattr(namespace, self.dest, [start, end])
 
 
 class _AttributeHolder:
@@ -78,13 +76,13 @@ class Ledger(_AttributeHolder):
             yield from csv.DictReader(f)
 
     def balance(
-        self, start_date: datetime.date = MIN_DATE, end_date: datetime.date = MAX_DATE
+        self, start: datetime.date = MIN_DATE, end: datetime.date = MAX_DATE
     ) -> int:
         """Calculates the total balance from all transactions in the ledger"""
         return sum(
             Decimal(transaction['amount'])  # type: ignore[misc]
             for transaction in self
-            if start_date <= datetime.date.fromisoformat(transaction['date']) <= end_date
+            if start <= datetime.date.fromisoformat(transaction['date']) <= end
         )
 
     def collimate(self, transaction: Iterable[str]) -> str:
@@ -92,12 +90,12 @@ class Ledger(_AttributeHolder):
         return '  '.join(self.fields.values()).format(*transaction)
 
     def tabulate(
-        self, start_date: datetime.date = MIN_DATE, end_date: datetime.date = MAX_DATE
+        self, start: datetime.date = MIN_DATE, end: datetime.date = MAX_DATE
     ) -> Generator[Sequence[str], None, None]:
         """A generator yielding formatted rows of the ledger contents"""
         yield self.collimate(self.fields.keys()).upper()
         for transaction in self:
-            if start_date <= datetime.date.fromisoformat(transaction['date']) <= end_date:
+            if start <= datetime.date.fromisoformat(transaction['date']) <= end:
                 yield self.collimate(transaction.values())
 
     def append(self, **transaction: Union[str, int]) -> None:
