@@ -2,10 +2,6 @@ Acc
 ===
 
 > TODO:
-> * Description
->   * This is a learning project
->   * What were the learning objectives?
-> * Usage
 > * Installation
 > * Unix, Windows
 > * Resurrect old python test script: `git checkout 2c5512d -- test.py`
@@ -15,8 +11,16 @@ Acc
 > * Similar projects (ledger-cli.org)
 
 
-Acc is a command-line tool for managing a simple financial account. It is primarily
-a learning project, and its functionality is not particularly interesting.
+A command-line tool for managing a simple financial account. It is primarily a
+learning project, and its functionality is not particularly interesting, although
+it is described briefly in the [Usage](#usage) section.
+
+The main goals of this project were:
+
+* To gain experience with using and understanding python standard library modules
+* To learn about object-oriented programming and design
+* To practice a test-driven development workflow
+* To get familiar with the process of writing a command-line tool in python
 
 
 Usage
@@ -26,19 +30,38 @@ Debits and credits can be recorded in a ledger of transactions, from which the
 current balance can be calculated:
 
 ```
+# Check the ledger file
+$ acc ledger
+acc_ledger.csv
+
+# Select a new ledger file
+$ acc ledger my_ledger.csv
+
+# Check the date
+$ acc date
+1970-01-01
+
+# Change the date
+$ acc date 2023-09-13
+
+# Add some transactions
 $ acc debit 78.47 --description 'Frobulant'
 $ acc debit 25.55 -d 'Quxicator'
 $ acc credit 101.99 -d 'Fremule'
+
+# Print a handy table of your account history
 $ acc report
 ID      DATE          AMOUNT  DESCRIPTION
-0       1970-01-01    +78.47  Frobulant
-1       1970-01-01    +25.55  Quxicator
-2       1970-01-01   -101.99  Fremule
+0       2023-09-13    +78.47  Frobulant
+1       2023-09-13    +25.55  Quxicator
+2       2023-09-13   -101.99  Fremule
+
+# Check the overall balance on your account
 $ acc balance
 +2.03
 ```
 
-Acc can report transactions from a specific date or range of dates:
+*Acc* can report transactions from a specific date or range of dates:
 
 ```
 # Use the sample data file included in this project
@@ -54,8 +77,7 @@ ID      DATE          AMOUNT  DESCRIPTION
 59436   2018-10-10   +847.18  Health traditional certain me candidate start away.
 
 # The default is to report all transactions up until the current date
-$ acc date
-2019-01-01
+$ acc date 2019-01-01
 $ acc report
 ID      DATE          AMOUNT  DESCRIPTION
 0       2018-03-27  -7617.10  Mrs itself off treatment daughter author field.
@@ -92,8 +114,9 @@ ID      DATE          AMOUNT  DESCRIPTION
 $ acc balance 2022-02-02~
 -932873.03  # Ouch!
 
-# To get the balance of the entire ledger, omit both dates and just use `~`, making
-# sure to quote it to avoid expansion by your shell
+# To get the balance of the entire ledger, regardless of whatever the current date
+# is set to, omit both dates and just use `~`, making sure to quote it to avoid
+# expansion by your shell
 $ acc balance \~
 -447127.92
 ```
