@@ -250,11 +250,11 @@ class Application(_AttributeHolder):
         self.read_config()
         try:
             args = self.parse_args(argv)
+            args.func(args)
         except argparse.ArgumentError as err:
             print(err, file=sys.stderr)
             return 1
-        try:
-            args.func(args)
         except (BrokenPipeError, KeyboardInterrupt):
-            pass
-        return 0
+            return 2
+        else:
+            return 0
