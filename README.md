@@ -1,14 +1,12 @@
 Acc
 ===
 
-> TODO:
-> * Possible extensions/improvements
-> * Similar projects (ledger-cli.org)
-
-
 A command-line tool for managing a simple financial account. It is primarily a
 learning project, and its functionality is not particularly interesting, although
 it is described briefly in the [Usage](#usage) section.
+
+For a much more complete command-line accounting tool, see
+[ledger-cli](https://ledger-cli.org)
 
 The main goals of this project were:
 
@@ -16,6 +14,7 @@ The main goals of this project were:
 * To learn about object-oriented programming and design
 * To practice a test-driven development workflow
 * To get familiar with the process of writing a command-line tool in python
+
 
 Installation
 ------------
@@ -97,7 +96,7 @@ $ acc balance
 +2.03
 ```
 
-*Acc* can report transactions from a specific date or range of dates:
+`acc` can report transactions from a specific date or range of dates:
 
 Use the sample data file included in this project:
 ```
