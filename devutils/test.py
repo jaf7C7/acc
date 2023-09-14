@@ -5,6 +5,10 @@ import sys
 import subprocess
 
 
+def help():
+    print('Usage: python test.py [-c|--clear] [<pytest-options>]')
+
+
 def clear():
     # Clear screen and scrollback: www.xfree86.org/current/ctlseqs.html
     print('\033c\033[3J')
@@ -38,7 +42,13 @@ def test(argv):
 
 
 def main(argv):
-    clear()
+    if len(argv) > 0:
+        if argv[0] in ['-h', '--help']:
+            help()
+            sys.exit()
+        if argv[0] in ['-c', '--clear']:
+            argv.pop(0)
+            clear()
     format()
     lint()
     type_check()
