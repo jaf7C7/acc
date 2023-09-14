@@ -48,5 +48,5 @@ def main(argv):
 if __name__ == '__main__':
     try:
         main(sys.argv[1:])
-    except CalledProcessError:
+    except subprocess.CalledProcessError:
         sys.exit(1)
