@@ -1,9 +1,8 @@
 # TODO
 
-* Update README.md
-  * ~~Installation~~
-  * Extension possibilities
-  * Similar projects (ledger-cli.org)
-* Sweeten syntax for specifying ranges of dates
+* Last push refactoring:
+  * Renaming methods
+  * Splitting methods up
+  * Reducing coupling
 * Next project!
 
