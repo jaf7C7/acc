@@ -6,8 +6,10 @@ from decimal import Decimal
 from typing import Union, Sequence, Generator, Iterable
 
 
+# TODO: Get rid of global variables
 DEFAULT_CONFIG = '.acc.conf'
 DEFAULT_LEDGER = 'acc_ledger.csv'
+# TODO: Why is default date a date object and default ledger a string?
 DEFAULT_DATE = datetime.date(1970, 1, 1)
 MIN_DATE = datetime.date(datetime.MINYEAR, 1, 1)
 MAX_DATE = datetime.date(datetime.MAXYEAR, 12, 31)
@@ -89,6 +91,7 @@ class Ledger(_AttributeHolder):
         """Format a line in the file into a readable form"""
         return '  '.join(self.fields.values()).format(*transaction)
 
+    # TODO: 'tabulate' should not be a generator, just let it print lines
     def tabulate(
         self, start: datetime.date = MIN_DATE, end: datetime.date = MAX_DATE
     ) -> Generator[Sequence[str], None, None]:
@@ -113,8 +116,11 @@ class Application(_AttributeHolder):
     def __init__(self, config: str = DEFAULT_CONFIG) -> None:
         self.config = config
         self.date = DEFAULT_DATE
+        # TODO: Keep ledger as a string until you need to do more with it
         self.ledger = Ledger(DEFAULT_LEDGER)
 
+    # TODO: Make a 'CSVFile' base class for ledger and config stuff?
+    # e.g. `config = CSVFile(self.config_path).read()`
     def read_config(self) -> None:
         """Update application properties with values from the config file"""
         try:
@@ -123,6 +129,7 @@ class Application(_AttributeHolder):
         except FileNotFoundError:
             pass
         else:
+            # TODO: Keep dates as strings until you need to do arithmetic
             self.date = datetime.date.fromisoformat(config['date'])
             self.ledger = Ledger(config['ledger'])
 
@@ -133,8 +140,10 @@ class Application(_AttributeHolder):
             writer.writeheader()
             writer.writerow(dict(date=self.date, ledger=self.ledger))
 
+    # TODO: Get rid of all '_command' methods, prefer custom argparse actions?
     def _date_command(self, args: argparse.Namespace) -> None:
         if args.date is not None:
+            # TODO: Just write the new date or ledger value straight to the config
             self.date = args.date
             self.write_config()
         elif args.days is not None:
@@ -160,6 +169,7 @@ class Application(_AttributeHolder):
             description=args.description,
         )
 
+    # TODO: Get rid of '{:+.2f}' everywhere (use 'int' or subclass 'Decimal')
     def _report_command(self, args: argparse.Namespace) -> None:
         if args.command == 'balance':
             print('{:+.2f}'.format(self.ledger.balance(*args.datespec)))
@@ -245,6 +255,7 @@ class Application(_AttributeHolder):
             argv = ['--help']
         return parser.parse_args(argv)
 
+    # TODO: Add tests for BrokenPipeError and KeyboardInterrupt
     def run(self, argv: Union[Sequence[str], None] = None) -> int:
         """Run the program with the given arguments"""
         self.read_config()
