@@ -21,7 +21,9 @@ def app():
 )
 def test_date_parser_returns_correct_namespace(args, date, days, app):
     assert app.parse_args(args) == argparse.Namespace(
-        command='date', date=date, days=days, func=app._date_command
+        command='date',
+        date=date,
+        days=days,
     )
 
 
@@ -34,7 +36,8 @@ def test_date_parser_returns_correct_namespace(args, date, days, app):
 )
 def test_ledger_parser_returns_correct_namespace(args, ledger, app):
     assert app.parse_args(args) == argparse.Namespace(
-        command='ledger', ledger=ledger, func=app._ledger_command
+        command='ledger',
+        ledger=ledger,
     )
 
 
@@ -57,7 +60,6 @@ def test_debit_credit_parser_returns_correct_namespace(
         command=command,
         amount=amount,
         description=description,
-        func=app._transaction_command,
     )
 
 
@@ -73,9 +75,7 @@ def test_debit_credit_parser_returns_correct_namespace(
     ],
 )
 def test_report_parser_returns_correct_namespace(args, command, datespec, app):
-    assert app.parse_args(args) == argparse.Namespace(
-        command=command, func=app._report_command, datespec=datespec
-    )
+    assert app.parse_args(args) == argparse.Namespace(command=command, datespec=datespec)
 
 
 @pytest.mark.parametrize('args', [['date', '01/01/1970'], ['date', '--advance', '0.5']])

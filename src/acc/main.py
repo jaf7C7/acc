@@ -6,10 +6,8 @@ from decimal import Decimal
 from typing import Union, Sequence, Generator, Iterable
 
 
-# TODO: Get rid of global variables
 DEFAULT_CONFIG = '.acc.conf'
 DEFAULT_LEDGER = 'acc_ledger.csv'
-# TODO: Why is default date a date object and default ledger a string?
 DEFAULT_DATE = datetime.date(1970, 1, 1)
 MIN_DATE = datetime.date(datetime.MINYEAR, 1, 1)
 MAX_DATE = datetime.date(datetime.MAXYEAR, 12, 31)
@@ -91,7 +89,6 @@ class Ledger(_AttributeHolder):
         """Format a line in the file into a readable form"""
         return '  '.join(self.fields.values()).format(*transaction)
 
-    # TODO: 'tabulate' should not be a generator, just let it print lines
     def tabulate(
         self, start: datetime.date = MIN_DATE, end: datetime.date = MAX_DATE
     ) -> Generator[Sequence[str], None, None]:
@@ -116,11 +113,8 @@ class Application(_AttributeHolder):
     def __init__(self, config: str = DEFAULT_CONFIG) -> None:
         self.config = config
         self.date = DEFAULT_DATE
-        # TODO: Keep ledger as a string until you need to do more with it
         self.ledger = Ledger(DEFAULT_LEDGER)
 
-    # TODO: Make a 'CSVFile' base class for ledger and config stuff?
-    # e.g. `config = CSVFile(self.config_path).read()`
     def read_config(self) -> None:
         """Update application properties with values from the config file"""
         try:
@@ -129,7 +123,6 @@ class Application(_AttributeHolder):
         except FileNotFoundError:
             pass
         else:
-            # TODO: Keep dates as strings until you need to do arithmetic
             self.date = datetime.date.fromisoformat(config['date'])
             self.ledger = Ledger(config['ledger'])
 
@@ -139,43 +132,6 @@ class Application(_AttributeHolder):
             writer = csv.DictWriter(f, fieldnames=['date', 'ledger'])
             writer.writeheader()
             writer.writerow(dict(date=self.date, ledger=self.ledger))
-
-    # TODO: Get rid of all '_command' methods, prefer custom argparse actions?
-    def _date_command(self, args: argparse.Namespace) -> None:
-        if args.date is not None:
-            # TODO: Just write the new date or ledger value straight to the config
-            self.date = args.date
-            self.write_config()
-        elif args.days is not None:
-            self.date += args.days
-            self.write_config()
-        else:
-            print(self.date.isoformat())
-
-    def _ledger_command(self, args: argparse.Namespace) -> None:
-        if args.ledger is not None:
-            self.ledger = args.ledger
-            self.write_config()
-        else:
-            print(self.ledger.path)
-
-    def _transaction_command(self, args: argparse.Namespace) -> None:
-        if args.command == 'credit':
-            args.amount *= -1
-        self.ledger.append(
-            id=len(self.ledger),
-            date=self.date.isoformat(),
-            amount='{:+.2f}'.format(args.amount),
-            description=args.description,
-        )
-
-    # TODO: Get rid of '{:+.2f}' everywhere (use 'int' or subclass 'Decimal')
-    def _report_command(self, args: argparse.Namespace) -> None:
-        if args.command == 'balance':
-            print('{:+.2f}'.format(self.ledger.balance(*args.datespec)))
-        else:
-            for row in self.ledger.tabulate(*args.datespec):
-                print(row)
 
     def parse_args(self, argv: Union[Sequence[str], None] = None) -> argparse.Namespace:
         """Handles parsing, type-checking and casting of command line arguments"""
@@ -201,7 +157,6 @@ class Application(_AttributeHolder):
             metavar='<days>',
             help='the number of days to advance (default %(const)s day)',
         )
-        date_parser.set_defaults(func=self._date_command)
 
         ledger_parser = subparsers.add_parser(
             'ledger', exit_on_error=False, help='select a new ledger file'
@@ -213,7 +168,6 @@ class Application(_AttributeHolder):
             metavar='<ledger>',
             help='the path to the new ledger file',
         )
-        ledger_parser.set_defaults(func=self._ledger_command)
 
         transaction_parser = subparsers.add_parser(
             'credit',
@@ -233,7 +187,6 @@ class Application(_AttributeHolder):
             metavar='<description>',
             help='a short description of the transation',
         )
-        transaction_parser.set_defaults(func=self._transaction_command)
 
         report_parser = subparsers.add_parser(
             'report',
@@ -249,19 +202,54 @@ class Application(_AttributeHolder):
             metavar='<datespec>',
             help='A date or range of dates over which to report, of the form [YYYY-MM-DD~]YYYY-MM-DD',  # noqa: B950
         )
-        report_parser.set_defaults(func=self._report_command)
 
         if not argv:
             argv = ['--help']
         return parser.parse_args(argv)
 
-    # TODO: Add tests for BrokenPipeError and KeyboardInterrupt
+    def _run(self, args: argparse.Namespace) -> None:
+        """Take appropriate action based on args object"""
+
+        if args.command == 'date':
+            if args.date is not None:
+                self.date = args.date
+                self.write_config()
+            elif args.days is not None:
+                self.date += args.days
+                self.write_config()
+            else:
+                print(self.date.isoformat())
+
+        if args.command == 'ledger':
+            if args.ledger is not None:
+                self.ledger = args.ledger
+                self.write_config()
+            else:
+                print(self.ledger.path)
+
+        if args.command in ['debit', 'credit']:
+            if args.command == 'credit':
+                args.amount *= -1
+            self.ledger.append(
+                id=len(self.ledger),
+                date=self.date.isoformat(),
+                amount='{:+.2f}'.format(args.amount),
+                description=args.description,
+            )
+
+        if args.command == 'report':
+            for row in self.ledger.tabulate(*args.datespec):
+                print(row)
+
+        if args.command == 'balance':
+            print('{:+.2f}'.format(self.ledger.balance(*args.datespec)))
+
     def run(self, argv: Union[Sequence[str], None] = None) -> int:
         """Run the program with the given arguments"""
         self.read_config()
         try:
             args = self.parse_args(argv)
-            args.func(args)
+            self._run(args)
         except argparse.ArgumentError as err:
             print(err, file=sys.stderr)
             return 1
