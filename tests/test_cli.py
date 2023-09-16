@@ -118,6 +118,11 @@ def test_report_over_a_range_of_dates_with_last_date_omitted(capsys, mock_ledger
     )
 
 
+def test_a_non_isoformat_date_in_a_datespec_raises_exception():
+    with pytest.raises(ValueError):
+        cli.main(['report', '1991/01/01~2023-02-03'])
+
+
 def test_balance_calculates_correct_balance(capsys, mock_ledger):
     cli.main(['date', '1970-04-01'])
     cli.main(['balance'])
