@@ -18,7 +18,7 @@ class daydelta(datetime.timedelta):
 
     resolution = datetime.timedelta(days=1)
 
-    def __new__(cls, days: int) -> datetime.timedelta:  # type: ignore [misc]
+    def __new__(cls, days: int) -> "daydelta":
         return super().__new__(cls, days=int(days))
 
 
