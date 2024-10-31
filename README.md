@@ -1,12 +1,8 @@
 Acc
 ===
 
-A command-line tool for managing a simple financial account. It is primarily a
-learning project, and its functionality is not particularly interesting, although
-it is described briefly in the [Usage](#usage) section.
-
-For a much more complete command-line accounting tool, see
-[ledger-cli](https://ledger-cli.org)
+A command-line tool for keeping track of incomes and expenditures in a
+financial account.
 
 The main goals of this project were:
 
@@ -157,7 +153,7 @@ ID      DATE          AMOUNT  DESCRIPTION
 To calculate the balance over that same period, use the `balance` command:
 ```
 $ acc balance 2022-02-02~
--932873.03  # Ouch!
+-932873.03
 ```
 
 To get the balance of the entire ledger, regardless of whatever the current date is
